@@ -56,6 +56,24 @@ export default defineConfig({
 					{ text: 'Helpers', link: '/docs/features/helpers' },
 				],
 			},
+			{
+				text: 'LLMs',
+				collapsed: true,
+				items: [
+					{
+						text: 'Docs List',
+						link: '/llms.txt',
+					},
+					{
+						text: 'Full Docs',
+						link: '/llms-full.txt',
+					},
+					{
+						text: 'Tiny Docs',
+						link: '/llms-small.txt',
+					},
+				],
+			},
 		],
 
 		socialLinks: [{ icon: 'github', link: 'https://github.com/honestjs/website' }],
