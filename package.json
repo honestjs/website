@@ -1,7 +1,6 @@
 {
 	"name": "honestjs.dev",
 	"version": "0.1.0",
-	"module": "index.ts",
 	"type": "module",
 	"author": "Orkhan Karimov <karimovok1@gmail.com> (https://github.com/kerimovok)",
 	"license": "MIT",
@@ -17,8 +16,9 @@
 		"typescript": "^5"
 	},
 	"scripts": {
-		"docs:dev": "vitepress dev",
-		"docs:build": "vitepress build",
-		"docs:preview": "vitepress preview"
+		"dev": "vitepress dev",
+		"prebuild": "bun ./scripts/build-llm-docs.ts",
+		"build": "vitepress build",
+		"preview": "vitepress preview"
 	}
 }
