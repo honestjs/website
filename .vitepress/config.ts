@@ -2,16 +2,25 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+	lang: 'en-US',
 	title: 'HonestJS',
-	description: 'A modern TypeScript web framework built on top of Hono',
+	description: 'Fast, minimal, and structured. Hono performance meets Nest architecture for scalable apps.',
+	lastUpdated: true,
+	cleanUrls: true,
+	ignoreDeadLinks: true,
 	sitemap: {
 		hostname: 'https://honestjs.dev',
 	},
+	head: [['link', { rel: 'icon', href: '/images/honestjs.png' }]],
 	themeConfig: {
 		// https://vitepress.dev/reference/default-theme-config
 		nav: [
 			{ text: 'Home', link: '/' },
 			{ text: 'Documentation', link: '/docs/introduction' },
+			{
+				text: 'Discussions',
+				link: 'https://github.com/orgs/honestjs/discussions',
+			},
 		],
 
 		sidebar: [
