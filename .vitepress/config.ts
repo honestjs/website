@@ -11,7 +11,7 @@ export default defineConfig({
 	sitemap: {
 		hostname: 'https://honestjs.dev',
 	},
-	head: [['link', { rel: 'icon', href: '/images/honestjs.png' }]],
+	head: [['link', { rel: 'icon', href: '/images/honestjs-mini.svg' }]],
 	themeConfig: {
 		// https://vitepress.dev/reference/default-theme-config
 		nav: [
