@@ -6,7 +6,7 @@ export default defineConfig({
 	title: 'HonestJS',
 	description: 'Fast, minimal, and structured. Hono performance meets Nest architecture for scalable apps.',
 	lastUpdated: true,
-	cleanUrls: false,
+	cleanUrls: true,
 	ignoreDeadLinks: true,
 	sitemap: {
 		hostname: 'https://honestjs.dev',
