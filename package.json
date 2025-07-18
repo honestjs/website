@@ -9,11 +9,11 @@
 		"url": "git+https://github.com/honestjs/website.git"
 	},
 	"devDependencies": {
-		"@types/bun": "latest",
+		"@types/bun": "^1.2.18",
 		"vitepress": "^1.6.3"
 	},
 	"peerDependencies": {
-		"typescript": "^5"
+		"typescript": "^5.8.3"
 	},
 	"scripts": {
 		"dev": "vitepress dev",
