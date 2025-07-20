@@ -216,7 +216,7 @@ class PagesController {
 
 ::: code-group
 
-```bash [Bun (recommended)]
+```bash [bun (recommended)]
 bun add honestjs reflect-metadata
 ```
 
@@ -297,17 +297,17 @@ class PagesController {
 
 ## Community and Support
 
--   **GitHub**: [honestjs/honestjs](https://github.com/honestjs/honestjs)
--   **Issues**: [GitHub Issues](https://github.com/honestjs/honestjs/issues)
--   **Discussions**: [GitHub Discussions](https://github.com/honestjs/honestjs/discussions)
+-   **GitHub**: [honestjs/honest](https://github.com/honestjs/honest)
+-   **Issues**: [GitHub Issues](https://github.com/honestjs/honest/issues)
+-   **Discussions**: [GitHub Discussions](https://github.com/honestjs/honest/discussions)
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](https://github.com/honestjs/honestjs/blob/main/CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](https://github.com/honestjs/honest/blob/main/CONTRIBUTING.md) for details.
 
 ## License
 
-HonestJS is licensed under the MIT License. See the [LICENSE](https://github.com/honestjs/honestjs/blob/main/LICENSE) file for details.
+HonestJS is licensed under the MIT License. See the [LICENSE](https://github.com/honestjs/honest/blob/main/LICENSE) file for details.
 
 ---
 

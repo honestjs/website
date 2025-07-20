@@ -39,11 +39,14 @@ export default defineConfig({
 					{ text: 'Dependency Injection', link: '/docs/concepts/dependency-injection' },
 					{ text: 'Routing', link: '/docs/concepts/routing' },
 					{ text: 'Parameters', link: '/docs/concepts/parameters' },
+					{ text: 'Error Handling', link: '/docs/concepts/error-handling' },
 				],
 			},
 			{
 				text: 'Components',
 				items: [
+					{ text: 'Overview', link: '/docs/components/overview' },
+					{ text: 'Layout', link: '/docs/components/layout' },
 					{ text: 'Middleware', link: '/docs/components/middleware' },
 					{ text: 'Guards', link: '/docs/components/guards' },
 					{ text: 'Pipes', link: '/docs/components/pipes' },
@@ -57,6 +60,10 @@ export default defineConfig({
 					{ text: 'MVC', link: '/docs/features/mvc' },
 					{ text: 'Helpers', link: '/docs/features/helpers' },
 				],
+			},
+			{
+				text: 'Reference',
+				items: [{ text: 'API Reference', link: '/docs/api-reference' }],
 			},
 			{
 				text: 'LLMs',
