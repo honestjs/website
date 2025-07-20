@@ -17,7 +17,7 @@ export default defineConfig({
 		// https://vitepress.dev/reference/default-theme-config
 		nav: [
 			{ text: 'Home', link: '/' },
-			{ text: 'Documentation', link: '/docs/introduction' },
+			{ text: 'Documentation', link: '/docs/overview' },
 			{
 				text: 'Discussions',
 				link: 'https://github.com/orgs/honestjs/discussions',
@@ -26,9 +26,10 @@ export default defineConfig({
 
 		sidebar: [
 			{
-				text: 'Getting Started',
+				text: 'Introduction',
 				items: [
-					{ text: 'Introduction', link: '/docs/introduction' },
+					{ text: 'Overview', link: '/docs/overview' },
+					{ text: 'Getting Started', link: '/docs/getting-started' },
 					{ text: 'Configuration', link: '/docs/configuration' },
 				],
 			},

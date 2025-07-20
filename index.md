@@ -12,7 +12,7 @@ hero:
     actions:
         - theme: brand
           text: Get Started
-          link: /docs/introduction
+          link: /docs/overview
         - theme: alt
           text: View on GitHub
           link: https://github.com/honestjs/honest

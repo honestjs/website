@@ -87,8 +87,7 @@ Pipes can be applied at the global, controller, or handler level using the `@Use
 
 Global pipes are useful for applying validation to all incoming data. A global `ValidationPipe` can be set to ensure all DTOs are validated automatically.
 
-```typescript
-// src/main.ts
+```typescript [src/main.ts]
 const { hono } = await Application.create(AppModule, {
 	components: {
 		pipes: [new ValidationPipe()],

@@ -50,8 +50,7 @@ Filters can be applied at the global, controller, or handler level using the `@U
 
 Global filters are ideal for handling common exceptions across an entire application.
 
-```typescript
-// src/main.ts
+```typescript [src/main.ts]
 const { hono } = await Application.create(AppModule, {
 	components: {
 		filters: [new NotFoundExceptionFilter()],

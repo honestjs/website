@@ -96,8 +96,7 @@ roles with specific handlers, and a `RolesGuard` to check for those roles.
 
 This decorator will attach role metadata to a route.
 
-```typescript
-// src/decorators/roles.decorator.ts
+```typescript [src/decorators/roles.decorator.ts]
 export const Roles = (...roles: string[]) => {
 	return (target: any, key: string, descriptor: PropertyDescriptor) => {
 		Reflect.defineMetadata('roles', roles, descriptor.value)
@@ -109,8 +108,7 @@ export const Roles = (...roles: string[]) => {
 
 This guard will retrieve the roles from the metadata and check if the user has the required role.
 
-```typescript
-// src/guards/roles.guard.ts
+```typescript [src/guards/roles.guard.ts]
 import type { IGuard } from 'honestjs'
 import type { Context } from 'hono'
 
@@ -129,8 +127,7 @@ export class RolesGuard implements IGuard {
 
 **3. Use them together:**
 
-```typescript
-// src/controllers/admin.controller.ts
+```typescript [src/controllers/admin.controller.ts]
 import { Controller, Get, UseGuards } from 'honestjs'
 import { Roles } from '../decorators/roles.decorator'
 import { RolesGuard } from '../guards/roles.guard'

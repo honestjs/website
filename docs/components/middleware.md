@@ -33,9 +33,9 @@ Global middleware can be registered in the `Application.create` options.
 
 **Example:**
 
-`src/main.ts`
+::: code-group
 
-```typescript
+```typescript [src/main.ts]
 import { Application } from 'honestjs'
 import { LoggerMiddleware } from './middleware/logger.middleware'
 
@@ -45,6 +45,8 @@ const { hono } = await Application.create(AppModule, {
 	},
 })
 ```
+
+:::
 
 ### Controller-Level Middleware
 
@@ -94,14 +96,17 @@ Middleware is executed in the following order:
 
 ## Using Hono Middleware
 
-HonestJS is built on Hono, so you can use any existing Hono middleware. The `_templates/mvc` example shows how to integrate Hono's `jsxRenderer` and a custom `EmojiFavicon` middleware.
+HonestJS is built on Hono, so you can use any existing Hono middleware. The `mvc` example shows how to integrate Hono's `jsxRenderer` middleware.
 
 To use a Hono middleware, create a simple wrapper class.
 
-```typescript
+::: code-group
+
+```typescript [src/middleware/hono.middleware.ts]
 // A wrapper to use Hono's jsxRenderer with HonestJS.
 import { jsxRenderer } from 'hono/jsx-renderer'
-import { IMiddleware } from 'honestjs'
+import type { IMiddleware } from 'honestjs'
+import type { Context, Next } from 'hono'
 
 export class HonoMiddleware implements IMiddleware {
 	constructor(private middleware: any) {}
@@ -110,7 +115,9 @@ export class HonoMiddleware implements IMiddleware {
 		return this.middleware(c, next)
 	}
 }
+```
 
+```typescript [src/main.ts]
 // In main.ts
 const { hono } = await Application.create(AppModule, {
 	components: {
@@ -118,5 +125,7 @@ const { hono } = await Application.create(AppModule, {
 	},
 })
 ```
+
+:::
 
 This approach allows you to seamlessly integrate the rich ecosystem of Hono middleware into your HonestJS application.
