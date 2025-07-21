@@ -1,4 +1,4 @@
-# Helper Functions in HonestJS
+# Helpers
 
 HonestJS provides several powerful helper functions that enable you to extend the framework's functionality. These
 helpers allow you to create custom decorators, standardize error responses, and build reusable components that integrate

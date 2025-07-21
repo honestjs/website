@@ -1,4 +1,4 @@
-# Routing in HonestJS
+# Routing
 
 Routing is the mechanism that maps incoming requests to the correct controller methods. HonestJS uses a combination of decorators on your controller classes and methods to define the routes for your application.
 
@@ -250,7 +250,7 @@ Similar to versioning, you can control route prefixes at multiple levels:
 
 ::: code-group
 
-```typescript [src/main.ts]
+```typescript [main.ts]
 // Global prefix
 const { app, hono } = await Application.create(AppModule, {
 	routing: {
@@ -259,7 +259,7 @@ const { app, hono } = await Application.create(AppModule, {
 })
 ```
 
-```typescript [src/controllers/users.controller.ts]
+```typescript [users.controller.ts]
 // Controller-level prefix
 @Controller('users', { prefix: 'v2/api' })
 export class UsersController {
@@ -267,7 +267,7 @@ export class UsersController {
 }
 ```
 
-```typescript [src/controllers/users.controller.ts]
+```typescript [users.controller.ts]
 // Route-level prefix
 @Controller('users')
 export class UsersController {

@@ -1,4 +1,4 @@
-# Parameter Decorators in HonestJS
+# Parameters
 
 Parameter decorators allow you to extract data from the incoming request and inject it directly into your route handler's parameters. This provides a clean and declarative way to access request data with full type safety.
 

@@ -1,4 +1,4 @@
-# Exception Filters
+# Filters
 
 Exception filters provide a mechanism for handling unhandled exceptions that occur during the request-response cycle. They allow you to catch specific types of errors and send a customized response to the client.
 
@@ -28,14 +28,16 @@ import { NotFoundException } from 'http-essentials'
 
 export class NotFoundExceptionFilter implements IFilter<NotFoundException> {
 	catch(exception: NotFoundException, context: Context) {
-		context.status(404)
-		return context.json({
-			statusCode: 404,
-			message: 'The requested resource was not found.',
-			error: 'Not Found',
-			timestamp: new Date().toISOString(),
-			path: context.req.path,
-		})
+		if (exception instanceof NotFoundException) {
+			context.status(404)
+			return context.json({
+				statusCode: 404,
+				message: 'The requested resource was not found.',
+				error: 'Not Found',
+				timestamp: new Date().toISOString(),
+				path: context.req.path,
+			})
+		}
 	}
 }
 ```
@@ -50,7 +52,7 @@ Filters can be applied at the global, controller, or handler level using the `@U
 
 Global filters are ideal for handling common exceptions across an entire application.
 
-```typescript [src/main.ts]
+```typescript
 const { hono } = await Application.create(AppModule, {
 	components: {
 		filters: [new NotFoundExceptionFilter()],

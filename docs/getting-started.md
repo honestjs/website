@@ -18,7 +18,6 @@ First, create a new project and install the necessary dependencies.
 ```bash
 bun init
 bun add honestjs hono reflect-metadata
-bun add -d typescript @types/bun
 ```
 
 ### 2. Configure TypeScript
@@ -30,15 +29,46 @@ Ensure your `tsconfig.json` has the following options enabled for decorator supp
 ```json [tsconfig.json]
 {
 	"compilerOptions": {
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
-		"target": "ES2022",
+		// Enable latest features
+		"lib": ["ESNext", "DOM"],
+		"target": "ESNext",
 		"module": "ESNext",
+		"moduleDetection": "force",
+
+		// Optional: Enable JSX support for Hono
+		"jsx": "react-jsx",
+		"jsxImportSource": "hono/jsx",
+
+		// Bundler mode
 		"moduleResolution": "bundler",
+		"verbatimModuleSyntax": true,
+
+		// Enable declaration file generation
+		"declaration": false,
+		"declarationMap": false,
+		"emitDeclarationOnly": false,
+		"outDir": "dist",
+		"rootDir": "src",
+		"sourceMap": false,
+
+		// Best practices
 		"strict": true,
 		"skipLibCheck": true,
-		"esModuleInterop": true
-	}
+		"noFallthroughCasesInSwitch": true,
+		"forceConsistentCasingInFileNames": true,
+		"esModuleInterop": true,
+
+		// Some stricter flags (disabled by default)
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"noPropertyAccessFromIndexSignature": false,
+
+		// Decorators
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist"]
 }
 ```
 
@@ -46,13 +76,24 @@ Ensure your `tsconfig.json` has the following options enabled for decorator supp
 
 ## Building Your First App
 
+### 0. Create a directory structure
+
+```
+Project
+├── src
+│   ├── app.module.ts
+│   ├── app.controller.ts
+│   ├── app.service.ts
+└── └── main.ts
+```
+
 ### 1. Create a Service
 
 Services are responsible for business logic. This service will provide the "Hello, World!" message.
 
 ::: code-group
 
-```typescript [src/app.service.ts]
+```typescript [app.service.ts]
 import { Service } from 'honestjs'
 
 @Service()
@@ -73,7 +114,7 @@ Controllers handle incoming requests and use services to fulfill them.
 
 ::: code-group
 
-```typescript [src/app.controller.ts]
+```typescript [app.controller.ts]
 import { Controller, Get } from 'honestjs'
 import AppService from './app.service'
 
@@ -98,7 +139,7 @@ Modules organize the application's components and define the dependency injectio
 
 ::: code-group
 
-```typescript [src/app.module.ts]
+```typescript [app.module.ts]
 import { Module } from 'honestjs'
 import AppController from './app.controller'
 import AppService from './app.service'
@@ -120,7 +161,7 @@ Finally, create the main application file to bootstrap the HonestJS app.
 
 ::: code-group
 
-```typescript [src/main.ts]
+```typescript [main.ts]
 import { Application } from 'honestjs'
 import 'reflect-metadata'
 import AppModule from './app.module'
@@ -166,71 +207,4 @@ Now that you have a basic application running, you can explore:
 -   [Routing](./concepts/routing.md) - Understand how to define routes and handle requests
 -   [Dependency Injection](./concepts/dependency-injection.md) - Learn about the DI system
 -   [Parameters](./concepts/parameters.md) - See how to extract data from requests
--   [Components](./components/) - Explore middleware, guards, pipes, and filters
--   [Features](./features/) - Discover advanced features like plugins and MVC support
-
-## Framework Exports
-
-HonestJS exports the following main components:
-
-::: code-group
-
-```typescript [src/exports/core.ts]
-// Core application
-import { Application } from 'honestjs'
-```
-
-```typescript [src/exports/decorators.ts]
-// Decorators
-import {
-	Controller,
-	Get,
-	Post,
-	Put,
-	Delete,
-	Patch,
-	Options,
-	All,
-	Service,
-	Module,
-	Body,
-	Param,
-	Query,
-	Header,
-	Req,
-	Res,
-	Ctx,
-	UseMiddleware,
-	UseGuards,
-	UsePipes,
-	UseFilters,
-} from 'honestjs'
-```
-
-```typescript [src/exports/components.ts]
-// Components
-import { Layout } from 'honestjs'
-```
-
-```typescript [src/exports/constants.ts]
-// Constants
-import { VERSION_NEUTRAL } from 'honestjs'
-```
-
-```typescript [src/exports/types.ts]
-// Types and interfaces
-import type {
-	HonestOptions,
-	ControllerOptions,
-	ModuleOptions,
-	IMiddleware,
-	IGuard,
-	IPipe,
-	IFilter,
-	IPlugin,
-} from 'honestjs'
-```
-
-:::
-
-This modular structure allows you to import only what you need, keeping your bundle size minimal.
+-   [Components](./components/overview.md) - Explore middleware, guards, pipes, and filters

@@ -1,4 +1,4 @@
-# Dependency Injection in HonestJS
+# Dependency Injection
 
 HonestJS includes a simple and effective dependency injection (DI) container that manages the instantiation of your classes and their dependencies. This allows you to write loosely coupled, testable, and maintainable code.
 
@@ -17,9 +17,9 @@ Services are the primary candidates for dependency injection. They are typically
 
 **Example:**
 
-`src/app.service.ts`
+::: code-group
 
-```typescript
+```typescript [app.service.ts]
 import { Service } from 'honestjs'
 
 @Service()
@@ -32,6 +32,8 @@ class AppService {
 export default AppService
 ```
 
+:::
+
 The `@Service()` decorator marks the `AppService` class as a provider that can be managed by the DI container.
 
 ## Constructor Injection
@@ -40,9 +42,9 @@ To inject a service into a controller (or another service), you simply declare i
 
 **Example:**
 
-`src/app.controller.ts`
+::: code-group
 
-```typescript
+```typescript [app.controller.ts]
 import { Controller, Get } from 'honestjs'
 import AppService from './app.service'
 
@@ -58,6 +60,8 @@ class AppController {
 
 export default AppController
 ```
+
+:::
 
 When the `AppController` is instantiated, the DI container will:
 
@@ -79,7 +83,9 @@ HonestJS's DI container maintains a map of class constructors to their instances
 
 Services are automatically registered when you use the `@Service()` decorator. However, you can also register them explicitly in your modules:
 
-```typescript
+::: code-group
+
+```typescript [users.module.ts]
 import { Module } from 'honestjs'
 import { UsersController } from './users.controller'
 import { UsersService } from './users.service'
@@ -91,6 +97,8 @@ import { DatabaseService } from './database.service'
 })
 class UsersModule {}
 ```
+
+:::
 
 ## Complex Dependency Chains
 

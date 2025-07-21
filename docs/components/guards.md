@@ -1,4 +1,4 @@
-# Guards in HonestJS
+# Guards
 
 Guards are a powerful feature for managing access control and authorization. They determine whether a given request
 should be handled by the route handler or not. If a guard denies access, HonestJS throws a `ForbiddenException`.
@@ -36,8 +36,6 @@ Like middleware, guards can be applied at the global, controller, or handler lev
 Global guards are applied to every route in your application.
 
 **Example:**
-
-`src/main.ts`
 
 ```typescript
 import { Application } from 'honestjs'
@@ -96,7 +94,9 @@ roles with specific handlers, and a `RolesGuard` to check for those roles.
 
 This decorator will attach role metadata to a route.
 
-```typescript [src/decorators/roles.decorator.ts]
+::: code-group
+
+```typescript [roles.decorator.ts]
 export const Roles = (...roles: string[]) => {
 	return (target: any, key: string, descriptor: PropertyDescriptor) => {
 		Reflect.defineMetadata('roles', roles, descriptor.value)
@@ -104,11 +104,15 @@ export const Roles = (...roles: string[]) => {
 }
 ```
 
+:::
+
 **2. Create the `RolesGuard`:**
 
 This guard will retrieve the roles from the metadata and check if the user has the required role.
 
-```typescript [src/guards/roles.guard.ts]
+::: code-group
+
+```typescript [roles.guard.ts]
 import type { IGuard } from 'honestjs'
 import type { Context } from 'hono'
 
@@ -125,9 +129,13 @@ export class RolesGuard implements IGuard {
 }
 ```
 
+:::
+
 **3. Use them together:**
 
-```typescript [src/controllers/admin.controller.ts]
+::: code-group
+
+```typescript [admin.controller.ts]
 import { Controller, Get, UseGuards } from 'honestjs'
 import { Roles } from '../decorators/roles.decorator'
 import { RolesGuard } from '../guards/roles.guard'
@@ -142,5 +150,7 @@ export class AdminController {
 	}
 }
 ```
+
+:::
 
 This example demonstrates how you can build a flexible and declarative authorization system with guards.

@@ -4,11 +4,11 @@
     "": {
       "name": "honestjs.dev",
       "devDependencies": {
-        "@types/bun": "latest",
-        "vitepress": "latest",
+        "@types/bun": "^1.2.19",
+        "vitepress": "^1.6.3",
       },
       "peerDependencies": {
-        "typescript": "latest",
+        "typescript": "^5.8.3",
       },
     },
   },

@@ -46,7 +46,6 @@ export default defineConfig({
 				text: 'Components',
 				items: [
 					{ text: 'Overview', link: '/docs/components/overview' },
-					{ text: 'Layout', link: '/docs/components/layout' },
 					{ text: 'Middleware', link: '/docs/components/middleware' },
 					{ text: 'Guards', link: '/docs/components/guards' },
 					{ text: 'Pipes', link: '/docs/components/pipes' },
@@ -93,7 +92,7 @@ export default defineConfig({
 		},
 
 		editLink: {
-			pattern: 'https://github.com/honestjs/website/edit/main/:path',
+			pattern: 'https://github.com/honestjs/website/edit/master/:path',
 			text: 'Edit this page on GitHub',
 		},
 

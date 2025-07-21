@@ -1,4 +1,4 @@
-# Configuration in HonestJS
+# Configuration
 
 HonestJS applications can be configured through the `HonestOptions` interface when creating your application. This allows you to customize various aspects of your application's behavior, from routing to error handling.
 

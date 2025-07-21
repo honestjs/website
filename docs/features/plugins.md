@@ -1,8 +1,15 @@
-# Plugins in HonestJS
+# Plugins
 
 Plugins provide a powerful way to extend HonestJS functionality by hooking into the application lifecycle. They allow
 you to add custom features, integrate third-party services, or modify the application's behavior without changing the
 core framework code.
+
+> [!NOTE]
+> For cross-cutting concerns like logging, authentication, validation, and request/response modification,
+> prefer using [middleware](./../components/middleware.md), [guards](./../components/guards.md), [pipes](./../components/pipes.md),
+> or [filters](./../components/filters.md) over plugins. These components are specifically designed for these use cases
+> and provide better integration with the request lifecycle. Use plugins primarily for application-level setup,
+> external service integration, or framework extensions.
 
 ## Plugin Interface
 
@@ -41,6 +48,10 @@ This hook runs after all modules have been registered. Use this hook for:
 -   Registering catch-all routes
 
 ## Creating a Simple Plugin
+
+> [!WARNING] IMPORTANT
+> The logging example below demonstrates plugin usage, but for request logging,
+> [middleware](./../components/middleware.md) is the preferred approach. This example is shown for educational purposes.
 
 Here's a basic example of a logging plugin:
 

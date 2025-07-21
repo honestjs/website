@@ -1,4 +1,4 @@
-# Error Handling in HonestJS
+# Error Handling
 
 HonestJS provides a comprehensive error handling system that allows you to catch, process, and respond to errors in a consistent and organized way.
 

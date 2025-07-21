@@ -4,7 +4,7 @@ layout: home
 
 hero:
     name: 'HonestJS'
-    text: Web application framework
+    text: Hono + Nest
     tagline: Fast, minimal, and structured. Hono performance meets Nest architecture for scalable apps.
     image:
         src: /images/codeblock.png
@@ -18,16 +18,16 @@ hero:
           link: https://github.com/honestjs/honest
 
 features:
+    - icon: 🚀
+      title: Lightning Fast Performance
+      details: Built on Hono for maximum speed and efficiency, delivering exceptional performance for your web applications
     - icon: 🏗️
-      title: NestJS Architecture
-      details: Familiar decorators and patterns
-    - icon: ⚡️
-      title: Lightning Fast
-      details: Built on Hono for maximum performance
-    - icon: 🧩
-      title: Extensible
-      details: Middleware, guards, pipes, filters, and plugin system
-    - icon: ✅
-      title: Feature Rich
-      details: DI, routing, SSR with JSX included
+      title: Familiar Architecture
+      details: Decorator-based API inspired by NestJS with TypeScript-first design for intuitive development
+    - icon: 🔧
+      title: Dependency Injection
+      details: Powerful DI container for clean, testable code with automatic service instantiation and management
+    - icon: 🔌
+      title: Plugin System
+      details: Extensible architecture with custom plugins, middleware, pipes, and filters for unlimited flexibility
 ---

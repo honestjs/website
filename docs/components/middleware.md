@@ -35,7 +35,7 @@ Global middleware can be registered in the `Application.create` options.
 
 ::: code-group
 
-```typescript [src/main.ts]
+```typescript [main.ts]
 import { Application } from 'honestjs'
 import { LoggerMiddleware } from './middleware/logger.middleware'
 

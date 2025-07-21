@@ -68,20 +68,6 @@ class UsersController {
 }
 ```
 
-### [Layout](./layout.md)
-
-A server-side rendering component that provides a comprehensive HTML document structure with SEO optimization, flexible configuration, and modern web standards support.
-
-```typescript
-import { Layout } from 'honestjs'
-
-const html = Layout({
-	title: 'My Application',
-	description: 'A modern web application',
-	children: '<h1>Hello World</h1>',
-})
-```
-
 ## Component Execution Order
 
 Components are executed in the following order:

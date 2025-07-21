@@ -28,6 +28,7 @@ Here is a simple pipe that transforms a string value into a number.
 
 ```typescript
 import { IPipe, ArgumentMetadata } from 'honestjs'
+import { BadRequestException } from 'http-essentials'
 
 export class ParseIntPipe implements IPipe<string> {
 	transform(value: string, metadata: ArgumentMetadata): number {

@@ -1,4 +1,4 @@
-# HonestJS Documentation
+# Overview
 
 Welcome to the HonestJS documentation! HonestJS is a modern, lightweight web framework for TypeScript and JavaScript, built on top of [Hono](https://hono.dev).
 
@@ -8,7 +8,7 @@ HonestJS provides a clean, decorator-based API for building web applications wit
 
 -   **Decorator-based Architecture**: TypeScript decorators for Controllers, Services, and Modules
 -   **Dependency Injection**: Simple yet powerful DI container for managing application components
--   **Comprehensive Middleware System**: Support for middleware, guards, pipes, and exception filters
+-   **Comprehensive Components System**: Support for middleware, guards, pipes, and filters
 -   **API Versioning**: Built-in support for API versioning with flexible versioning strategies
 -   **Plugin System**: Extensible architecture with plugin support for custom functionality
 -   **MVC Support**: Includes support for building full-stack applications with JSX-based views
@@ -67,12 +67,11 @@ export default hono
 
 ### Components
 
--   **[Components Overview](./components/index.md)** - Introduction to components system
+-   **[Overview](./components/overview.md)** - Overview of the components system
 -   **[Middleware](./components/middleware.md)** - Request/response processing middleware
 -   **[Guards](./components/guards.md)** - Authentication and authorization guards
 -   **[Pipes](./components/pipes.md)** - Data transformation and validation pipes
 -   **[Filters](./components/filters.md)** - Exception handling filters
--   **[Layout](./components/layout.md)** - Server-side rendering component
 
 ### Features
 
@@ -136,20 +135,20 @@ class UsersController {
 
 ::: code-group
 
-```typescript [src/main.ts]
+```typescript [main.ts]
 // Global version
 const { app, hono } = await Application.create(AppModule, {
 	routing: { version: 1 },
 })
 ```
 
-```typescript [src/controllers/users.controller.ts]
+```typescript [users.controller.ts]
 // Controller-specific version
 @Controller('users', { version: 2 })
 class UsersController {}
 ```
 
-```typescript [src/controllers/health.controller.ts]
+```typescript [health.controller.ts]
 // Version-neutral routes
 @Controller('health', { version: VERSION_NEUTRAL })
 class HealthController {}
@@ -161,19 +160,19 @@ class HealthController {}
 
 ::: code-group
 
-```typescript [src/main.ts]
+```typescript [main.ts]
 // Global components
 const { app, hono } = await Application.create(AppModule, {
 	components: {
-		middleware: [new LoggerMiddleware()],
-		guards: [new AuthGuard()],
-		pipes: [new ValidationPipe()],
-		filters: [new HttpExceptionFilter()],
+		middleware: [new LoggerMiddleware({ level: 'info' })],
+		guards: [AuthGuard],
+		pipes: [ValidationPipe],
+		filters: [HttpExceptionFilter],
 	},
 })
 ```
 
-```typescript [src/controllers/users.controller.ts]
+```typescript [users.controller.ts]
 // Controller-level components
 @Controller('users')
 @UseMiddleware(LoggerMiddleware)
@@ -181,7 +180,7 @@ const { app, hono } = await Application.create(AppModule, {
 class UsersController {}
 ```
 
-```typescript [src/controllers/users.controller.ts]
+```typescript [users.controller.ts]
 // Handler-level components
 @Controller('users')
 class UsersController {
@@ -197,7 +196,7 @@ class UsersController {
 ### Server-Side Rendering
 
 ```typescript
-import { Layout } from 'honestjs'
+import { Controller, Get, Layout } from 'honestjs'
 
 @Controller('pages')
 class PagesController {
@@ -217,97 +216,38 @@ class PagesController {
 ::: code-group
 
 ```bash [bun (recommended)]
-bun add honestjs reflect-metadata
+bun add honestjs hono reflect-metadata
 ```
 
 ```bash [npm]
-npm install honestjs reflect-metadata
+npm install honestjs hono reflect-metadata
+```
+
+```bash [pnpm]
+pnpm add honestjs hono reflect-metadata
 ```
 
 ```bash [yarn]
-yarn add honestjs reflect-metadata
+yarn add honestjs hono reflect-metadata
 ```
 
 :::
 
 For detailed setup instructions, see our [Getting Started](./getting-started.md) guide.
 
-## Examples
-
-### Basic REST API
-
-```typescript
-import { Application, Controller, Get, Post, Put, Delete, Body, Param } from 'honestjs'
-
-@Controller('api/users')
-class UsersController {
-	@Get()
-	async findAll() {
-		return await this.usersService.findAll()
-	}
-
-	@Get(':id')
-	async findOne(@Param('id') id: string) {
-		return await this.usersService.findById(id)
-	}
-
-	@Post()
-	async create(@Body() userData: CreateUserDto) {
-		return await this.usersService.create(userData)
-	}
-
-	@Put(':id')
-	async update(@Param('id') id: string, @Body() userData: UpdateUserDto) {
-		return await this.usersService.update(id, userData)
-	}
-
-	@Delete(':id')
-	async remove(@Param('id') id: string) {
-		return await this.usersService.delete(id)
-	}
-}
-```
-
-### Full-Stack Application
-
-```typescript
-import { Application, View, Page, Layout } from 'honestjs'
-
-@View('pages')
-class PagesController {
-	@Page('home')
-	home() {
-		return Layout({
-			title: 'Home',
-			description: 'Welcome to our app',
-			scripts: ['/app.js'],
-			stylesheets: ['/styles.css'],
-			children: `
-				<header>
-					<h1>Welcome to Our App</h1>
-				</header>
-				<main>
-					<p>Built with HonestJS</p>
-				</main>
-			`,
-		})
-	}
-}
-```
-
 ## Community and Support
 
--   **GitHub**: [honestjs/honest](https://github.com/honestjs/honest)
+-   **Repository**: [GitHub Repository](https://github.com/honestjs/honest)
 -   **Issues**: [GitHub Issues](https://github.com/honestjs/honest/issues)
 -   **Discussions**: [GitHub Discussions](https://github.com/honestjs/honest/discussions)
 
-## Contributing
+<!-- ## Contributing -->
 
-We welcome contributions! Please see our [Contributing Guide](https://github.com/honestjs/honest/blob/main/CONTRIBUTING.md) for details.
+<!-- We welcome contributions! Please see our [Contributing Guide](https://github.com/honestjs/honest/blob/master/CONTRIBUTING.md) for details. -->
 
 ## License
 
-HonestJS is licensed under the MIT License. See the [LICENSE](https://github.com/honestjs/honest/blob/main/LICENSE) file for details.
+HonestJS is licensed under the MIT License. See the [LICENSE](https://github.com/honestjs/honest/blob/master/LICENSE) file for details.
 
 ---
 
