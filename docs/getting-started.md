@@ -11,6 +11,41 @@ Before you begin, make sure you have the following installed:
 
 ## Project Setup
 
+The fastest way to create a new Honest application is with the HonestJS CLI.
+
+### 1. Install the CLI
+
+To install the CLI globally, run:
+
+```bash
+bun add -g @honestjs/cli
+```
+
+### 2. Create a Project
+
+Create a new project using the `new` command:
+
+```bash
+honestjs new my-project # alias: honest, hnjs
+```
+
+This command will prompt you to select a template and configure the project. For this guide, choose the `barebone` template.
+
+### 3. Start the Development Server
+
+Navigate to your new project directory and start the development server:
+
+```bash
+cd my-project
+bun dev
+```
+
+Your application will be available at `http://localhost:3000`.
+
+## Manual Setup
+
+If you prefer to set up your project manually, follow these steps:
+
 ### 1. Initialize Project
 
 First, create a new project and install the necessary dependencies.
