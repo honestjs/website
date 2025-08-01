@@ -4,6 +4,15 @@ Exception filters provide a mechanism for handling unhandled exceptions that occ
 
 By default, HonestJS includes a built-in global exception filter that handles standard `Error` objects and `HttpException`s from Hono. However, you can create custom filters to handle specific error cases.
 
+## Use Cases
+
+Exception filters are essential for centralized error handling. Common use cases include:
+
+-   **Logging Errors:** Capturing and logging unhandled exceptions for debugging purposes.
+-   **Custom Error Responses:** Formatting error responses to match your API's error schema.
+-   **Handling Specific Exceptions:** Creating dedicated filters for specific exceptions, such as `NotFoundException` or database-related errors.
+-   **Monitoring and Alerting:** Sending notifications to a monitoring service when critical errors occur.
+
 ## Creating an Exception Filter
 
 An exception filter is a class that implements the `IFilter` interface. This interface has a `catch` method that receives the exception and the Hono `Context`.

@@ -1,6 +1,17 @@
 # Middleware
 
-Middleware consists of functions executed before the route handler. They can perform a wide range of tasks, such as logging, authentication, and request parsing. HonestJS provides a flexible middleware system that allows you to apply middleware at the global, controller, and handler levels.
+Middleware consists of functions executed before the route handler. They can perform a wide range of tasks, such as logging, authentication, and request parsing.
+
+## Use Cases
+
+Middleware is versatile and can be used for a variety of cross-cutting concerns, including:
+
+-   **Logging:** Recording details about incoming requests and outgoing responses.
+-   **Authentication/Authorization:** Validating credentials or permissions before allowing access to a route.
+-   **Request Parsing:** Parsing request bodies (e.g., JSON, form-data).
+-   **Security:** Adding security headers (e.g., CORS, CSRF protection).
+-   **Caching:** Implementing caching strategies to improve performance.
+-   **Rate Limiting:** Protecting your API from abuse.
 
 ## Creating Middleware
 
@@ -93,6 +104,8 @@ Middleware is executed in the following order:
 1.  Global Middleware
 2.  Controller-Level Middleware
 3.  Handler-Level Middleware
+
+If multiple middleware are applied at the same level (e.g., `@UseMiddleware(MiddlewareA, MiddlewareB)`), they are executed in the order they are listed.
 
 ## Using Hono Middleware
 

@@ -1,16 +1,21 @@
 # Guards
 
-Guards are a powerful feature for managing access control and authorization. They determine whether a given request
-should be handled by the route handler or not. If a guard denies access, HonestJS throws a `ForbiddenException`.
+A guard is a class that implements the `IGuard` interface. It determines whether a given request should be handled by the route handler based on certain conditions (e.g., permissions, roles). If a guard denies access, HonestJS throws a `ForbiddenException`.
+
+## Use Cases
+
+Guards are primarily used for authorization. Common use cases include:
+
+-   **Authentication:** Checking if a user is logged in.
+-   **Role-Based Access Control (RBAC):** Permitting access only to users with specific roles.
+-   **IP Whitelisting/Blacklisting:** Allowing or blocking requests from certain IP addresses.
+-   **API Key Validation:** Ensuring that a valid API key is present in the request.
 
 ## Creating a Guard
 
-A guard is a class that implements the `IGuard` interface, which has a single `canActivate` method. This method should
-return `true` if the request is allowed, and `false` otherwise. It can also be asynchronous and return a
-`Promise<boolean>`.
+A guard must implement the `IGuard` interface, which has a single `canActivate` method. This method should return `true` if the request is allowed, and `false` otherwise. It can also be asynchronous and return a `Promise<boolean>`.
 
-The `canActivate` method receives the Hono `Context` as its argument, which gives you access to the request, response,
-and other context-specific information.
+The `canActivate` method receives the Hono `Context` as its argument, which gives you access to the request, response, and other context-specific information.
 
 **Example:** A simple authentication guard.
 
@@ -29,7 +34,7 @@ export class AuthGuard implements IGuard {
 
 ## Applying Guards
 
-Like middleware, guards can be applied at the global, controller, or handler level using the `@UseGuards()` decorator.
+Guards can be applied at the global, controller, or handler level using the `@UseGuards()` decorator.
 
 ### Global Guards
 
@@ -85,10 +90,19 @@ export class PostsController {
 }
 ```
 
+## Execution Order
+
+When multiple guards are applied to a route, they are executed in the following order:
+
+1.  Global Guards
+2.  Controller-Level Guards
+3.  Handler-Level Guards
+
+If multiple guards are applied at the same level (e.g., `@UseGuards(GuardA, GuardB)`), they are executed in the order they are listed. The request is denied if any guard returns `false`.
+
 ## Role-Based Access Control
 
-Guards are ideal for implementing role-based access control (RBAC). You can create a `Roles` decorator to associate
-roles with specific handlers, and a `RolesGuard` to check for those roles.
+Guards are ideal for implementing role-based access control (RBAC). You can create a `Roles` decorator to associate roles with specific handlers, and a `RolesGuard` to check for those roles.
 
 **1. Create a `Roles` decorator:**
 

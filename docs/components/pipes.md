@@ -115,4 +115,15 @@ export class UsersController {
 
 In this example, `ParseIntPipe` is applied only to the `id` parameter.
 
+## Execution Order
+
+When multiple pipes are applied, they are executed in the following order:
+
+1.  Global Pipes
+2.  Controller-Level Pipes
+3.  Handler-Level Pipes
+4.  Parameter-Level Pipes
+
+If multiple pipes are applied at the same level (e.g., `@UsePipes(PipeA, PipeB)`), they are executed in the order they are listed. Each pipe's output becomes the next pipe's input.
+
 Pipes are a powerful tool for creating robust and type-safe APIs, reducing boilerplate code in route handlers.
