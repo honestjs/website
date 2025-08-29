@@ -36,6 +36,7 @@ export default defineConfig({
 			{
 				text: 'Core Concepts',
 				items: [
+					{ text: 'Project Organization', link: '/docs/concepts/project-organization' },
 					{ text: 'Dependency Injection', link: '/docs/concepts/dependency-injection' },
 					{ text: 'Routing', link: '/docs/concepts/routing' },
 					{ text: 'Parameters', link: '/docs/concepts/parameters' },
@@ -84,7 +85,7 @@ export default defineConfig({
 			},
 		],
 
-		socialLinks: [{ icon: 'github', link: 'https://github.com/honestjs/website' }],
+		socialLinks: [{ icon: 'github', link: 'https://github.com/honestjs/honest' }],
 
 		footer: {
 			message: 'Released under the MIT License.',

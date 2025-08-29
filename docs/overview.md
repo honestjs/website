@@ -55,11 +55,13 @@ export default hono
 ### Getting Started
 
 -   **[Getting Started](./getting-started.md)** - Complete tutorial to build your first app
+-   **[Project Organization](./concepts/project-organization.md)** - Folder structure and organization patterns
 -   **[Configuration](./configuration.md)** - Application configuration options
 -   **[API Reference](./api-reference.md)** - Complete API documentation
 
 ### Core Concepts
 
+-   **[Project Organization](./concepts/project-organization.md)** - Folder structure and organization patterns
 -   **[Routing](./concepts/routing.md)** - Route definitions, versioning, and path management
 -   **[Dependency Injection](./concepts/dependency-injection.md)** - DI container and service management
 -   **[Parameters](./concepts/parameters.md)** - Parameter decorators and data extraction
