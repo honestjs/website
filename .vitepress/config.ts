@@ -62,6 +62,11 @@ export default defineConfig({
 				],
 			},
 			{
+				text: 'Plugins',
+				collapsed: true,
+				items: [{ text: 'RPC Plugin', link: '/docs/plugins/rpc-plugin' }],
+			},
+			{
 				text: 'Reference',
 				items: [{ text: 'API Reference', link: '/docs/api-reference' }],
 			},
