@@ -1,24 +1,6 @@
 # RPC Plugin
 
-A comprehensive RPC plugin for HonestJS that combines route analysis, schema generation, and client generation into a
-single solution.
-
-## Overview
-
-The RPC Plugin automatically analyzes your HonestJS controllers and generates:
-
--   **Type-safe TypeScript RPC clients** with proper parameter typing
--   **JSON schemas** and TypeScript interfaces from your controller types
--   **Complete route metadata** with parameter and return type information
-
-This plugin eliminates the need for manual API client creation and ensures type safety between your backend and frontend.
-
-## Features
-
--   **Route Analysis**: Automatically analyzes controller methods and extracts type information using ts-morph
--   **Schema Generation**: Generates JSON schemas and TypeScript interfaces from types used in controllers
--   **Client Generation**: Creates a fully-typed TypeScript RPC client with proper parameter typing
--   **Type Safety**: Full TypeScript support with generated types and interfaces
+The RPC Plugin automatically analyzes your HonestJS controllers and generates a fully-typed TypeScript RPC client with proper parameter typing.
 
 ## Installation
 
@@ -37,11 +19,7 @@ import { RPCPlugin } from '@honestjs/rpc-plugin'
 import { Application } from 'honestjs'
 
 const app = new Application({
-	plugins: [
-		new RPCPlugin({
-			outputDir: './generated/rpc',
-		}),
-	],
+	plugins: [RPCPlugin],
 })
 ```
 
@@ -217,14 +195,6 @@ expect(mockFetch).toHaveBeenCalledWith('http://test.com/api/v1/users/123', expec
 -   Creates parameter validation and typing
 -   Builds the complete RPC client with proper error handling
 
-## Benefits of the Unified Approach
-
--   **No Duplication**: Single source of truth for all type information
--   **Tight Coupling**: Components share data directly without file I/O
--   **Better Performance**: Eliminates redundant analysis and file generation
--   **Consistent Types**: All generated code uses the same type definitions
--   **Easier Maintenance**: Single plugin to configure and maintain
-
 ## Example Generated Output
 
 ### Generated Client
@@ -293,23 +263,6 @@ const rpcPlugin = new RPCPlugin({
 
 // Later in your code
 await rpcPlugin.analyze()
-```
-
-### Accessing Generated Data
-
-The plugin provides access to analyzed data:
-
-```typescript
-const rpcPlugin = new RPCPlugin()
-
-// Get analyzed routes
-const routes = rpcPlugin.getRoutes()
-
-// Get generated schemas
-const schemas = rpcPlugin.getSchemas()
-
-// Get generation info
-const info = rpcPlugin.getGenerationInfo()
 ```
 
 ## Integration with HonestJS
@@ -383,52 +336,3 @@ try {
 	}
 }
 ```
-
-## Performance Considerations
-
--   **Initial Generation**: First run may take longer due to TypeScript analysis
--   **Subsequent Runs**: Only regenerates when source files change
--   **Memory Usage**: Minimal memory footprint during runtime
--   **Build Time**: Adds minimal overhead to your build process
-
-## Troubleshooting
-
-### Common Issues
-
-1. **No files generated**: Check that your controllers match the `controllerPattern`
-2. **Type errors**: Ensure your `tsconfig.json` is properly configured
-3. **Missing types**: Verify that all DTOs and return types are properly exported
-
-### Debug Mode
-
-Enable verbose logging:
-
-```typescript
-new RPCPlugin({
-	outputDir: './generated/rpc',
-	// Add debug logging if available
-})
-```
-
-## Dependencies
-
--   **ts-morph**: TypeScript source code analysis
--   **ts-json-schema-generator**: JSON schema generation from TypeScript types
--   **honestjs**: Core framework integration
-
-## Contributing
-
-The RPC Plugin is part of the official HonestJS ecosystem. To contribute:
-
-1. Fork the [@honestjs-plugins](https://github.com/honestjs/honestjs-plugins) repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## License
-
-MIT
-
----
-
-The RPC Plugin transforms your HonestJS application into a fully type-safe API with minimal configuration. It eliminates the need for manual client generation and ensures consistency between your backend and frontend code.
