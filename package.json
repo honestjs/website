@@ -20,5 +20,9 @@
 		"prebuild": "bun ./scripts/build-llm-docs.ts",
 		"build": "vitepress build",
 		"preview": "vitepress preview"
+	},
+	"engines": {
+		"node": ">=22.0.0",
+		"bun": ">=1.2.0"
 	}
 }
