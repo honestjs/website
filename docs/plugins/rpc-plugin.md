@@ -79,7 +79,7 @@ The generated `client.ts` file contains everything you need:
 
 -   **ApiClient class** with all your controller methods
 -   **Type definitions** for requests, responses, and DTOs
--   **Utility types** like RequestOptions and ApiResponse
+-   **Utility types** like RequestOptions
 -   **Generated interfaces** from your controller types
 
 ## Custom Fetch Functions
@@ -203,15 +203,15 @@ expect(mockFetch).toHaveBeenCalledWith('http://test.com/api/v1/users/123', expec
 export class ApiClient {
 	get users() {
 		return {
-			create: async (
+			create: async <Result = User>(
 				options: RequestOptions<{ name: string; email: string }, undefined, undefined, undefined>
-			): Promise<ApiResponse<any>> => {
-				return this.request('POST', `/api/v1/users/`, options)
+			) => {
+				return this.request<Result>('POST', `/api/v1/users/`, options)
 			},
-			list: async (
+			list: async <Result = User[]>(
 				options?: RequestOptions<undefined, { page: number; limit: number }, undefined, undefined>
-			): Promise<ApiResponse<any>> => {
-				return this.request('GET', `/api/v1/users/`, options)
+			) => {
+				return this.request<Result>('GET', `/api/v1/users/`, options)
 			},
 		}
 	}
