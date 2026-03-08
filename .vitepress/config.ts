@@ -86,6 +86,10 @@ export default defineConfig({
 						text: 'Tiny Docs',
 						link: '/llms-small.txt',
 					},
+					{
+						text: 'SKILL.md',
+						link: 'https://github.com/honestjs/skills/blob/master/honest/SKILL.md',
+					},
 				],
 			},
 		],
