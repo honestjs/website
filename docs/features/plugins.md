@@ -1,89 +1,115 @@
 # Plugins
 
-Plugins provide a powerful way to extend HonestJS functionality by hooking into the application lifecycle. They allow
-you to add custom features, integrate third-party services, or modify the application's behavior without changing the
+Plugins provide a powerful way to extend HonestJS functionality by hooking into
+the application lifecycle. They allow you to add custom features, integrate
+third-party services, or modify the application's behavior without changing the
 core framework code.
 
 > [!NOTE]
-> For cross-cutting concerns like logging, authentication, validation, and request/response modification,
-> prefer using [middleware](./../components/middleware.md), [guards](./../components/guards.md), [pipes](./../components/pipes.md),
-> or [filters](./../components/filters.md) over plugins. These components are specifically designed for these use cases
-> and provide better integration with the request lifecycle. Use plugins primarily for application-level setup,
+> For cross-cutting concerns like logging, authentication, validation, and
+> request/response modification, prefer using
+> [middleware](./../components/middleware.md),
+> [guards](./../components/guards.md), [pipes](./../components/pipes.md), or
+> [filters](./../components/filters.md) over plugins. These components are
+> specifically designed for these use cases and provide better integration with
+> the request lifecycle. Use plugins primarily for application-level setup,
 > external service integration, or framework extensions.
 
 ## Plugin Interface
 
-A plugin must implement the `IPlugin` interface, which provides two optional lifecycle hooks:
+A plugin must implement the `IPlugin` interface, which provides two optional
+lifecycle hooks:
 
 ```typescript
 interface IPlugin {
-	beforeModulesRegistered?: (app: Application, hono: Hono) => void | Promise<void>
-	afterModulesRegistered?: (app: Application, hono: Hono) => void | Promise<void>
+	beforeModulesRegistered?: (
+		app: Application,
+		hono: Hono,
+	) => void | Promise<void>;
+	afterModulesRegistered?: (
+		app: Application,
+		hono: Hono,
+	) => void | Promise<void>;
 }
 ```
 
 Both hooks receive:
 
--   `app`: The HonestJS `Application` instance
--   `hono`: The underlying Hono application instance
+- `app`: The HonestJS `Application` instance. Use `app.getContext()` to read or
+  write app-level pipeline data (the
+  [application context](./application-context.md) is available to your whole
+  app, not only plugins).
+- `hono`: The underlying Hono application instance
 
 ## Lifecycle Hooks
 
 ### `beforeModulesRegistered`
 
-This hook runs before any modules are registered with the application. Use this hook for:
+This hook runs before any modules are registered with the application. Use this
+hook for:
 
--   Setting up global services that modules might depend on
--   Configuring the Hono instance
--   Registering global middleware that needs to run before module-specific middleware
--   Initializing external services (databases, caches, etc.)
+- Setting up global services that modules might depend on
+- Configuring the Hono instance
+- Registering global middleware that needs to run before module-specific
+  middleware
+- Initializing external services (databases, caches, etc.)
 
 ### `afterModulesRegistered`
 
 This hook runs after all modules have been registered. Use this hook for:
 
--   Cleanup operations
--   Final configuration that requires all modules to be loaded
--   Setting up monitoring or health checks
--   Registering catch-all routes
+- Cleanup operations
+- Final configuration that requires all modules to be loaded
+- Setting up monitoring or health checks
+- Registering catch-all routes
 
 ## Creating a Simple Plugin
 
-> [!WARNING] IMPORTANT
-> The logging example below demonstrates plugin usage, but for request logging,
-> [middleware](./../components/middleware.md) is the preferred approach. This example is shown for educational purposes.
+> [!WARNING] IMPORTANT The logging example below demonstrates plugin usage, but
+> for request logging, [middleware](./../components/middleware.md) is the
+> preferred approach. This example is shown for educational purposes.
 
 Here's a basic example of a logging plugin:
 
 ```typescript
-import { IPlugin } from 'honestjs'
-import type { Application } from 'honestjs'
-import type { Hono } from 'hono'
+import { IPlugin } from "honestjs";
+import type { Application } from "honestjs";
+import type { Hono } from "hono";
 
 export class LoggerPlugin implements IPlugin {
-	private logLevel: string
+	private logLevel: string;
 
-	constructor(logLevel: string = 'info') {
-		this.logLevel = logLevel
+	constructor(logLevel: string = "info") {
+		this.logLevel = logLevel;
 	}
 
 	async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		console.log(`[LoggerPlugin] Initializing with log level: ${this.logLevel}`)
+		console.log(
+			`[LoggerPlugin] Initializing with log level: ${this.logLevel}`,
+		);
 
 		// Add a request logging middleware
-		hono.use('*', async (c, next) => {
-			const start = Date.now()
-			console.log(`[${new Date().toISOString()}] ${c.req.method} ${c.req.path} - Started`)
+		hono.use("*", async (c, next) => {
+			const start = Date.now();
+			console.log(
+				`[${
+					new Date().toISOString()
+				}] ${c.req.method} ${c.req.path} - Started`,
+			);
 
-			await next()
+			await next();
 
-			const duration = Date.now() - start
-			console.log(`[${new Date().toISOString()}] ${c.req.method} ${c.req.path} - ${c.res.status} (${duration}ms)`)
-		})
+			const duration = Date.now() - start;
+			console.log(
+				`[${
+					new Date().toISOString()
+				}] ${c.req.method} ${c.req.path} - ${c.res.status} (${duration}ms)`,
+			);
+		});
 	}
 
 	async afterModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		console.log('[LoggerPlugin] All modules registered, logging is active')
+		console.log("[LoggerPlugin] All modules registered, logging is active");
 	}
 }
 ```
@@ -93,60 +119,63 @@ export class LoggerPlugin implements IPlugin {
 Here's a more complex example that manages database connections:
 
 ```typescript
-import { IPlugin } from 'honestjs'
-import type { Application } from 'honestjs'
-import type { Hono } from 'hono'
+import { IPlugin } from "honestjs";
+import type { Application } from "honestjs";
+import type { Hono } from "hono";
 
 interface DatabaseConfig {
-	host: string
-	port: number
-	database: string
-	username: string
-	password: string
+	host: string;
+	port: number;
+	database: string;
+	username: string;
+	password: string;
 }
 
 export class DatabasePlugin implements IPlugin {
-	private config: DatabaseConfig
-	private connection: any = null
+	private config: DatabaseConfig;
+	private connection: any = null;
 
 	constructor(config: DatabaseConfig) {
-		this.config = config
+		this.config = config;
 	}
 
 	async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		console.log('[DatabasePlugin] Connecting to database...')
+		console.log("[DatabasePlugin] Connecting to database...");
 
 		try {
 			// Simulate database connection
-			this.connection = await this.createConnection()
+			this.connection = await this.createConnection();
 
 			// Make the connection available in Hono context
-			hono.use('*', async (c, next) => {
-				c.set('db', this.connection)
-				await next()
-			})
+			hono.use("*", async (c, next) => {
+				c.set("db", this.connection);
+				await next();
+			});
 
-			console.log('[DatabasePlugin] Database connection established')
+			console.log("[DatabasePlugin] Database connection established");
 		} catch (error) {
-			console.error('[DatabasePlugin] Failed to connect to database:', error)
-			throw error
+			console.error(
+				"[DatabasePlugin] Failed to connect to database:",
+				error,
+			);
+			throw error;
 		}
 	}
 
 	async afterModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		console.log('[DatabasePlugin] Database plugin initialization complete')
+		console.log("[DatabasePlugin] Database plugin initialization complete");
 
 		// Add a health check endpoint
-		hono.get('/health/db', async (c) => {
-			const isHealthy = await this.checkConnection()
+		hono.get("/health/db", async (c) => {
+			const isHealthy = await this.checkConnection();
 			return c.json(
 				{
-					status: isHealthy ? 'healthy' : 'unhealthy',
+					status: isHealthy ? "healthy" : "unhealthy",
 					timestamp: new Date().toISOString(),
 				},
-				isHealthy ? 200 : 503
-			)
-		})
+				isHealthy ? 200 : 503,
+			);
+		});
 	}
 
 	private async createConnection(): Promise<any> {
@@ -155,12 +184,12 @@ export class DatabasePlugin implements IPlugin {
 			host: this.config.host,
 			port: this.config.port,
 			connected: true,
-		}
+		};
 	}
 
 	private async checkConnection(): Promise<boolean> {
 		// Simulate health check
-		return this.connection && this.connection.connected
+		return this.connection && this.connection.connected;
 	}
 }
 ```
@@ -170,25 +199,25 @@ export class DatabasePlugin implements IPlugin {
 Register plugins when creating your application:
 
 ```typescript
-import { Application } from 'honestjs'
-import { LoggerPlugin } from './plugins/logger.plugin'
-import { DatabasePlugin } from './plugins/database.plugin'
-import AppModule from './app.module'
+import { Application } from "honestjs";
+import { LoggerPlugin } from "./plugins/logger.plugin";
+import { DatabasePlugin } from "./plugins/database.plugin";
+import AppModule from "./app.module";
 
 const { hono } = await Application.create(AppModule, {
 	plugins: [
-		new LoggerPlugin('debug'),
+		new LoggerPlugin("debug"),
 		new DatabasePlugin({
-			host: 'localhost',
+			host: "localhost",
 			port: 5432,
-			database: 'myapp',
-			username: 'user',
-			password: 'password',
+			database: "myapp",
+			username: "user",
+			password: "password",
 		}),
 	],
-})
+});
 
-export default hono
+export default hono;
 ```
 
 ## Plugin Types
@@ -198,20 +227,22 @@ You can provide plugins in two ways:
 1. **Plugin Instance**: Pass an already instantiated plugin object
 
 ```typescript
-plugins: [new LoggerPlugin('debug')]
+plugins: [new LoggerPlugin("debug")];
 ```
 
-2. **Plugin Class**: Pass the plugin class (it will be instantiated by the DI container)
+2. **Plugin Class**: Pass the plugin class (it will be instantiated by the DI
+   container)
 
 ```typescript
-plugins: [LoggerPlugin]
+plugins: [LoggerPlugin];
 ```
 
 ## Best Practices
 
 ### 1. Error Handling
 
-Always handle errors gracefully in plugins, especially in the `beforeModulesRegistered` hook:
+Always handle errors gracefully in plugins, especially in the
+`beforeModulesRegistered` hook:
 
 ```typescript
 async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
@@ -231,20 +262,20 @@ Consider implementing cleanup logic:
 
 ```typescript
 export class ResourcePlugin implements IPlugin {
-	private resources: any[] = []
+	private resources: any[] = [];
 
 	async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
 		// Setup resources
-		this.resources = await this.createResources()
+		this.resources = await this.createResources();
 
 		// Setup cleanup on process termination
-		process.on('SIGTERM', () => this.cleanup())
-		process.on('SIGINT', () => this.cleanup())
+		process.on("SIGTERM", () => this.cleanup());
+		process.on("SIGINT", () => this.cleanup());
 	}
 
 	private async cleanup(): Promise<void> {
-		console.log('[ResourcePlugin] Cleaning up resources...')
-		await Promise.all(this.resources.map((resource) => resource.close()))
+		console.log("[ResourcePlugin] Cleaning up resources...");
+		await Promise.all(this.resources.map((resource) => resource.close()));
 	}
 }
 ```
@@ -256,12 +287,14 @@ Validate plugin configuration early:
 ```typescript
 export class ConfigurablePlugin implements IPlugin {
 	constructor(private config: any) {
-		this.validateConfig(config)
+		this.validateConfig(config);
 	}
 
 	private validateConfig(config: any): void {
 		if (!config.requiredProperty) {
-			throw new Error('[ConfigurablePlugin] requiredProperty is missing from configuration')
+			throw new Error(
+				"[ConfigurablePlugin] requiredProperty is missing from configuration",
+			);
 		}
 	}
 }
@@ -273,20 +306,26 @@ export class ConfigurablePlugin implements IPlugin {
 
 ```typescript
 export class CorsPlugin implements IPlugin {
-	constructor(private origins: string[] = ['*']) {}
+	constructor(private origins: string[] = ["*"]) {}
 
 	async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		hono.use('*', async (c, next) => {
-			c.header('Access-Control-Allow-Origin', this.origins.join(', '))
-			c.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-			c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+		hono.use("*", async (c, next) => {
+			c.header("Access-Control-Allow-Origin", this.origins.join(", "));
+			c.header(
+				"Access-Control-Allow-Methods",
+				"GET, POST, PUT, DELETE, OPTIONS",
+			);
+			c.header(
+				"Access-Control-Allow-Headers",
+				"Content-Type, Authorization",
+			);
 
-			if (c.req.method === 'OPTIONS') {
-				return c.text('', 204)
+			if (c.req.method === "OPTIONS") {
+				return c.text("", 204);
 			}
 
-			await next()
-		})
+			await next();
+		});
 	}
 }
 ```
@@ -295,36 +334,37 @@ export class CorsPlugin implements IPlugin {
 
 ```typescript
 export class MetricsPlugin implements IPlugin {
-	private requestCount = 0
-	private requestDurations: number[] = []
+	private requestCount = 0;
+	private requestDurations: number[] = [];
 
 	async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		hono.use('*', async (c, next) => {
-			const start = Date.now()
-			this.requestCount++
+		hono.use("*", async (c, next) => {
+			const start = Date.now();
+			this.requestCount++;
 
-			await next()
+			await next();
 
-			const duration = Date.now() - start
-			this.requestDurations.push(duration)
-		})
+			const duration = Date.now() - start;
+			this.requestDurations.push(duration);
+		});
 	}
 
 	async afterModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		hono.get('/metrics', (c) => {
-			const avgDuration =
-				this.requestDurations.length > 0
-					? this.requestDurations.reduce((a, b) => a + b, 0) / this.requestDurations.length
-					: 0
+		hono.get("/metrics", (c) => {
+			const avgDuration = this.requestDurations.length > 0
+				? this.requestDurations.reduce((a, b) => a + b, 0) /
+					this.requestDurations.length
+				: 0;
 
 			return c.json({
 				totalRequests: this.requestCount,
 				averageResponseTime: avgDuration,
 				uptime: process.uptime(),
-			})
-		})
+			});
+		});
 	}
 }
 ```
 
-Plugins are a powerful way to keep your application modular and maintainable while adding the functionality you need.
+Plugins are a powerful way to keep your application modular and maintainable
+while adding the functionality you need.

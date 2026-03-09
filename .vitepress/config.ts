@@ -56,6 +56,7 @@ export default defineConfig({
 			{
 				text: 'Features',
 				items: [
+					{ text: 'Application context', link: '/docs/features/application-context' },
 					{ text: 'Plugins', link: '/docs/features/plugins' },
 					{ text: 'MVC', link: '/docs/features/mvc' },
 					{ text: 'Helpers', link: '/docs/features/helpers' },
