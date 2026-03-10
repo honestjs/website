@@ -18,9 +18,7 @@ with:
 - **API Versioning**: Built-in support for API versioning with flexible
   versioning strategies
 - **Application context**: App-level typed key-value store so your app and
-  plugins can share pipeline data by key (e.g. RPC plugin publishes
-  `rpc.artifact`, API Docs consumes it with `artifact: 'rpc.artifact'`, or pass
-  `{ routes, schemas }` directly) without hard coupling
+  plugins can share pipeline data by key without hard coupling
 - **Plugin System**: Extensible architecture with plugin support for custom
   functionality
 - **MVC Support**: Includes support for building full-stack applications with
