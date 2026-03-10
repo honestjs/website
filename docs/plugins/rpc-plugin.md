@@ -1,6 +1,6 @@
 # RPC Plugin
 
-The RPC Plugin automatically analyzes your HonestJS controllers and generates a fully-typed TypeScript RPC client with proper parameter typing.
+The RPC Plugin automatically analyzes your HonestJS controllers and, by default, generates a fully-typed TypeScript RPC client with proper parameter typing. You can also provide custom generators.
 
 ## Installation
 
@@ -34,6 +34,7 @@ interface RPCPluginOptions {
 	readonly tsConfigPath?: string // Path to tsconfig.json (default: 'tsconfig.json')
 	readonly outputDir?: string // Output directory for generated files (default: './generated/rpc')
 	readonly generateOnInit?: boolean // Generate files on initialization (default: true)
+	readonly generators?: readonly RPCGenerator[] // Optional list of generators to execute
 	readonly context?: {
 		readonly namespace?: string // Default: 'rpc'
 		readonly keys?: {
@@ -41,6 +42,20 @@ interface RPCPluginOptions {
 		}
 	}
 }
+```
+
+### Generator Behavior
+
+- If `generators` is omitted, the plugin uses the built-in `TypeScriptClientGenerator`.
+- If `generators` is defined, only those generators are executed.
+- You can explicitly include the built-in generator:
+
+```typescript
+import { RPCPlugin, TypeScriptClientGenerator } from '@honestjs/rpc-plugin'
+
+new RPCPlugin({
+	generators: [new TypeScriptClientGenerator('./generated/rpc')],
+})
 ```
 
 ## Application Context Artifact
