@@ -222,7 +222,7 @@ export default hono;
 
 ## Plugin Types
 
-You can provide plugins in two ways:
+You can provide plugins in three ways:
 
 1. **Plugin Instance**: Pass an already instantiated plugin object
 
@@ -230,12 +230,42 @@ You can provide plugins in two ways:
 plugins: [new LoggerPlugin("debug")];
 ```
 
-2. **Plugin Class**: Pass the plugin class (it will be instantiated by the DI
-   container)
+2. **Plugin Class**: Pass the plugin class (it will be instantiated by the
+   framework)
 
 ```typescript
 plugins: [LoggerPlugin];
 ```
+
+3. **Plugin with pre/post processors**: Wrap a plugin with optional processors
+   that run before or after the plugin's lifecycle hooks. Processors receive
+   `(app, hono, ctx)` where `ctx` is the application context (registry). Use
+   `ctx.get` / `ctx.set` to share pipeline data between processors and plugins.
+
+```typescript
+plugins: [
+  {
+    plugin: new MyPlugin(),
+    preProcessors: [
+      async (app, hono, ctx) => {
+        ctx.set("my.config", { loaded: true });
+      },
+    ],
+    postProcessors: [
+      async (app, hono, ctx) => {
+        const config = ctx.get<{ loaded: boolean }>("my.config");
+        if (config?.loaded) {
+          console.log("Plugin setup complete");
+        }
+      },
+    ],
+  },
+];
+```
+
+Execution order per plugin: `preProcessors` → `beforeModulesRegistered` (phase
+1, before modules); `afterModulesRegistered` → `postProcessors` (phase 2, after
+modules).
 
 ## Best Practices
 
