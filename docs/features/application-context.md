@@ -1,7 +1,7 @@
-# Application context (registry)
+# Application context
 
 The application context is a small, typed key-value store on the HonestJS
-`Application` instance. It is available to **your entire application**—bootstrap
+`Application` instance. It is available to **your entire application**-bootstrap
 code, services, plugins, and any code that has access to `app`. Use it to
 publish and read pipeline data by key without hard coupling between producers
 and consumers.
@@ -10,16 +10,20 @@ and consumers.
 
 Do not confuse Honest’s **application context** with Hono’s **request context**:
 
-| | Honest application context | Hono request context |
-|--|----------------------------|----------------------|
-| **What** | Key-value store on `Application` | Per-request object (request, response, env, variables) |
-| **Scope** | **App lifetime** — one instance for the whole application | **Per request** — a new context for each HTTP request |
-| **Access** | `app.getContext()` — requires the `app` instance | `@Ctx()` / `@Context()` in handlers — Hono injects it per request |
+|                 | Honest application context                                           | Hono request context                                                      |
+| --------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **What**        | Key-value store on `Application`                                     | Per-request object (request, response, env, variables)                    |
+| **Scope**       | **App lifetime** - one instance for the whole application            | **Per request** - a new context for each HTTP request                     |
+| **Access**      | `app.getContext()` - requires the `app` instance                     | `@Ctx()` / `@Context()` in handlers - Hono injects it per request         |
 | **Typical use** | Pipeline data, build-time/config, artifact sharing between app steps | Current request/response, auth user for this request, request-scoped data |
-| **Example** | `app.getContext().set('app.config', config)` | `c.req.path`, `c.json(...)`, `c.set('user', user)` for this request only |
+| **Example**     | `app.getContext().set('app.config', config)`                         | `c.req.path`, `c.json(...)`, `c.set('user', user)` for this request only  |
 
-- **Use Honest application context** when you need app-wide or startup/shared data (e.g. config, generated specs, artifacts) that outlives any single request.
-- **Use Hono request context** when you need the current request, response, or data that is specific to one request (e.g. the logged-in user for that request).
+- **Use Honest application context** when you need app-wide or startup/shared
+  data (e.g. config, generated specs, artifacts) that outlives any single
+  request.
+- **Use Hono request context** when you need the current request, response, or
+  data that is specific to one request (e.g. the logged-in user for that
+  request).
 
 ## Why use it?
 
