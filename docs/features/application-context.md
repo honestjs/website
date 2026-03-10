@@ -80,6 +80,9 @@ const config = app.getContext().get<{ env: string; version: string }>(
 - **Namespaced keys**: Use a prefix to avoid collisions (e.g. `rpc.artifact`,
   `openapi.spec`, `graphql.schema`). Honest does not reserve or define key
   names.
+- **Canonical plugin flow**: A common contract is RPC plugin writing
+  `rpc.artifact` and API Docs plugin reading that key via
+  `artifact: 'rpc.artifact'`.
 - **Contracts**: The producer of a key owns its shape and version. Document the
   contract (type and meaning) in your app so consumers know what to expect.
 - **Versioning**: You can version keys (e.g. `rpc.artifact.v1`) or document in

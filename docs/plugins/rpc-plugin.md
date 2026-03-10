@@ -17,10 +17,13 @@ pnpm add @honestjs/rpc-plugin
 ```typescript
 import { RPCPlugin } from '@honestjs/rpc-plugin'
 import { Application } from 'honestjs'
+import AppModule from './app.module'
 
-const app = new Application({
-	plugins: [RPCPlugin],
+const { hono } = await Application.create(AppModule, {
+	plugins: [new RPCPlugin()],
 })
+
+export default hono
 ```
 
 ## Configuration Options
@@ -31,7 +34,37 @@ interface RPCPluginOptions {
 	readonly tsConfigPath?: string // Path to tsconfig.json (default: 'tsconfig.json')
 	readonly outputDir?: string // Output directory for generated files (default: './generated/rpc')
 	readonly generateOnInit?: boolean // Generate files on initialization (default: true)
+	readonly context?: {
+		readonly namespace?: string // Default: 'rpc'
+		readonly keys?: {
+			readonly artifact?: string // Default: 'artifact'
+		}
+	}
 }
+```
+
+## Application Context Artifact
+
+After analysis, RPC plugin publishes this artifact to app context:
+
+```typescript
+type RpcArtifact = {
+	routes: ExtendedRouteInfo[]
+	schemas: SchemaInfo[]
+}
+```
+
+By default it is written to `'rpc.artifact'` and can be consumed by API Docs plugin:
+
+```typescript
+import { RPCPlugin } from '@honestjs/rpc-plugin'
+import { ApiDocsPlugin } from '@honestjs/api-docs-plugin'
+import { Application } from 'honestjs'
+import AppModule from './app.module'
+
+const { hono } = await Application.create(AppModule, {
+	plugins: [new RPCPlugin(), new ApiDocsPlugin({ artifact: 'rpc.artifact' })]
+})
 ```
 
 ## What It Generates
