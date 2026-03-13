@@ -1,6 +1,6 @@
 # API Docs Plugin
 
-The API Docs Plugin generates OpenAPI JSON from an artifact and serves it together with Swagger UI. The artifact can be provided as a direct object or as an application context key (for example from [RPC Plugin](./rpc-plugin)).
+The API Docs Plugin generates OpenAPI JSON from an artifact and serves it together with Swagger UI. The artifact can be a direct object or an application context key. When used with [RPC Plugin](./rpc-plugin), it defaults to the context key `'rpc.artifact'`, so you can register it with no options.
 
 ## Installation
 
@@ -16,7 +16,7 @@ pnpm add @honestjs/api-docs-plugin
 
 ### Using artifact from RPC Plugin
 
-The RPC plugin writes its artifact to the application context. Pass the context key so API Docs can read it. Ensure RPC runs **before** ApiDocs in the plugins array:
+The RPC plugin writes its artifact to the application context. API Docs defaults to the context key `'rpc.artifact'`, so you can omit options when using both plugins. Ensure RPC runs **before** ApiDocs in the plugins array:
 
 ```typescript
 import { Application } from 'honestjs'
@@ -25,13 +25,13 @@ import { ApiDocsPlugin } from '@honestjs/api-docs-plugin'
 import AppModule from './app.module'
 
 const { hono } = await Application.create(AppModule, {
-	plugins: [new RPCPlugin(), new ApiDocsPlugin({ artifact: 'rpc.artifact' })],
+	plugins: [new RPCPlugin(), new ApiDocsPlugin()],
 })
 
 export default hono
 ```
 
-If RPC uses custom `context.namespace` or `context.keys.artifact`, pass the resulting full key (for example `custom.artifact`) to `artifact`.
+If RPC uses custom `context.namespace` or `context.keys.artifact`, pass the resulting full key to `artifact` (e.g. `new ApiDocsPlugin({ artifact: 'custom.artifact' })`).
 
 By default:
 
@@ -66,8 +66,8 @@ plugins: [new ApiDocsPlugin({ artifact })]
 
 ```typescript
 interface ApiDocsPluginOptions {
-	// Required: artifact — direct object or context key (resolved via app.getContext().get)
-	artifact: OpenApiArtifactInput | string
+	// Optional: artifact — direct object or context key. Default: 'rpc.artifact'
+	artifact?: OpenApiArtifactInput | string
 
 	// OpenAPI metadata (when converting artifact to spec)
 	title?: string
@@ -85,7 +85,7 @@ interface ApiDocsPluginOptions {
 
 | Option | Description |
 |--------|-------------|
-| `artifact` | **Required.** Either a context key string (e.g. `'rpc.artifact'`) or a direct `{ routes, schemas }` object. |
+| `artifact` | Context key string or direct `{ routes, schemas }` object. Default: `'rpc.artifact'`. |
 | `title`, `version`, `description`, `servers` | OpenAPI document metadata. |
 | `openApiRoute` | Path where the OpenAPI JSON is served. Default: `'/openapi.json'`. |
 | `uiRoute` | Path where Swagger UI is served. Default: `'/docs'`. |
@@ -96,7 +96,6 @@ interface ApiDocsPluginOptions {
 
 ```typescript
 new ApiDocsPlugin({
-	artifact: 'rpc.artifact',
 	title: 'My API',
 	version: '1.0.0',
 	description: 'REST API for the application.',
@@ -129,4 +128,4 @@ await write(spec, './generated/openapi.json')
 
 ## Integration with RPC Plugin
 
-See [RPC Plugin — Application Context Artifact](./rpc-plugin#application-context-artifact) for how the RPC plugin publishes its artifact. Use the same context key in `ApiDocsPlugin({ artifact: 'rpc.artifact' })` so API Docs can generate the OpenAPI spec from the same routes and schemas.
+See [RPC Plugin — Application Context Artifact](./rpc-plugin#application-context-artifact) for how the RPC plugin publishes its artifact. API Docs defaults to reading `'rpc.artifact'`, so with both plugins you can use `new ApiDocsPlugin()`; pass `artifact` only if RPC uses a custom context key.

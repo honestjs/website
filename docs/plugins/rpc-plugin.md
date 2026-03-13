@@ -69,7 +69,7 @@ type RpcArtifact = {
 }
 ```
 
-By default it is written to `'rpc.artifact'` and can be consumed by API Docs plugin:
+By default it is written to `'rpc.artifact'`. The API Docs plugin defaults to that key, so you can use both plugins like this:
 
 ```typescript
 import { RPCPlugin } from '@honestjs/rpc-plugin'
@@ -78,7 +78,7 @@ import { Application } from 'honestjs'
 import AppModule from './app.module'
 
 const { hono } = await Application.create(AppModule, {
-	plugins: [new RPCPlugin(), new ApiDocsPlugin({ artifact: 'rpc.artifact' })]
+	plugins: [new RPCPlugin(), new ApiDocsPlugin()],
 })
 ```
 
