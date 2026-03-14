@@ -98,7 +98,10 @@ export default defineConfig({
 			},
 		],
 
-		socialLinks: [{ icon: 'github', link: 'https://github.com/honestjs/honest' }],
+		socialLinks: [
+			{ icon: 'github', link: 'https://github.com/honestjs/honest' },
+			{ icon: 'discord', link: 'https://discord.gg/FB5bX9KN' }
+		],
 
 		footer: {
 			message: 'Released under the MIT License.',
