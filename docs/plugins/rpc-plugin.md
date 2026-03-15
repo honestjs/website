@@ -362,7 +362,7 @@ import { UsersService } from './users.service'
 
 @Module({
 	controllers: [UsersController],
-	providers: [UsersService],
+	services: [UsersService],
 })
 export class UsersModule {}
 ```
