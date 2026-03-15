@@ -78,12 +78,6 @@ Each feature in your application should be organized into its own module. A modu
 @Module({
 	controllers: [UsersController],
 	services: [UsersService],
-	components: {
-		middleware: [UsersMiddleware],
-		guards: [UsersGuard],
-		pipes: [UsersPipe],
-		filters: [UsersFilter],
-	},
 })
 class UsersModule {}
 
@@ -129,18 +123,12 @@ const { app, hono } = await Application.create(AppModule, {
 
 ### Module-Specific Components
 
-Module-specific components are scoped to a particular feature and can be applied at the module, controller, or handler level:
+Module-specific components are scoped to a particular feature and can be applied at the controller or handler level:
 
 ```typescript
 @Module({
 	controllers: [UsersController],
 	services: [UsersService],
-	components: {
-		middleware: [UsersMiddleware],
-		guards: [UsersGuard],
-		pipes: [UsersPipe],
-		filters: [UsersFilter],
-	},
 })
 class UsersModule {}
 
