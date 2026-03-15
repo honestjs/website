@@ -1,16 +1,17 @@
 # API Reference
 
-This document provides a comprehensive reference for all the APIs available in HonestJS.
+This document provides a comprehensive reference for all the APIs available in
+HonestJS.
 
 ## Table of Contents
 
--   [Application](#application)
--   [Decorators](#decorators)
--   [Components](#components)
--   [Interfaces](#interfaces)
--   [Types](#types)
--   [Constants](#constants)
--   [Utilities](#utilities)
+- [Application](#application)
+- [Decorators](#decorators)
+- [Components](#components)
+- [Interfaces](#interfaces)
+- [Types](#types)
+- [Constants](#constants)
+- [Utilities](#utilities)
 
 ## Application
 
@@ -31,8 +32,8 @@ static async create(
 
 **Parameters:**
 
--   `rootModule`: The root module class for the application
--   `options`: Optional application configuration
+- `rootModule`: The root module class for the application
+- `options`: Optional application configuration
 
 **Returns:** Object containing the application and Hono instances
 
@@ -40,8 +41,8 @@ static async create(
 
 ```typescript
 const { app, hono } = await Application.create(AppModule, {
-	routing: { prefix: '/api', version: 1 },
-})
+	routing: { prefix: "/api", version: 1 },
+});
 ```
 
 #### `Application.getApp()`
@@ -74,7 +75,7 @@ async register(moduleClass: Constructor): Promise<Application>
 
 **Parameters:**
 
--   `moduleClass`: The module class to register
+- `moduleClass`: The module class to register
 
 **Returns:** The application instance for method chaining
 
@@ -87,18 +88,21 @@ async register(moduleClass: Constructor): Promise<Application>
 Marks a class as a controller and defines the base route for all its endpoints.
 
 ```typescript
-function Controller(route?: string, options?: ControllerOptions): ClassDecorator
+function Controller(
+	route?: string,
+	options?: ControllerOptions,
+): ClassDecorator;
 ```
 
 **Parameters:**
 
--   `route`: Optional base route path
--   `options`: Controller configuration options
+- `route`: Optional base route path
+- `options`: Controller configuration options
 
 **Example:**
 
 ```typescript
-@Controller('users', { version: 1 })
+@Controller("users", { version: 1 })
 class UsersController {}
 ```
 
@@ -109,7 +113,7 @@ class UsersController {}
 Defines a GET endpoint.
 
 ```typescript
-function Get(path?: string, options?: HttpMethodOptions): MethodDecorator
+function Get(path?: string, options?: HttpMethodOptions): MethodDecorator;
 ```
 
 ##### `@Post(path?, options?)`
@@ -117,7 +121,7 @@ function Get(path?: string, options?: HttpMethodOptions): MethodDecorator
 Defines a POST endpoint.
 
 ```typescript
-function Post(path?: string, options?: HttpMethodOptions): MethodDecorator
+function Post(path?: string, options?: HttpMethodOptions): MethodDecorator;
 ```
 
 ##### `@Put(path?, options?)`
@@ -125,7 +129,7 @@ function Post(path?: string, options?: HttpMethodOptions): MethodDecorator
 Defines a PUT endpoint.
 
 ```typescript
-function Put(path?: string, options?: HttpMethodOptions): MethodDecorator
+function Put(path?: string, options?: HttpMethodOptions): MethodDecorator;
 ```
 
 ##### `@Delete(path?, options?)`
@@ -133,7 +137,7 @@ function Put(path?: string, options?: HttpMethodOptions): MethodDecorator
 Defines a DELETE endpoint.
 
 ```typescript
-function Delete(path?: string, options?: HttpMethodOptions): MethodDecorator
+function Delete(path?: string, options?: HttpMethodOptions): MethodDecorator;
 ```
 
 ##### `@Patch(path?, options?)`
@@ -141,7 +145,7 @@ function Delete(path?: string, options?: HttpMethodOptions): MethodDecorator
 Defines a PATCH endpoint.
 
 ```typescript
-function Patch(path?: string, options?: HttpMethodOptions): MethodDecorator
+function Patch(path?: string, options?: HttpMethodOptions): MethodDecorator;
 ```
 
 ##### `@Options(path?, options?)`
@@ -149,7 +153,7 @@ function Patch(path?: string, options?: HttpMethodOptions): MethodDecorator
 Defines an OPTIONS endpoint.
 
 ```typescript
-function Options(path?: string, options?: HttpMethodOptions): MethodDecorator
+function Options(path?: string, options?: HttpMethodOptions): MethodDecorator;
 ```
 
 ##### `@All(path?, options?)`
@@ -157,7 +161,7 @@ function Options(path?: string, options?: HttpMethodOptions): MethodDecorator
 Defines an endpoint that matches all HTTP methods.
 
 ```typescript
-function All(path?: string, options?: HttpMethodOptions): MethodDecorator
+function All(path?: string, options?: HttpMethodOptions): MethodDecorator;
 ```
 
 ### Dependency Injection Decorators
@@ -167,7 +171,7 @@ function All(path?: string, options?: HttpMethodOptions): MethodDecorator
 Marks a class as a service that can be injected as a dependency.
 
 ```typescript
-function Service(): ClassDecorator
+function Service(): ClassDecorator;
 ```
 
 **Example:**
@@ -182,12 +186,12 @@ class UserService {}
 Defines a module that organizes controllers, services, and other modules.
 
 ```typescript
-function Module(options?: ModuleOptions): ClassDecorator
+function Module(options?: ModuleOptions): ClassDecorator;
 ```
 
 **Parameters:**
 
--   `options`: Module configuration options
+- `options`: Module configuration options
 
 **Example:**
 
@@ -207,12 +211,12 @@ class AppModule {}
 Extracts the request body or a specific property from it.
 
 ```typescript
-function Body(data?: string): ParameterDecorator
+function Body(data?: string): ParameterDecorator;
 ```
 
 **Parameters:**
 
--   `data`: Optional property name to extract from the body
+- `data`: Optional property name to extract from the body
 
 **Example:**
 
@@ -229,12 +233,12 @@ createUser(@Body('name') name: string) {}
 Extracts route parameters.
 
 ```typescript
-function Param(data?: string): ParameterDecorator
+function Param(data?: string): ParameterDecorator;
 ```
 
 **Parameters:**
 
--   `data`: Optional parameter name to extract
+- `data`: Optional parameter name to extract
 
 **Example:**
 
@@ -251,12 +255,12 @@ getUser(@Param() params: Record<string, string>) {}
 Extracts query string parameters.
 
 ```typescript
-function Query(data?: string): ParameterDecorator
+function Query(data?: string): ParameterDecorator;
 ```
 
 **Parameters:**
 
--   `data`: Optional query parameter name to extract
+- `data`: Optional query parameter name to extract
 
 **Example:**
 
@@ -273,12 +277,12 @@ getUsers(@Query() query: Record<string, string>) {}
 Extracts HTTP headers.
 
 ```typescript
-function Header(data?: string): ParameterDecorator
+function Header(data?: string): ParameterDecorator;
 ```
 
 **Parameters:**
 
--   `data`: Optional header name to extract
+- `data`: Optional header name to extract
 
 **Example:**
 
@@ -295,8 +299,8 @@ getProfile(@Header() headers: Record<string, string>) {}
 Injects the full request object.
 
 ```typescript
-function Req(): ParameterDecorator
-function Request(): ParameterDecorator
+function Req(): ParameterDecorator;
+function Request(): ParameterDecorator;
 ```
 
 **Example:**
@@ -311,8 +315,8 @@ getInfo(@Req() req: Request) {}
 Injects the response object.
 
 ```typescript
-function Res(): ParameterDecorator
-function Response(): ParameterDecorator
+function Res(): ParameterDecorator;
+function Response(): ParameterDecorator;
 ```
 
 **Example:**
@@ -327,8 +331,8 @@ getInfo(@Res() res: Response) {}
 Injects the Hono context object.
 
 ```typescript
-function Ctx(): ParameterDecorator
-function Context(): ParameterDecorator
+function Ctx(): ParameterDecorator;
+function Context(): ParameterDecorator;
 ```
 
 **Example:**
@@ -343,13 +347,13 @@ getInfo(@Ctx() ctx: Context) {}
 Extracts a variable from the context.
 
 ```typescript
-function Var(data: string): ParameterDecorator
-function Variable(data: string): ParameterDecorator
+function Var(data: string): ParameterDecorator;
+function Variable(data: string): ParameterDecorator;
 ```
 
 **Parameters:**
 
--   `data`: The variable name to extract from context
+- `data`: The variable name to extract from context
 
 **Example:**
 
@@ -365,18 +369,20 @@ getCurrentUser(@Var('user') user: User) {}
 Applies middleware to a controller or method.
 
 ```typescript
-function UseMiddleware(...middleware: MiddlewareType[]): ClassDecorator | MethodDecorator
+function UseMiddleware(
+	...middleware: MiddlewareType[]
+): ClassDecorator | MethodDecorator;
 ```
 
 **Parameters:**
 
--   `middleware`: Array of middleware classes or instances
+- `middleware`: Array of middleware classes or instances
 
 **Example:**
 
 ```typescript
 @UseMiddleware(LoggerMiddleware, AuthMiddleware)
-@Controller('users')
+@Controller("users")
 class UsersController {
 	@UseMiddleware(RateLimitMiddleware)
 	@Get()
@@ -389,21 +395,21 @@ class UsersController {
 Applies guards to a controller or method.
 
 ```typescript
-function UseGuards(...guards: GuardType[]): ClassDecorator | MethodDecorator
+function UseGuards(...guards: GuardType[]): ClassDecorator | MethodDecorator;
 ```
 
 **Parameters:**
 
--   `guards`: Array of guard classes or instances
+- `guards`: Array of guard classes or instances
 
 **Example:**
 
 ```typescript
 @UseGuards(AuthGuard, RoleGuard)
-@Controller('admin')
+@Controller("admin")
 class AdminController {
 	@UseGuards(AdminGuard)
-	@Get('users')
+	@Get("users")
 	getUsers() {}
 }
 ```
@@ -413,18 +419,18 @@ class AdminController {
 Applies pipes to a controller or method.
 
 ```typescript
-function UsePipes(...pipes: PipeType[]): ClassDecorator | MethodDecorator
+function UsePipes(...pipes: PipeType[]): ClassDecorator | MethodDecorator;
 ```
 
 **Parameters:**
 
--   `pipes`: Array of pipe classes or instances
+- `pipes`: Array of pipe classes or instances
 
 **Example:**
 
 ```typescript
 @UsePipes(ValidationPipe, TransformPipe)
-@Controller('users')
+@Controller("users")
 class UsersController {
 	@UsePipes(CustomPipe)
 	@Post()
@@ -437,18 +443,18 @@ class UsersController {
 Applies exception filters to a controller or method.
 
 ```typescript
-function UseFilters(...filters: FilterType[]): ClassDecorator | MethodDecorator
+function UseFilters(...filters: FilterType[]): ClassDecorator | MethodDecorator;
 ```
 
 **Parameters:**
 
--   `filters`: Array of filter classes or instances
+- `filters`: Array of filter classes or instances
 
 **Example:**
 
 ```typescript
 @UseFilters(HttpExceptionFilter, ValidationExceptionFilter)
-@Controller('users')
+@Controller("users")
 class UsersController {
 	@UseFilters(CustomExceptionFilter)
 	@Get()
@@ -463,7 +469,7 @@ class UsersController {
 Alias for `@Controller` with MVC naming.
 
 ```typescript
-function View(route?: string, options?: ControllerOptions): ClassDecorator
+function View(route?: string, options?: ControllerOptions): ClassDecorator;
 ```
 
 #### `@Page(path?, options?)`
@@ -471,7 +477,7 @@ function View(route?: string, options?: ControllerOptions): ClassDecorator
 Alias for `@Get` with MVC naming.
 
 ```typescript
-const Page = Get
+const Page = Get;
 ```
 
 #### `@MvcModule(options)`
@@ -479,7 +485,9 @@ const Page = Get
 Enhanced module decorator with view support.
 
 ```typescript
-function MvcModule(options?: ModuleOptions & { views?: Constructor[] }): ClassDecorator
+function MvcModule(
+	options?: ModuleOptions & { views?: Constructor[] },
+): ClassDecorator;
 ```
 
 ## Components
@@ -491,21 +499,21 @@ function MvcModule(options?: ModuleOptions & { views?: Constructor[] }): ClassDe
 Creates a complete HTML document with SEO optimization and modern web standards.
 
 ```typescript
-function Layout(props: PropsWithChildren<SiteData>): string
+function Layout(props: PropsWithChildren<SiteData>): string;
 ```
 
 **Parameters:**
 
--   `props`: Layout configuration object
+- `props`: Layout configuration object
 
 **Example:**
 
 ```typescript
 const html = Layout({
-	title: 'My App',
-	description: 'A modern web application',
-	children: '<h1>Hello World</h1>',
-})
+	title: "My App",
+	description: "A modern web application",
+	children: "<h1>Hello World</h1>",
+});
 ```
 
 ## Interfaces
@@ -518,25 +526,32 @@ Configuration options for the HonestJS application.
 
 ```typescript
 interface HonestOptions {
-	container?: DiContainer
+	debug?: boolean | { routes?: boolean; plugins?: boolean };
+	strict?: {
+		requireRoutes?: boolean;
+	};
+	deprecations?: {
+		printPreV1Warning?: boolean;
+	};
+	container?: DiContainer;
 	hono?: {
-		strict?: boolean
-		router?: any
-		getPath?: (request: Request, options?: any) => string
-	}
+		strict?: boolean;
+		router?: any;
+		getPath?: (request: Request, options?: any) => string;
+	};
 	routing?: {
-		prefix?: string
-		version?: number | typeof VERSION_NEUTRAL | number[]
-	}
+		prefix?: string;
+		version?: number | typeof VERSION_NEUTRAL | number[];
+	};
 	components?: {
-		middleware?: MiddlewareType[]
-		guards?: GuardType[]
-		pipes?: PipeType[]
-		filters?: FilterType[]
-	}
-	plugins?: PluginType[]
-	onError?: (error: Error, context: Context) => Response | Promise<Response>
-	notFound?: (context: Context) => Response | Promise<Response>
+		middleware?: MiddlewareType[];
+		guards?: GuardType[];
+		pipes?: PipeType[];
+		filters?: FilterType[];
+	};
+	plugins?: PluginEntry[];
+	onError?: (error: Error, context: Context) => Response | Promise<Response>;
+	notFound?: (context: Context) => Response | Promise<Response>;
 }
 ```
 
@@ -546,8 +561,8 @@ Configuration options for controllers.
 
 ```typescript
 interface ControllerOptions {
-	prefix?: string | null
-	version?: number | null | typeof VERSION_NEUTRAL | number[]
+	prefix?: string | null;
+	version?: number | null | typeof VERSION_NEUTRAL | number[];
 }
 ```
 
@@ -557,8 +572,8 @@ Configuration options for HTTP method decorators.
 
 ```typescript
 interface HttpMethodOptions {
-	prefix?: string | null
-	version?: number | null | typeof VERSION_NEUTRAL | number[]
+	prefix?: string | null;
+	version?: number | null | typeof VERSION_NEUTRAL | number[];
 }
 ```
 
@@ -568,9 +583,9 @@ Configuration options for modules.
 
 ```typescript
 interface ModuleOptions {
-	controllers?: Constructor[]
-	services?: Constructor[]
-	imports?: Constructor[]
+	controllers?: Constructor[];
+	services?: Constructor[];
+	imports?: Constructor[];
 }
 ```
 
@@ -582,7 +597,7 @@ Interface for middleware classes.
 
 ```typescript
 interface IMiddleware {
-	use(c: Context, next: Next): Promise<Response | void>
+	use(c: Context, next: Next): Promise<Response | void>;
 }
 ```
 
@@ -592,7 +607,7 @@ Interface for guard classes.
 
 ```typescript
 interface IGuard {
-	canActivate(context: Context): boolean | Promise<boolean>
+	canActivate(context: Context): boolean | Promise<boolean>;
 }
 ```
 
@@ -602,7 +617,10 @@ Interface for pipe classes.
 
 ```typescript
 interface IPipe {
-	transform(value: unknown, metadata: ArgumentMetadata): Promise<unknown> | unknown
+	transform(
+		value: unknown,
+		metadata: ArgumentMetadata,
+	): Promise<unknown> | unknown;
 }
 ```
 
@@ -612,7 +630,10 @@ Interface for exception filter classes.
 
 ```typescript
 interface IFilter {
-	catch(exception: Error, context: Context): Promise<Response | undefined> | Response | undefined
+	catch(
+		exception: Error,
+		context: Context,
+	): Promise<Response | undefined> | Response | undefined;
 }
 ```
 
@@ -622,8 +643,14 @@ Interface for plugin classes.
 
 ```typescript
 interface IPlugin {
-	beforeModulesRegistered?: (app: Application, hono: Hono) => void | Promise<void>
-	afterModulesRegistered?: (app: Application, hono: Hono) => void | Promise<void>
+	beforeModulesRegistered?: (
+		app: Application,
+		hono: Hono,
+	) => void | Promise<void>;
+	afterModulesRegistered?: (
+		app: Application,
+		hono: Hono,
+	) => void | Promise<void>;
 }
 ```
 
@@ -635,8 +662,8 @@ Interface for dependency injection containers.
 
 ```typescript
 interface DiContainer {
-	resolve<T>(target: Constructor<T>): T
-	register<T>(target: Constructor<T>, instance: T): void
+	resolve<T>(target: Constructor<T>): T;
+	register<T>(target: Constructor<T>, instance: T): void;
 }
 ```
 
@@ -648,12 +675,12 @@ Definition of a route.
 
 ```typescript
 interface RouteDefinition {
-	path: string
-	method: string
-	handlerName: string | symbol
-	parameterMetadata: ParameterMetadata[]
-	version?: number | null | typeof VERSION_NEUTRAL | number[]
-	prefix?: string | null
+	path: string;
+	method: string;
+	handlerName: string | symbol;
+	parameterMetadata: ParameterMetadata[];
+	version?: number | null | typeof VERSION_NEUTRAL | number[];
+	prefix?: string | null;
 }
 ```
 
@@ -663,15 +690,15 @@ Information about a registered route.
 
 ```typescript
 interface RouteInfo {
-	controller: string | symbol
-	handler: string | symbol
-	method: string
-	prefix: string
-	version?: string
-	route: string
-	path: string
-	fullPath: string
-	parameters: ParameterMetadata[]
+	controller: string | symbol;
+	handler: string | symbol;
+	method: string;
+	prefix: string;
+	version?: string;
+	route: string;
+	path: string;
+	fullPath: string;
+	parameters: ParameterMetadata[];
 }
 ```
 
@@ -681,11 +708,11 @@ Metadata about a parameter.
 
 ```typescript
 interface ParameterMetadata {
-	index: number
-	name: string
-	data?: any
-	factory: (data: any, ctx: Context) => any
-	metatype?: Constructor<unknown>
+	index: number;
+	name: string;
+	data?: any;
+	factory: (data: any, ctx: Context) => any;
+	metatype?: Constructor<unknown>;
 }
 ```
 
@@ -695,9 +722,9 @@ Metadata about an argument for pipes.
 
 ```typescript
 interface ArgumentMetadata {
-	type: 'body' | 'query' | 'param' | 'custom'
-	metatype?: Constructor<unknown>
-	data?: string
+	type: "body" | "query" | "param" | "custom";
+	metatype?: Constructor<unknown>;
+	data?: string;
 }
 ```
 
@@ -709,14 +736,14 @@ Standard error response format.
 
 ```typescript
 interface ErrorResponse {
-	status: number
-	message: string
-	timestamp: string
-	path: string
-	requestId?: string
-	code?: string
-	details?: Record<string, any>
-	errors?: Array<{ property: string; constraints: Record<string, string> }>
+	status: number;
+	message: string;
+	timestamp: string;
+	path: string;
+	requestId?: string;
+	code?: string;
+	details?: Record<string, any>;
+	errors?: Array<{ property: string; constraints: Record<string, string> }>;
 }
 ```
 
@@ -728,22 +755,22 @@ Configuration for the Layout component.
 
 ```typescript
 interface SiteData {
-	title: string
-	description?: string
-	image?: string
-	url?: string
-	locale?: string
-	type?: string
-	siteName?: string
-	customMeta?: MetaTag[]
-	scripts?: (string | ScriptOptions)[]
-	stylesheets?: string[]
-	favicon?: string
-	twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player'
-	csp?: string
-	htmlAttributes?: HtmlAttributes
-	headAttributes?: HtmlAttributes
-	bodyAttributes?: HtmlAttributes
+	title: string;
+	description?: string;
+	image?: string;
+	url?: string;
+	locale?: string;
+	type?: string;
+	siteName?: string;
+	customMeta?: MetaTag[];
+	scripts?: (string | ScriptOptions)[];
+	stylesheets?: string[];
+	favicon?: string;
+	twitterCard?: "summary" | "summary_large_image" | "app" | "player";
+	csp?: string;
+	htmlAttributes?: HtmlAttributes;
+	headAttributes?: HtmlAttributes;
+	bodyAttributes?: HtmlAttributes;
 }
 ```
 
@@ -753,10 +780,10 @@ Custom meta tag configuration.
 
 ```typescript
 interface MetaTag {
-	property: string
-	content: string
-	name?: string
-	prefix?: string
+	property: string;
+	content: string;
+	name?: string;
+	prefix?: string;
 }
 ```
 
@@ -765,7 +792,7 @@ interface MetaTag {
 HTML attributes configuration.
 
 ```typescript
-type HtmlAttributes = Record<string, string | number | boolean>
+type HtmlAttributes = Record<string, string | number | boolean>;
 ```
 
 ## Types
@@ -775,7 +802,7 @@ type HtmlAttributes = Record<string, string | number | boolean>
 Type for class constructors.
 
 ```typescript
-type Constructor<T = any> = new (...args: any[]) => T
+type Constructor<T = any> = new (...args: any[]) => T;
 ```
 
 ### Component Types
@@ -785,7 +812,7 @@ type Constructor<T = any> = new (...args: any[]) => T
 Type for middleware classes or instances.
 
 ```typescript
-type MiddlewareType = Constructor<IMiddleware> | IMiddleware
+type MiddlewareType = Constructor<IMiddleware> | IMiddleware;
 ```
 
 #### `GuardType`
@@ -793,7 +820,7 @@ type MiddlewareType = Constructor<IMiddleware> | IMiddleware
 Type for guard classes or instances.
 
 ```typescript
-type GuardType = Constructor<IGuard> | IGuard
+type GuardType = Constructor<IGuard> | IGuard;
 ```
 
 #### `PipeType`
@@ -801,7 +828,7 @@ type GuardType = Constructor<IGuard> | IGuard
 Type for pipe classes or instances.
 
 ```typescript
-type PipeType = Constructor<IPipe> | IPipe
+type PipeType = Constructor<IPipe> | IPipe;
 ```
 
 #### `FilterType`
@@ -809,7 +836,7 @@ type PipeType = Constructor<IPipe> | IPipe
 Type for filter classes or instances.
 
 ```typescript
-type FilterType = Constructor<IFilter> | IFilter
+type FilterType = Constructor<IFilter> | IFilter;
 ```
 
 #### `PluginType`
@@ -817,7 +844,20 @@ type FilterType = Constructor<IFilter> | IFilter
 Type for plugin classes or instances.
 
 ```typescript
-type PluginType = Constructor<IPlugin> | IPlugin
+type PluginType = Constructor<IPlugin> | IPlugin;
+```
+
+#### `PluginEntry`
+
+Type for plugin registration entries. Supports plain plugins or wrapped entries
+with optional pre/post processors.
+
+```typescript
+type PluginEntry = PluginType | {
+	plugin: IPlugin | Constructor<IPlugin>;
+	preProcessors?: PluginProcessor[];
+	postProcessors?: PluginProcessor[];
+};
 ```
 
 ## Constants
@@ -827,15 +867,15 @@ type PluginType = Constructor<IPlugin> | IPlugin
 Symbol to use when marking a route as version-neutral.
 
 ```typescript
-const VERSION_NEUTRAL = Symbol('VERSION_NEUTRAL')
+const VERSION_NEUTRAL = Symbol("VERSION_NEUTRAL");
 ```
 
 **Usage:**
 
 ```typescript
-@Controller('health', { version: VERSION_NEUTRAL })
+@Controller("health", { version: VERSION_NEUTRAL })
 class HealthController {
-	@Get('status')
+	@Get("status")
 	getStatus() {
 		// Accessible at both /health/status and /v1/health/status
 	}
@@ -853,22 +893,22 @@ Creates a custom parameter decorator.
 ```typescript
 function createParamDecorator<T = any>(
 	type: string,
-	factory?: (data: any, ctx: Context) => T
-): (data?: any) => ParameterDecorator
+	factory?: (data: any, ctx: Context) => T,
+): (data?: any) => ParameterDecorator;
 ```
 
 **Parameters:**
 
--   `type`: The type identifier for the parameter
--   `factory`: Optional function to transform the parameter value
+- `type`: The type identifier for the parameter
+- `factory`: Optional function to transform the parameter value
 
 **Example:**
 
 ```typescript
-export const CurrentUser = createParamDecorator('user', (_, ctx) => {
-	const token = ctx.req.header('authorization')?.replace('Bearer ', '')
-	return token ? decodeJWT(token) : null
-})
+export const CurrentUser = createParamDecorator("user", (_, ctx) => {
+	const token = ctx.req.header("authorization")?.replace("Bearer ", "");
+	return token ? decodeJWT(token) : null;
+});
 ```
 
 #### `createHttpMethodDecorator(method)`
@@ -876,17 +916,19 @@ export const CurrentUser = createParamDecorator('user', (_, ctx) => {
 Creates an HTTP method decorator.
 
 ```typescript
-function createHttpMethodDecorator(method: string): (path?: string, options?: HttpMethodOptions) => MethodDecorator
+function createHttpMethodDecorator(
+	method: string,
+): (path?: string, options?: HttpMethodOptions) => MethodDecorator;
 ```
 
 **Parameters:**
 
--   `method`: The HTTP method name
+- `method`: The HTTP method name
 
 **Example:**
 
 ```typescript
-const CustomGet = createHttpMethodDecorator('get')
+const CustomGet = createHttpMethodDecorator("get");
 ```
 
 #### `createErrorResponse(exception, context, options?)`
@@ -898,13 +940,13 @@ function createErrorResponse(
 	exception: Error,
 	context: Context,
 	options?: {
-		status?: number
-		title?: string
-		detail?: string
-		code?: string
-		additionalDetails?: Record<string, any>
-	}
-): { response: ErrorResponse; status: ContentfulStatusCode }
+		status?: number;
+		title?: string;
+		detail?: string;
+		code?: string;
+		additionalDetails?: Record<string, any>;
+	},
+): { response: ErrorResponse; status: ContentfulStatusCode };
 ```
 
 ### Utility Functions
@@ -914,7 +956,7 @@ function createErrorResponse(
 Checks if a value is a constructor function.
 
 ```typescript
-function isConstructor(val: unknown): boolean
+function isConstructor(val: unknown): boolean;
 ```
 
 #### `isObject(val)`
@@ -922,7 +964,7 @@ function isConstructor(val: unknown): boolean
 Checks if a value is an object.
 
 ```typescript
-function isObject(val: unknown): val is Record<PropertyKey, unknown>
+function isObject(val: unknown): val is Record<PropertyKey, unknown>;
 ```
 
 #### `isFunction(val)`
@@ -930,7 +972,7 @@ function isObject(val: unknown): val is Record<PropertyKey, unknown>
 Checks if a value is a function.
 
 ```typescript
-function isFunction(val: unknown): val is Function
+function isFunction(val: unknown): val is Function;
 ```
 
 #### `isString(val)`
@@ -938,7 +980,7 @@ function isFunction(val: unknown): val is Function
 Checks if a value is a string.
 
 ```typescript
-function isString(val: unknown): val is string
+function isString(val: unknown): val is string;
 ```
 
 #### `isNumber(val)`
@@ -946,7 +988,7 @@ function isString(val: unknown): val is string
 Checks if a value is a number.
 
 ```typescript
-function isNumber(val: unknown): val is number
+function isNumber(val: unknown): val is number;
 ```
 
 #### `normalizePath(path?)`
@@ -954,7 +996,7 @@ function isNumber(val: unknown): val is number
 Normalizes a path string.
 
 ```typescript
-function normalizePath(path?: string): string
+function normalizePath(path?: string): string;
 ```
 
 #### `addLeadingSlash(path?)`
@@ -962,7 +1004,7 @@ function normalizePath(path?: string): string
 Adds a leading slash to a path if it doesn't have one.
 
 ```typescript
-function addLeadingSlash(path?: string): string
+function addLeadingSlash(path?: string): string;
 ```
 
 #### `stripEndSlash(path)`
@@ -970,7 +1012,9 @@ function addLeadingSlash(path?: string): string
 Removes the trailing slash from a path.
 
 ```typescript
-function stripEndSlash(path: string): string
+function stripEndSlash(path: string): string;
 ```
 
-This API reference provides comprehensive documentation for all the features and functionality available in HonestJS. For more detailed examples and usage patterns, refer to the individual documentation sections.
+This API reference provides comprehensive documentation for all the features and
+functionality available in HonestJS. For more detailed examples and usage
+patterns, refer to the individual documentation sections.

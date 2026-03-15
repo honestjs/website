@@ -65,6 +65,16 @@ const { app, hono } = await Application.create(AppModule);
 export default hono;
 ```
 
+## Stabilization Status (pre-v1)
+
+HonestJS is currently focused on correctness and docs/runtime consistency before expanding feature surface.
+
+- [ ] Runtime correctness fixes (`@Body()` reuse, `Response` passthrough, decorator safety)
+- [ ] Static registry lifecycle hardening
+- [ ] Route registration diagnostics
+- [ ] Documentation/API consistency sweep
+- [ ] Optional strict startup checks (post-stabilization)
+
 ## Documentation Sections
 
 ### Getting Started

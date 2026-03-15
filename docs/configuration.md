@@ -87,6 +87,24 @@ const { app, hono } = await Application.create(AppModule, {
 **Example result:** With `prefix: 'api'` and `version: 1`, a route
 `@Get('/users')` becomes accessible at `/api/v1/users`.
 
+### Debug and Strict Options
+
+Use startup diagnostics while developing, and opt into stricter startup checks when needed.
+
+```typescript
+const { app, hono } = await Application.create(AppModule, {
+	debug: { routes: true, plugins: true },
+	strict: {
+		// Fails startup if no routes were registered
+		requireRoutes: true,
+	},
+	deprecations: {
+		// Prints pre-v1 warning at startup
+		printPreV1Warning: true,
+	},
+})
+```
+
 ### Global Components Configuration
 
 Apply components (middleware, guards, pipes, filters) globally to all routes:

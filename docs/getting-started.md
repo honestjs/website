@@ -314,20 +314,21 @@ const { app, hono } = await Application.create(AppModule, {
 
 #### Module-Specific Components
 
-Module-specific components are scoped to a particular feature and can be applied at the module, controller, or handler level:
+Module-specific components are scoped to a particular feature and can be applied at the controller or handler level:
 
 ```typescript
-@Module({
-	controllers: [UsersController],
-	services: [UsersService],
-	components: {
-		middleware: [UsersMiddleware],
-		guards: [UsersGuard],
-		pipes: [UsersPipe],
-		filters: [UsersFilter],
-	},
-})
-class UsersModule {}
+@Controller('users')
+@UseMiddleware(UsersMiddleware)
+@UseGuards(UsersGuard)
+class UsersController {}
+
+@Controller('users')
+class UsersWriteController {
+	@Post()
+	@UsePipes(UsersPipe)
+	@UseFilters(UsersFilter)
+	createUser(@Body() body: CreateUserDto) {}
+}
 ```
 
 ### Static Asset Organization
