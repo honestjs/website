@@ -20,11 +20,99 @@ Pipes have two main use cases:
 1.  **Transformation:** Converting data from one form to another (e.g., converting a string ID to a number).
 2.  **Validation:** Checking if incoming data meets certain criteria and throwing an exception if it does not.
 
-## Creating a Pipe
+## Official Pipes
+
+HonestJS provides two pipe packages:
+
+-   **`@honestjs/pipes`** – `PrimitiveValidationPipe` for automatic coercion of path/query params to `String`, `Number`, or `Boolean`.
+-   **`@honestjs/class-validator-pipe`** – `ClassValidatorPipe` for validating and transforming DTOs with class-validator and class-transformer.
+
+### PrimitiveValidationPipe
+
+Use for path and query parameters. When you declare `@Param('id') id: number` or `@Query('page') page: number`, the pipe transforms string values to the expected primitive type.
+
+```bash
+bun add @honestjs/pipes
+```
+
+```typescript
+import { Application } from 'honestjs'
+import { PrimitiveValidationPipe } from '@honestjs/pipes'
+
+const { hono } = await Application.create(AppModule, {
+	components: {
+		pipes: [new PrimitiveValidationPipe()]
+	}
+})
+```
+
+```typescript
+@Controller('/users')
+export class UsersController {
+	@Get('/:id')
+	async findOne(@Param('id') id: number) {
+		// `id` is a number here (e.g. from /users/42)
+		return this.usersService.findById(id)
+	}
+
+	@Get()
+	async list(@Query('page') page: number, @Query('limit') limit: number) {
+		// `page` and `limit` are numbers (e.g. ?page=1&limit=10)
+		return this.usersService.findAll(page, limit)
+	}
+}
+```
+
+### ClassValidatorPipe
+
+Use for request bodies and other DTOs. It validates plain objects against class-validator decorators and transforms them into class instances.
+
+```bash
+bun add @honestjs/class-validator-pipe class-validator class-transformer
+```
+
+```typescript
+import { Application } from 'honestjs'
+import { ClassValidatorPipe } from '@honestjs/class-validator-pipe'
+
+const { hono } = await Application.create(AppModule, {
+	components: {
+		pipes: [new ClassValidatorPipe()]
+	}
+})
+```
+
+```typescript
+import { IsEmail, IsString, MinLength, IsOptional } from 'class-validator'
+
+export class CreateUserDto {
+	@IsString()
+	@MinLength(2)
+	name: string
+
+	@IsEmail()
+	email: string
+
+	@IsString()
+	@IsOptional()
+	bio?: string
+}
+
+@Controller('/users')
+export class UsersController {
+	@Post()
+	async create(@Body() body: CreateUserDto) {
+		// `body` is validated and transformed into a CreateUserDto instance
+		return this.usersService.create(body)
+	}
+}
+```
+
+## Creating a Custom Pipe
 
 ### Transformation Example
 
-Here is a simple pipe that transforms a string value into a number.
+Here is a simple custom pipe that transforms a string value into a number. You can register it globally or with `@UsePipes()`.
 
 ```typescript
 import { IPipe, ArgumentMetadata } from 'honestjs'
@@ -43,13 +131,11 @@ export class ParseIntPipe implements IPipe<string> {
 
 ### Validation Example
 
-A more common use case is validating an incoming request body against a DTO class. This is often done with libraries like `class-validator` and `class-transformer`.
-
-Here is an example of a `ValidationPipe`:
+A custom validation pipe using class-validator and class-transformer. For production, prefer `@honestjs/class-validator-pipe` which handles edge cases and options.
 
 ```typescript
 import { IPipe, ArgumentMetadata } from 'honestjs'
-import { plainToClass } from 'class-transformer'
+import { plainToInstance } from 'class-transformer'
 import { validate } from 'class-validator'
 import { BadRequestException } from 'http-essentials'
 
@@ -58,12 +144,12 @@ export class ValidationPipe implements IPipe {
 		if (!metatype || !this.toValidate(metatype)) {
 			return value
 		}
-		const object = plainToClass(metatype, value)
+		const object = plainToInstance(metatype, value)
 		const errors = await validate(object)
 		if (errors.length > 0) {
 			throw new BadRequestException('Validation failed', { details: errors })
 		}
-		return value
+		return object
 	}
 
 	private toValidate(metatype: Function): boolean {
@@ -73,47 +159,46 @@ export class ValidationPipe implements IPipe {
 }
 ```
 
-This pipe:
-
-1.  Checks if the parameter has a specific DTO type.
-2.  Uses `class-transformer` to convert the plain JavaScript object from the request into an instance of the DTO class.
-3.  Uses `class-validator` to validate the object based on the decorators in the DTO.
-4.  Throws an exception if validation fails.
-
 ## Applying Pipes
 
-Pipes can be applied at the global, controller, or handler level using the `@UsePipes()` decorator. They can also be applied to a specific parameter.
+Pipes are applied at the global, controller, or handler level. HonestJS does not support parameter-level pipes (e.g. `@Param('id', SomePipe)`). Use global or scoped pipes instead.
 
 ### Global Pipes
 
-Global pipes are useful for applying validation to all incoming data. A global `ValidationPipe` can be set to ensure all DTOs are validated automatically.
+Global pipes run on all parameters for all routes. Register them when creating the application.
 
 ```typescript [src/main.ts]
+import { Application } from 'honestjs'
+import { PrimitiveValidationPipe } from '@honestjs/pipes'
+import { ClassValidatorPipe } from '@honestjs/class-validator-pipe'
+
 const { hono } = await Application.create(AppModule, {
 	components: {
-		pipes: [new ValidationPipe()],
-	},
+		pipes: [
+			new PrimitiveValidationPipe(),
+			new ClassValidatorPipe()
+		]
+	}
 })
 ```
 
-### Parameter-Level Pipes
+### Controller and Handler Pipes
 
-You can also apply pipes to a specific parameter within a route handler.
+Use `@UsePipes()` to apply pipes to a controller or a specific handler.
 
 ```typescript
-import { Body, Param, ParseIntPipe } from 'honestjs'
+import { Body, Controller, Get, Param, UsePipes } from 'honestjs'
+import { PrimitiveValidationPipe } from '@honestjs/pipes'
 
 @Controller('/users')
+@UsePipes(new PrimitiveValidationPipe())
 export class UsersController {
 	@Get('/:id')
-	async findOne(@Param('id', ParseIntPipe) id: number) {
-		// The `id` will be a number here, not a string.
+	async findOne(@Param('id') id: number) {
 		return this.usersService.findById(id)
 	}
 }
 ```
-
-In this example, `ParseIntPipe` is applied only to the `id` parameter.
 
 ## Execution Order
 
@@ -122,8 +207,7 @@ When multiple pipes are applied, they are executed in the following order:
 1.  Global Pipes
 2.  Controller-Level Pipes
 3.  Handler-Level Pipes
-4.  Parameter-Level Pipes
 
-If multiple pipes are applied at the same level (e.g., `@UsePipes(PipeA, PipeB)`), they are executed in the order they are listed. Each pipe's output becomes the next pipe's input.
+If multiple pipes are applied at the same level (e.g. `@UsePipes(PipeA, PipeB)`), they run in the order listed. Each pipe's output becomes the next pipe's input.
 
 Pipes are a powerful tool for creating robust and type-safe APIs, reducing boilerplate code in route handlers.
