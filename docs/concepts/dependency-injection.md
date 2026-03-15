@@ -6,10 +6,10 @@ HonestJS includes a simple and effective dependency injection (DI) container tha
 
 The DI system is built around a few key concepts:
 
--   **Providers:** These are classes that can be "provided" by the DI container. In HonestJS, the most common providers are **Services**, but any class decorated with `@Service()` can be a provider.
--   **Consumers:** These are classes that consume providers. **Controllers** are the most common consumers.
+-   **Services:** Classes managed by the DI container. In current HonestJS, these are typically declared with `@Service()` and/or listed in module `services`.
+-   **Consumers:** Classes that consume services. **Controllers** are the most common consumers.
 -   **Injection:** This is the process of providing an instance of a dependency to a consumer. HonestJS primarily uses **constructor injection**.
--   **Container:** The DI container manages the lifecycle of all providers and handles dependency resolution.
+-   **Container:** The DI container manages service lifecycle and dependency resolution.
 
 ## Services
 
@@ -196,7 +196,7 @@ const { app, hono } = await Application.create(AppModule, {
 
 ### Singleton Scope
 
-By default, all registered providers are singletons. This means that the same instance of a service is shared across the entire application:
+By default, all registered services are singletons. This means that the same instance of a service is shared across the entire application:
 
 ```typescript
 @Service()
@@ -270,7 +270,7 @@ class UsersController {
 
 ### 1. Use Constructor Injection
 
-Prefer constructor injection over property injection:
+Prefer constructor injection. Property injection is not currently part of HonestJS core API.
 
 ```typescript
 // ✅ Good
@@ -279,12 +279,8 @@ class UsersController {
 	constructor(private readonly userService: UserService) {}
 }
 
-// ❌ Avoid
-@Controller('users')
-class UsersController {
-	@Inject()
-	private userService: UserService
-}
+// ❌ Not supported in current HonestJS core
+// Property injection decorators like @Inject() are planned, not available.
 ```
 
 ### 2. Keep Services Focused
