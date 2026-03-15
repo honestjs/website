@@ -21,8 +21,8 @@ with:
   plugins can share pipeline data by key without hard coupling
 - **Plugin System**: Extensible architecture with plugin support for custom
   functionality
-- **MVC Support**: Includes support for building full-stack applications with
-  JSX-based views
+- **MVC Support**: Full-stack apps with Hono JSX views; use the `mvc` template
+  (`honestjs new my-app -t mvc`) or see [MVC](./features/mvc.md)
 - **Error Handling**: Comprehensive error handling with customizable exception
   filters
 - **Route Management**: Advanced routing with parameter binding, query parsing,
@@ -30,9 +30,7 @@ with:
 
 ## Quick Start
 
-Get up and running with HonestJS in minutes! Check out our
-[Getting Started](./getting-started.md) guide for a complete tutorial, or jump
-right in with this minimal example:
+Get up and running with HonestJS in minutes! Use the CLI (`bun add -g @honestjs/cli` then `honestjs new my-app`) or check our [Getting Started](./getting-started.md) guide for a complete tutorial. Or jump right in with this minimal example:
 
 ```typescript
 import { Application, Controller, Get, Module, Service } from "honestjs";

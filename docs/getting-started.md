@@ -29,7 +29,7 @@ Create a new project using the `new` command:
 honestjs new my-project # alias: honest, hnjs
 ```
 
-This command will prompt you to select a template and configure the project. For this guide, choose the `barebone` template.
+This command will prompt you to select a template and configure the project. For this guide, choose the `barebone` template. Available templates: `blank` (minimal), `barebone` (modules structure), `mvc` (full-stack with Hono JSX views). Use `-y` or `--yes` to skip prompts and use defaults.
 
 ### 3. Start the Development Server
 
@@ -346,6 +346,26 @@ Static assets are organized to support both global and view-specific styling and
 4. **Separate Concerns**: Keep business logic, presentation, and data access separate
 5. **Plan for Growth**: Structure your application to accommodate future features
 
+## CLI Reference
+
+The HonestJS CLI provides commands for scaffolding and generating code:
+
+| Command | Description |
+| ------- | ----------- |
+| `honestjs new <name>` | Create a new project. Options: `-t|--template`, `-p|--package-manager`, `--typescript`, `--eslint`, `--prettier`, `--docker`, `--git`, `--install`, `-y|--yes` |
+| `honestjs list` | List available templates. Options: `-j|--json`, `-c|--category`, `-t|--tag` |
+| `honestjs info` | Show CLI version and template info |
+| `honestjs generate <schematic> <name>` | Generate files (alias: `g`). Schematics: controller/c, service/s, module/m, view/v, middleware/c-m, guard/c-g, filter/c-f, pipe/c-p. Options: `-p|--path`, `--flat`, `--force` (overwrite existing), `--skip-import`, `--export` |
+
+Examples:
+
+```bash
+honestjs new my-api -t barebone -y
+honestjs list --category basic
+honestjs g controller users
+honestjs g service users --force
+```
+
 ## Next Steps
 
 Now that you have a basic application running and understand the project organization, you can explore:
@@ -355,3 +375,4 @@ Now that you have a basic application running and understand the project organiz
 -   [Dependency Injection](./concepts/dependency-injection.md) - Learn about the DI system
 -   [Parameters](./concepts/parameters.md) - See how to extract data from requests
 -   [Components](./components/overview.md) - Explore middleware, guards, pipes, and filters
+-   [MVC](./features/mvc.md) - Build full-stack apps with Hono JSX views (use `mvc` template)
