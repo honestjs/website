@@ -35,6 +35,11 @@ interface RPCPluginOptions {
 	readonly outputDir?: string // Output directory for generated files (default: './generated/rpc')
 	readonly generateOnInit?: boolean // Generate files on initialization (default: true)
 	readonly generators?: readonly RPCGenerator[] // Optional list of generators to execute
+	readonly mode?: 'strict' | 'best-effort' // Default: 'best-effort'
+	readonly logLevel?: 'silent' | 'error' | 'warn' | 'info' | 'debug' // Default: 'info'
+	readonly customClassMatcher?: (classDeclaration: ClassDeclaration) => boolean // Optional override for controller discovery
+	readonly failOnSchemaError?: boolean // Default: true in strict mode
+	readonly failOnRouteAnalysisWarning?: boolean // Default: true in strict mode
 	readonly context?: {
 		readonly namespace?: string // Default: 'rpc'
 		readonly keys?: {
@@ -64,10 +69,14 @@ After analysis, RPC plugin publishes this artifact to app context:
 
 ```typescript
 type RpcArtifact = {
+	artifactVersion: string
 	routes: ExtendedRouteInfo[]
 	schemas: SchemaInfo[]
 }
 ```
+
+`artifactVersion` is currently `"1"` and is validated by downstream consumers
+like the API Docs plugin.
 
 By default it is written to `'rpc.artifact'`. The API Docs plugin defaults to that key, so you can use both plugins like this:
 
@@ -228,6 +237,8 @@ expect(mockFetch).toHaveBeenCalledWith('http://test.com/api/v1/users/123', expec
 -   Uses ts-morph to analyze controller source code
 -   Extracts method signatures, parameter types, and return types
 -   Builds comprehensive route metadata
+-   Uses custom discovery matcher when provided; otherwise discovers by
+    decorators (`@Controller`, `@View`)
 
 ### 2. Schema Generation
 
@@ -284,8 +295,13 @@ also manually trigger generation:
 
 ```typescript
 const rpcPlugin = new RPCPlugin()
-await rpcPlugin.analyze() // Manually trigger analysis and generation
+await rpcPlugin.analyze({ force: true }) // bypass cache
+await rpcPlugin.analyze({ force: false }) // respect cache
+await rpcPlugin.analyze({ force: true, dryRun: true }) // analyze-only (no generated client)
 ```
+
+In addition to `client.ts` and `rpc-artifact.json`, the plugin writes
+`rpc-diagnostics.json` with mode, cache status, and warning details.
 
 ## Advanced Usage
 

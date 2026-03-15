@@ -53,6 +53,7 @@ You can pass the artifact object directly instead of a context key:
 import { ApiDocsPlugin } from "@honestjs/api-docs-plugin";
 
 const artifact = {
+	artifactVersion: "1",
 	routes: [
 		{
 			method: "GET",
@@ -87,6 +88,8 @@ interface ApiDocsPluginOptions {
 	uiRoute?: string; // default: '/docs'
 	uiTitle?: string; // default: 'API Docs'
 	reloadOnRequest?: boolean; // default: false
+	onOpenApiRequest?: (c, next) => void | Response | Promise<void | Response>; // optional route auth hook
+	onUiRequest?: (c, next) => void | Response | Promise<void | Response>; // optional route auth hook
 }
 ```
 
@@ -98,6 +101,7 @@ interface ApiDocsPluginOptions {
 | `uiRoute`                                    | Path where Swagger UI is served. Default: `'/docs'`.                                          |
 | `uiTitle`                                    | Title shown in the Swagger UI page. Default: `'API Docs'`.                                    |
 | `reloadOnRequest`                            | If `true`, the spec is regenerated on each request; otherwise it is cached. Default: `false`. |
+| `onOpenApiRequest`, `onUiRequest`            | Optional hook points to protect `/openapi.json` and `/docs` (auth/allowlist/custom checks). |
 
 ## Custom OpenAPI metadata
 
@@ -133,6 +137,29 @@ const spec: OpenApiDocument = fromArtifactSync(artifact, {
 })
 await write(spec, './generated/openapi.json')
 ```
+
+## Route Protection Hooks
+
+```typescript
+new ApiDocsPlugin({
+	onOpenApiRequest: async (c, next) => {
+		if (c.req.header("x-api-key") !== "secret") {
+			return new Response("Unauthorized", { status: 401 });
+		}
+		await next();
+	},
+	onUiRequest: async (_c, next) => {
+		await next();
+	},
+});
+```
+
+## Artifact Contract Notes
+
+- `artifactVersion` is optional in input artifacts.
+- When present, supported value is currently `"1"`.
+- Unsupported versions fail with a clear runtime error so contract mismatches are
+  visible early.
 
 ## Integration with RPC Plugin
 
