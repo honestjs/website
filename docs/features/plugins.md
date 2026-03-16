@@ -100,9 +100,7 @@ export class LoggerPlugin implements IPlugin {
 
       const duration = Date.now() - start;
       console.log(
-        `[${
-          new Date().toISOString()
-        }] ${c.req.method} ${c.req.path} - ${c.res.status} (${duration}ms)`,
+        `[${new Date().toISOString()}] ${c.req.method} ${c.req.path} - ${c.res.status} (${duration}ms)`,
       );
     });
   }
@@ -374,10 +372,11 @@ export class MetricsPlugin implements IPlugin {
 
   async afterModulesRegistered(app: Application, hono: Hono): Promise<void> {
     hono.get("/metrics", (c) => {
-      const avgDuration = this.requestDurations.length > 0
-        ? this.requestDurations.reduce((a, b) => a + b, 0) /
-          this.requestDurations.length
-        : 0;
+      const avgDuration =
+        this.requestDurations.length > 0
+          ? this.requestDurations.reduce((a, b) => a + b, 0) /
+            this.requestDurations.length
+          : 0;
 
       return c.json({
         totalRequests: this.requestCount,
