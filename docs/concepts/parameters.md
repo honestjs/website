@@ -8,68 +8,84 @@ HonestJS comes with a comprehensive set of built-in decorators for common use ca
 
 ### Request Data Decorators
 
--   `@Body(data?: string)`: Extracts the request body. Can optionally extract a specific property from the body.
--   `@Param(data?: string)`: Extracts route parameters.
--   `@Query(data?: string)`: Extracts query parameters.
--   `@Header(data?: string)`: Extracts request headers.
+- `@Body(data?: string)`: Extracts the request body. Can optionally extract a specific property from the body.
+- `@Param(data?: string)`: Extracts route parameters.
+- `@Query(data?: string)`: Extracts query parameters.
+- `@Header(data?: string)`: Extracts request headers.
 
 ### Context Decorators
 
--   `@Req()` or `@Request()`: Injects the entire Hono request object.
--   `@Res()` or `@Response()`: Injects the Hono response object.
--   `@Ctx()` or `@Context()`: Injects the Hono `Context` object.
--   `@Var(data: string)` or `@Variable(data: string)`: Extracts a variable from the context (e.g., set by a middleware).
+- `@Req()` or `@Request()`: Injects the entire Hono request object.
+- `@Res()` or `@Response()`: Injects the Hono response object.
+- `@Ctx()` or `@Context()`: Injects the Hono `Context` object.
+- `@Var(data: string)` or `@Variable(data: string)`: Extracts a variable from the context (e.g., set by a middleware).
 
 ## Basic Usage Examples
 
 ```typescript
-import { Body, Controller, Ctx, Get, Param, Post, Query, Header } from 'honestjs'
-import type { Context } from 'hono'
-import type { CreateUserDto, UpdateUserDto } from './users.types'
+import {
+  Body,
+  Controller,
+  Ctx,
+  Get,
+  Param,
+  Post,
+  Query,
+  Header,
+} from "honestjs";
+import type { Context } from "hono";
+import type { CreateUserDto, UpdateUserDto } from "./users.types";
 
-@Controller('users')
+@Controller("users")
 export class UsersController {
-	@Post()
-	async createUser(@Body() createUserDto: CreateUserDto) {
-		return await this.usersService.create(createUserDto)
-	}
+  @Post()
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    return await this.usersService.create(createUserDto);
+  }
 
-	@Get(':id')
-	async findUserById(@Param('id') id: string) {
-		return await this.usersService.findById(id)
-	}
+  @Get(":id")
+  async findUserById(@Param("id") id: string) {
+    return await this.usersService.findById(id);
+  }
 
-	@Get()
-	async findAllUsers(@Query('page') page?: string, @Query('limit') limit?: string, @Query('role') role?: string) {
-		return await this.usersService.findAll({
-			page: parseInt(page || '1'),
-			limit: parseInt(limit || '10'),
-			role,
-		})
-	}
+  @Get()
+  async findAllUsers(
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
+    @Query("role") role?: string,
+  ) {
+    return await this.usersService.findAll({
+      page: parseInt(page || "1"),
+      limit: parseInt(limit || "10"),
+      role,
+    });
+  }
 
-	@Put(':id')
-	async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-		return await this.usersService.update(id, updateUserDto)
-	}
+  @Put(":id")
+  async updateUser(
+    @Param("id") id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.usersService.update(id, updateUserDto);
+  }
 
-	@Get('profile')
-	async getProfile(@Header('authorization') auth: string) {
-		// Extract authorization header
-		const token = auth?.replace('Bearer ', '')
-		return await this.usersService.getProfileByToken(token)
-	}
+  @Get("profile")
+  async getProfile(@Header("authorization") auth: string) {
+    // Extract authorization header
+    const token = auth?.replace("Bearer ", "");
+    return await this.usersService.getProfileByToken(token);
+  }
 
-	@Get('context')
-	async getContext(@Ctx() context: Context) {
-		// Access the full Hono context
-		return {
-			path: context.req.path,
-			method: context.req.method,
-			url: context.req.url,
-			headers: Object.fromEntries(context.req.header()),
-		}
-	}
+  @Get("context")
+  async getContext(@Ctx() context: Context) {
+    // Access the full Hono context
+    return {
+      path: context.req.path,
+      method: context.req.method,
+      url: context.req.url,
+      headers: Object.fromEntries(context.req.header()),
+    };
+  }
 }
 ```
 
@@ -80,31 +96,38 @@ export class UsersController {
 You can extract specific properties from request data:
 
 ```typescript
-@Controller('users')
+@Controller("users")
 export class UsersController {
-	@Post()
-	async createUser(@Body('name') name: string, @Body('email') email: string, @Body('age') age: number) {
-		// Extract specific properties from request body
-		return await this.usersService.create({ name, email, age })
-	}
+  @Post()
+  async createUser(
+    @Body("name") name: string,
+    @Body("email") email: string,
+    @Body("age") age: number,
+  ) {
+    // Extract specific properties from request body
+    return await this.usersService.create({ name, email, age });
+  }
 
-	@Get(':id/posts')
-	async getUserPosts(
-		@Param('id') userId: string,
-		@Query('category') category?: string,
-		@Query('published') published?: string
-	) {
-		return await this.postsService.findByUserId(userId, {
-			category,
-			published: published === 'true',
-		})
-	}
+  @Get(":id/posts")
+  async getUserPosts(
+    @Param("id") userId: string,
+    @Query("category") category?: string,
+    @Query("published") published?: string,
+  ) {
+    return await this.postsService.findByUserId(userId, {
+      category,
+      published: published === "true",
+    });
+  }
 
-	@Get('search')
-	async searchUsers(@Query('q') query: string, @Query('fields') fields?: string) {
-		const searchFields = fields ? fields.split(',') : ['name', 'email']
-		return await this.usersService.search(query, searchFields)
-	}
+  @Get("search")
+  async searchUsers(
+    @Query("q") query: string,
+    @Query("fields") fields?: string,
+  ) {
+    const searchFields = fields ? fields.split(",") : ["name", "email"];
+    return await this.usersService.search(query, searchFields);
+  }
 }
 ```
 
@@ -113,25 +136,28 @@ export class UsersController {
 Headers are commonly used for authentication and other metadata:
 
 ```typescript
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
-	@Post('login')
-	async login(
-		@Body() credentials: { email: string; password: string },
-		@Header('user-agent') userAgent?: string,
-		@Header('x-forwarded-for') clientIP?: string
-	) {
-		return await this.authService.login(credentials, {
-			userAgent,
-			clientIP,
-		})
-	}
+  @Post("login")
+  async login(
+    @Body() credentials: { email: string; password: string },
+    @Header("user-agent") userAgent?: string,
+    @Header("x-forwarded-for") clientIP?: string,
+  ) {
+    return await this.authService.login(credentials, {
+      userAgent,
+      clientIP,
+    });
+  }
 
-	@Get('profile')
-	async getProfile(@Header('authorization') auth: string, @Header('accept-language') language?: string) {
-		const token = auth?.replace('Bearer ', '')
-		return await this.authService.getProfile(token, language)
-	}
+  @Get("profile")
+  async getProfile(
+    @Header("authorization") auth: string,
+    @Header("accept-language") language?: string,
+  ) {
+    const token = auth?.replace("Bearer ", "");
+    return await this.authService.getProfile(token, language);
+  }
 }
 ```
 
@@ -144,30 +170,30 @@ You can extract variables set by middleware:
 ```typescript [src/middleware/auth.middleware.ts]
 // Middleware that sets user in context
 class AuthMiddleware implements IMiddleware {
-	async use(c: Context, next: Next) {
-		const token = c.req.header('authorization')?.replace('Bearer ', '')
-		if (token) {
-			const user = await this.authService.validateToken(token)
-			c.set('user', user)
-		}
-		await next()
-	}
+  async use(c: Context, next: Next) {
+    const token = c.req.header("authorization")?.replace("Bearer ", "");
+    if (token) {
+      const user = await this.authService.validateToken(token);
+      c.set("user", user);
+    }
+    await next();
+  }
 }
 ```
 
 ```typescript [src/controllers/users.controller.ts]
-@Controller('users')
+@Controller("users")
 @UseMiddleware(AuthMiddleware)
 export class UsersController {
-	@Get('me')
-	async getCurrentUser(@Var('user') user: User) {
-		return user
-	}
+  @Get("me")
+  async getCurrentUser(@Var("user") user: User) {
+    return user;
+  }
 
-	@Get('me/posts')
-	async getMyPosts(@Var('user') user: User) {
-		return await this.postsService.findByUserId(user.id)
-	}
+  @Get("me/posts")
+  async getMyPosts(@Var("user") user: User) {
+    return await this.postsService.findByUserId(user.id);
+  }
 }
 ```
 
@@ -178,41 +204,41 @@ export class UsersController {
 Parameter decorators work seamlessly with TypeScript types and can be combined with pipes for validation:
 
 ```typescript
-import { Body, Controller, Get, Param, Post, UsePipes } from 'honestjs'
-import { ValidationPipe } from './pipes/validation.pipe'
-import { TransformPipe } from './pipes/transform.pipe'
+import { Body, Controller, Get, Param, Post, UsePipes } from "honestjs";
+import { ValidationPipe } from "./pipes/validation.pipe";
+import { TransformPipe } from "./pipes/transform.pipe";
 
 interface CreateUserDto {
-	name: string
-	email: string
-	age: number
+  name: string;
+  email: string;
+  age: number;
 }
 
 interface PaginationQuery {
-	page: number
-	limit: number
+  page: number;
+  limit: number;
 }
 
-@Controller('users')
+@Controller("users")
 export class UsersController {
-	@Post()
-	@UsePipes(ValidationPipe, TransformPipe)
-	async createUser(@Body() createUserDto: CreateUserDto) {
-		// createUserDto is validated and transformed
-		return await this.usersService.create(createUserDto)
-	}
+  @Post()
+  @UsePipes(ValidationPipe, TransformPipe)
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    // createUserDto is validated and transformed
+    return await this.usersService.create(createUserDto);
+  }
 
-	@Get()
-	async findAll(@Query() query: PaginationQuery) {
-		// query is typed as PaginationQuery
-		return await this.usersService.findAll(query)
-	}
+  @Get()
+  async findAll(@Query() query: PaginationQuery) {
+    // query is typed as PaginationQuery
+    return await this.usersService.findAll(query);
+  }
 
-	@Get(':id')
-	async findOne(@Param('id') id: string) {
-		// id is typed as string
-		return await this.usersService.findById(id)
-	}
+  @Get(":id")
+  async findOne(@Param("id") id: string) {
+    // id is typed as string
+    return await this.usersService.findById(id);
+  }
 }
 ```
 
@@ -223,94 +249,107 @@ You can create your own custom parameter decorators using the `createParamDecora
 ### Basic Custom Decorator
 
 ```typescript
-import { createParamDecorator } from 'honestjs'
-import type { Context } from 'hono'
+import { createParamDecorator } from "honestjs";
+import type { Context } from "hono";
 
-export const ClientIP = createParamDecorator('ip', (_, ctx: Context) => {
-	const forwardedFor = ctx.req.header('x-forwarded-for')
-	const realIP = ctx.req.header('x-real-ip')
-	const cfIP = ctx.req.header('cf-connecting-ip')
+export const ClientIP = createParamDecorator("ip", (_, ctx: Context) => {
+  const forwardedFor = ctx.req.header("x-forwarded-for");
+  const realIP = ctx.req.header("x-real-ip");
+  const cfIP = ctx.req.header("cf-connecting-ip");
 
-	const ip = forwardedFor?.split(',')[0].trim() || realIP || cfIP || 'unknown'
-	return ip
-})
+  const ip = forwardedFor?.split(",")[0].trim() || realIP || cfIP || "unknown";
+  return ip;
+});
 
-export const UserAgent = createParamDecorator('userAgent', (_, ctx: Context) => {
-	return ctx.req.header('user-agent') || 'unknown'
-})
+export const UserAgent = createParamDecorator(
+  "userAgent",
+  (_, ctx: Context) => {
+    return ctx.req.header("user-agent") || "unknown";
+  },
+);
 
-export const RequestId = createParamDecorator('requestId', (_, ctx: Context) => {
-	return ctx.get('requestId') || 'unknown'
-})
+export const RequestId = createParamDecorator(
+  "requestId",
+  (_, ctx: Context) => {
+    return ctx.get("requestId") || "unknown";
+  },
+);
 ```
 
 ### Advanced Custom Decorator
 
 ```typescript
-import { createParamDecorator } from 'honestjs'
-import type { Context } from 'hono'
+import { createParamDecorator } from "honestjs";
+import type { Context } from "hono";
 
-export const CurrentUser = createParamDecorator('user', (_, ctx: Context) => {
-	const token = ctx.req.header('authorization')?.replace('Bearer ', '')
-	if (!token) {
-		return null
-	}
+export const CurrentUser = createParamDecorator("user", (_, ctx: Context) => {
+  const token = ctx.req.header("authorization")?.replace("Bearer ", "");
+  if (!token) {
+    return null;
+  }
 
-	// Decode JWT and return user
-	return decodeJWT(token)
-})
+  // Decode JWT and return user
+  return decodeJWT(token);
+});
 
-export const Pagination = createParamDecorator('pagination', (_, ctx: Context) => {
-	const page = parseInt(ctx.req.query('page') || '1')
-	const limit = parseInt(ctx.req.query('limit') || '10')
+export const Pagination = createParamDecorator(
+  "pagination",
+  (_, ctx: Context) => {
+    const page = parseInt(ctx.req.query("page") || "1");
+    const limit = parseInt(ctx.req.query("limit") || "10");
 
-	return {
-		page: Math.max(1, page),
-		limit: Math.min(100, Math.max(1, limit)),
-		offset: (page - 1) * limit,
-	}
-})
+    return {
+      page: Math.max(1, page),
+      limit: Math.min(100, Math.max(1, limit)),
+      offset: (page - 1) * limit,
+    };
+  },
+);
 
-export const SortOptions = createParamDecorator('sort', (_, ctx: Context) => {
-	const sortBy = ctx.req.query('sortBy') || 'createdAt'
-	const sortOrder = ctx.req.query('sortOrder') || 'desc'
+export const SortOptions = createParamDecorator("sort", (_, ctx: Context) => {
+  const sortBy = ctx.req.query("sortBy") || "createdAt";
+  const sortOrder = ctx.req.query("sortOrder") || "desc";
 
-	return {
-		sortBy,
-		sortOrder: sortOrder === 'asc' ? 'asc' : 'desc',
-	}
-})
+  return {
+    sortBy,
+    sortOrder: sortOrder === "asc" ? "asc" : "desc",
+  };
+});
 ```
 
 ### Using Custom Decorators
 
 ```typescript
-@Controller('users')
+@Controller("users")
 export class UsersController {
-	@Get()
-	async findAll(
-		@Pagination() pagination: { page: number; limit: number; offset: number },
-		@SortOptions() sort: { sortBy: string; sortOrder: string }
-	) {
-		return await this.usersService.findAll(pagination, sort)
-	}
+  @Get()
+  async findAll(
+    @Pagination() pagination: { page: number; limit: number; offset: number },
+    @SortOptions() sort: { sortBy: string; sortOrder: string },
+  ) {
+    return await this.usersService.findAll(pagination, sort);
+  }
 
-	@Get('me')
-	async getCurrentUser(@CurrentUser() user: User | null) {
-		if (!user) {
-			throw new Error('User not authenticated')
-		}
-		return user
-	}
+  @Get("me")
+  async getCurrentUser(@CurrentUser() user: User | null) {
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+    return user;
+  }
 
-	@Get('analytics')
-	async getAnalytics(@ClientIP() clientIP: string, @UserAgent() userAgent: string, @RequestId() requestId: string) {
-		return await this.analyticsService.track({
-			clientIP,
-			userAgent,
-			requestId,
-		})
-	}
+  @Get("analytics")
+  async getAnalytics(
+    @ClientIP() clientIP: string,
+    @UserAgent() userAgent: string,
+    @RequestId() requestId: string,
+  ) {
+    return await this.analyticsService.track({
+      clientIP,
+      userAgent,
+      requestId,
+    });
+  }
 }
 ```
 
@@ -318,10 +357,10 @@ export class UsersController {
 
 The framework tracks parameter metadata for each handler method, which is used for:
 
--   **Type information**: Parameter types are captured for validation and transformation
--   **Decorator data**: Additional data passed to decorators is stored
--   **Factory functions**: Custom transformation logic is preserved
--   **Context indices**: Special handling for context parameters
+- **Type information**: Parameter types are captured for validation and transformation
+- **Decorator data**: Additional data passed to decorators is stored
+- **Factory functions**: Custom transformation logic is preserved
+- **Context indices**: Special handling for context parameters
 
 This metadata enables advanced features like automatic validation, transformation, and documentation generation.
 

@@ -41,24 +41,24 @@ import "reflect-metadata";
 
 @Service()
 class AppService {
-	helloWorld(): string {
-		return "Hello, World!";
-	}
+  helloWorld(): string {
+    return "Hello, World!";
+  }
 }
 
 @Controller()
 class AppController {
-	constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) {}
 
-	@Get()
-	helloWorld(): string {
-		return this.appService.helloWorld();
-	}
+  @Get()
+  helloWorld(): string {
+    return this.appService.helloWorld();
+  }
 }
 
 @Module({
-	controllers: [AppController],
-	services: [AppService],
+  controllers: [AppController],
+  services: [AppService],
 })
 class AppModule {}
 
@@ -131,12 +131,12 @@ Application
 ```typescript
 @Controller("users", { version: 1 })
 class UsersController {
-	@Get()
-	@UseGuards(AuthGuard)
-	@UsePipes(ValidationPipe)
-	async getUsers(@Query("page") page?: string) {
-		return await this.usersService.findAll({ page });
-	}
+  @Get()
+  @UseGuards(AuthGuard)
+  @UsePipes(ValidationPipe)
+  async getUsers(@Query("page") page?: string) {
+    return await this.usersService.findAll({ page });
+  }
 }
 ```
 
@@ -145,17 +145,17 @@ class UsersController {
 ```typescript
 @Service()
 class UserService {
-	constructor(private readonly db: DatabaseService) {}
+  constructor(private readonly db: DatabaseService) {}
 
-	async findAll() {
-		return await this.db.query("SELECT * FROM users");
-	}
+  async findAll() {
+    return await this.db.query("SELECT * FROM users");
+  }
 }
 
 @Controller("users")
 class UsersController {
-	constructor(private readonly userService: UserService) {}
-	// UserService is automatically injected
+  constructor(private readonly userService: UserService) {}
+  // UserService is automatically injected
 }
 ```
 
@@ -166,7 +166,7 @@ class UsersController {
 ```typescript [main.ts]
 // Global version
 const { app, hono } = await Application.create(AppModule, {
-	routing: { version: 1 },
+  routing: { version: 1 },
 });
 ```
 
@@ -191,12 +191,12 @@ class HealthController {}
 ```typescript [main.ts]
 // Global components
 const { app, hono } = await Application.create(AppModule, {
-	components: {
-		middleware: [new LoggerMiddleware({ level: "info" })],
-		guards: [AuthGuard],
-		pipes: [ValidationPipe],
-		filters: [HttpExceptionFilter],
-	},
+  components: {
+    middleware: [new LoggerMiddleware({ level: "info" })],
+    guards: [AuthGuard],
+    pipes: [ValidationPipe],
+    filters: [HttpExceptionFilter],
+  },
 });
 ```
 
@@ -212,10 +212,10 @@ class UsersController {}
 // Handler-level components
 @Controller("users")
 class UsersController {
-	@Get()
-	@UseGuards(AdminGuard)
-	@UsePipes(CustomPipe)
-	getUsers() {}
+  @Get()
+  @UseGuards(AdminGuard)
+  @UsePipes(CustomPipe)
+  getUsers() {}
 }
 ```
 
@@ -228,14 +228,14 @@ import { Controller, Get, Layout } from "honestjs";
 
 @Controller("pages")
 class PagesController {
-	@Get("home")
-	home() {
-		return Layout({
-			title: "Home - My App",
-			description: "Welcome to our application",
-			children: "<h1>Welcome to My App</h1>",
-		});
-	}
+  @Get("home")
+  home() {
+    return Layout({
+      title: "Home - My App",
+      description: "Welcome to our application",
+      children: "<h1>Welcome to My App</h1>",
+    });
+  }
 }
 ```
 

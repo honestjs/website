@@ -22,14 +22,14 @@ lifecycle hooks:
 
 ```typescript
 interface IPlugin {
-	beforeModulesRegistered?: (
-		app: Application,
-		hono: Hono,
-	) => void | Promise<void>;
-	afterModulesRegistered?: (
-		app: Application,
-		hono: Hono,
-	) => void | Promise<void>;
+  beforeModulesRegistered?: (
+    app: Application,
+    hono: Hono,
+  ) => void | Promise<void>;
+  afterModulesRegistered?: (
+    app: Application,
+    hono: Hono,
+  ) => void | Promise<void>;
 }
 ```
 
@@ -77,40 +77,34 @@ import type { Application } from "honestjs";
 import type { Hono } from "hono";
 
 export class LoggerPlugin implements IPlugin {
-	private logLevel: string;
+  private logLevel: string;
 
-	constructor(logLevel: string = "info") {
-		this.logLevel = logLevel;
-	}
+  constructor(logLevel: string = "info") {
+    this.logLevel = logLevel;
+  }
 
-	async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		console.log(
-			`[LoggerPlugin] Initializing with log level: ${this.logLevel}`,
-		);
+  async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
+    console.log(`[LoggerPlugin] Initializing with log level: ${this.logLevel}`);
 
-		// Add a request logging middleware
-		hono.use("*", async (c, next) => {
-			const start = Date.now();
-			console.log(
-				`[${
-					new Date().toISOString()
-				}] ${c.req.method} ${c.req.path} - Started`,
-			);
+    // Add a request logging middleware
+    hono.use("*", async (c, next) => {
+      const start = Date.now();
+      console.log(
+        `[${new Date().toISOString()}] ${c.req.method} ${c.req.path} - Started`,
+      );
 
-			await next();
+      await next();
 
-			const duration = Date.now() - start;
-			console.log(
-				`[${
-					new Date().toISOString()
-				}] ${c.req.method} ${c.req.path} - ${c.res.status} (${duration}ms)`,
-			);
-		});
-	}
+      const duration = Date.now() - start;
+      console.log(
+        `[${new Date().toISOString()}] ${c.req.method} ${c.req.path} - ${c.res.status} (${duration}ms)`,
+      );
+    });
+  }
 
-	async afterModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		console.log("[LoggerPlugin] All modules registered, logging is active");
-	}
+  async afterModulesRegistered(app: Application, hono: Hono): Promise<void> {
+    console.log("[LoggerPlugin] All modules registered, logging is active");
+  }
 }
 ```
 
@@ -124,73 +118,70 @@ import type { Application } from "honestjs";
 import type { Hono } from "hono";
 
 interface DatabaseConfig {
-	host: string;
-	port: number;
-	database: string;
-	username: string;
-	password: string;
+  host: string;
+  port: number;
+  database: string;
+  username: string;
+  password: string;
 }
 
 export class DatabasePlugin implements IPlugin {
-	private config: DatabaseConfig;
-	private connection: any = null;
+  private config: DatabaseConfig;
+  private connection: any = null;
 
-	constructor(config: DatabaseConfig) {
-		this.config = config;
-	}
+  constructor(config: DatabaseConfig) {
+    this.config = config;
+  }
 
-	async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		console.log("[DatabasePlugin] Connecting to database...");
+  async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
+    console.log("[DatabasePlugin] Connecting to database...");
 
-		try {
-			// Simulate database connection
-			this.connection = await this.createConnection();
+    try {
+      // Simulate database connection
+      this.connection = await this.createConnection();
 
-			// Make the connection available in Hono context
-			hono.use("*", async (c, next) => {
-				c.set("db", this.connection);
-				await next();
-			});
+      // Make the connection available in Hono context
+      hono.use("*", async (c, next) => {
+        c.set("db", this.connection);
+        await next();
+      });
 
-			console.log("[DatabasePlugin] Database connection established");
-		} catch (error) {
-			console.error(
-				"[DatabasePlugin] Failed to connect to database:",
-				error,
-			);
-			throw error;
-		}
-	}
+      console.log("[DatabasePlugin] Database connection established");
+    } catch (error) {
+      console.error("[DatabasePlugin] Failed to connect to database:", error);
+      throw error;
+    }
+  }
 
-	async afterModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		console.log("[DatabasePlugin] Database plugin initialization complete");
+  async afterModulesRegistered(app: Application, hono: Hono): Promise<void> {
+    console.log("[DatabasePlugin] Database plugin initialization complete");
 
-		// Add a health check endpoint
-		hono.get("/health/db", async (c) => {
-			const isHealthy = await this.checkConnection();
-			return c.json(
-				{
-					status: isHealthy ? "healthy" : "unhealthy",
-					timestamp: new Date().toISOString(),
-				},
-				isHealthy ? 200 : 503,
-			);
-		});
-	}
+    // Add a health check endpoint
+    hono.get("/health/db", async (c) => {
+      const isHealthy = await this.checkConnection();
+      return c.json(
+        {
+          status: isHealthy ? "healthy" : "unhealthy",
+          timestamp: new Date().toISOString(),
+        },
+        isHealthy ? 200 : 503,
+      );
+    });
+  }
 
-	private async createConnection(): Promise<any> {
-		// Simulate connection creation
-		return {
-			host: this.config.host,
-			port: this.config.port,
-			connected: true,
-		};
-	}
+  private async createConnection(): Promise<any> {
+    // Simulate connection creation
+    return {
+      host: this.config.host,
+      port: this.config.port,
+      connected: true,
+    };
+  }
 
-	private async checkConnection(): Promise<boolean> {
-		// Simulate health check
-		return this.connection && this.connection.connected;
-	}
+  private async checkConnection(): Promise<boolean> {
+    // Simulate health check
+    return this.connection && this.connection.connected;
+  }
 }
 ```
 
@@ -205,16 +196,16 @@ import { DatabasePlugin } from "./plugins/database.plugin";
 import AppModule from "./app.module";
 
 const { hono } = await Application.create(AppModule, {
-	plugins: [
-		new LoggerPlugin("debug"),
-		new DatabasePlugin({
-			host: "localhost",
-			port: 5432,
-			database: "myapp",
-			username: "user",
-			password: "password",
-		}),
-	],
+  plugins: [
+    new LoggerPlugin("debug"),
+    new DatabasePlugin({
+      host: "localhost",
+      port: 5432,
+      database: "myapp",
+      username: "user",
+      password: "password",
+    }),
+  ],
 });
 
 export default hono;
@@ -292,21 +283,21 @@ Consider implementing cleanup logic:
 
 ```typescript
 export class ResourcePlugin implements IPlugin {
-	private resources: any[] = [];
+  private resources: any[] = [];
 
-	async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		// Setup resources
-		this.resources = await this.createResources();
+  async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
+    // Setup resources
+    this.resources = await this.createResources();
 
-		// Setup cleanup on process termination
-		process.on("SIGTERM", () => this.cleanup());
-		process.on("SIGINT", () => this.cleanup());
-	}
+    // Setup cleanup on process termination
+    process.on("SIGTERM", () => this.cleanup());
+    process.on("SIGINT", () => this.cleanup());
+  }
 
-	private async cleanup(): Promise<void> {
-		console.log("[ResourcePlugin] Cleaning up resources...");
-		await Promise.all(this.resources.map((resource) => resource.close()));
-	}
+  private async cleanup(): Promise<void> {
+    console.log("[ResourcePlugin] Cleaning up resources...");
+    await Promise.all(this.resources.map((resource) => resource.close()));
+  }
 }
 ```
 
@@ -316,17 +307,17 @@ Validate plugin configuration early:
 
 ```typescript
 export class ConfigurablePlugin implements IPlugin {
-	constructor(private config: any) {
-		this.validateConfig(config);
-	}
+  constructor(private config: any) {
+    this.validateConfig(config);
+  }
 
-	private validateConfig(config: any): void {
-		if (!config.requiredProperty) {
-			throw new Error(
-				"[ConfigurablePlugin] requiredProperty is missing from configuration",
-			);
-		}
-	}
+  private validateConfig(config: any): void {
+    if (!config.requiredProperty) {
+      throw new Error(
+        "[ConfigurablePlugin] requiredProperty is missing from configuration",
+      );
+    }
+  }
 }
 ```
 
@@ -336,27 +327,24 @@ export class ConfigurablePlugin implements IPlugin {
 
 ```typescript
 export class CorsPlugin implements IPlugin {
-	constructor(private origins: string[] = ["*"]) {}
+  constructor(private origins: string[] = ["*"]) {}
 
-	async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		hono.use("*", async (c, next) => {
-			c.header("Access-Control-Allow-Origin", this.origins.join(", "));
-			c.header(
-				"Access-Control-Allow-Methods",
-				"GET, POST, PUT, DELETE, OPTIONS",
-			);
-			c.header(
-				"Access-Control-Allow-Headers",
-				"Content-Type, Authorization",
-			);
+  async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
+    hono.use("*", async (c, next) => {
+      c.header("Access-Control-Allow-Origin", this.origins.join(", "));
+      c.header(
+        "Access-Control-Allow-Methods",
+        "GET, POST, PUT, DELETE, OPTIONS",
+      );
+      c.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-			if (c.req.method === "OPTIONS") {
-				return c.text("", 204);
-			}
+      if (c.req.method === "OPTIONS") {
+        return c.text("", 204);
+      }
 
-			await next();
-		});
-	}
+      await next();
+    });
+  }
 }
 ```
 
@@ -364,35 +352,36 @@ export class CorsPlugin implements IPlugin {
 
 ```typescript
 export class MetricsPlugin implements IPlugin {
-	private requestCount = 0;
-	private requestDurations: number[] = [];
+  private requestCount = 0;
+  private requestDurations: number[] = [];
 
-	async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		hono.use("*", async (c, next) => {
-			const start = Date.now();
-			this.requestCount++;
+  async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
+    hono.use("*", async (c, next) => {
+      const start = Date.now();
+      this.requestCount++;
 
-			await next();
+      await next();
 
-			const duration = Date.now() - start;
-			this.requestDurations.push(duration);
-		});
-	}
+      const duration = Date.now() - start;
+      this.requestDurations.push(duration);
+    });
+  }
 
-	async afterModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		hono.get("/metrics", (c) => {
-			const avgDuration = this.requestDurations.length > 0
-				? this.requestDurations.reduce((a, b) => a + b, 0) /
-					this.requestDurations.length
-				: 0;
+  async afterModulesRegistered(app: Application, hono: Hono): Promise<void> {
+    hono.get("/metrics", (c) => {
+      const avgDuration =
+        this.requestDurations.length > 0
+          ? this.requestDurations.reduce((a, b) => a + b, 0) /
+            this.requestDurations.length
+          : 0;
 
-			return c.json({
-				totalRequests: this.requestCount,
-				averageResponseTime: avgDuration,
-				uptime: process.uptime(),
-			});
-		});
-	}
+      return c.json({
+        totalRequests: this.requestCount,
+        averageResponseTime: avgDuration,
+        uptime: process.uptime(),
+      });
+    });
+  }
 }
 ```
 

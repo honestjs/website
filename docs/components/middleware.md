@@ -6,12 +6,12 @@ Middleware consists of functions executed before the route handler. They can per
 
 Middleware is versatile and can be used for a variety of cross-cutting concerns, including:
 
--   **Logging:** Recording details about incoming requests and outgoing responses.
--   **Authentication/Authorization:** Validating credentials or permissions before allowing access to a route.
--   **Request Parsing:** Parsing request bodies (e.g., JSON, form-data).
--   **Security:** Adding security headers (e.g., CORS, CSRF protection).
--   **Caching:** Implementing caching strategies to improve performance.
--   **Rate Limiting:** Protecting your API from abuse.
+- **Logging:** Recording details about incoming requests and outgoing responses.
+- **Authentication/Authorization:** Validating credentials or permissions before allowing access to a route.
+- **Request Parsing:** Parsing request bodies (e.g., JSON, form-data).
+- **Security:** Adding security headers (e.g., CORS, CSRF protection).
+- **Caching:** Implementing caching strategies to improve performance.
+- **Rate Limiting:** Protecting your API from abuse.
 
 ## Creating Middleware
 
@@ -20,15 +20,15 @@ A middleware is a class that implements the `IMiddleware` interface, which has a
 **Example:** A simple logger middleware.
 
 ```typescript
-import type { IMiddleware } from 'honestjs'
-import type { Context, Next } from 'hono'
+import type { IMiddleware } from "honestjs";
+import type { Context, Next } from "hono";
 
 export class LoggerMiddleware implements IMiddleware {
-	async use(c: Context, next: Next) {
-		console.log(`[${c.req.method}] ${c.req.url} - Request received`)
-		await next()
-		console.log(`Response status: ${c.res.status}`)
-	}
+  async use(c: Context, next: Next) {
+    console.log(`[${c.req.method}] ${c.req.url} - Request received`);
+    await next();
+    console.log(`Response status: ${c.res.status}`);
+  }
 }
 ```
 
@@ -47,14 +47,14 @@ Global middleware can be registered in the `Application.create` options.
 ::: code-group
 
 ```typescript [main.ts]
-import { Application } from 'honestjs'
-import { LoggerMiddleware } from './middleware/logger.middleware'
+import { Application } from "honestjs";
+import { LoggerMiddleware } from "./middleware/logger.middleware";
 
 const { hono } = await Application.create(AppModule, {
-	components: {
-		middleware: [new LoggerMiddleware()],
-	},
-})
+  components: {
+    middleware: [new LoggerMiddleware()],
+  },
+});
 ```
 
 :::
@@ -66,14 +66,14 @@ Middleware can be applied to all routes within a specific controller by using th
 **Example:**
 
 ```typescript
-import { Controller } from 'honestjs'
-import { UseMiddleware } from 'honestjs'
-import { AuthenticationMiddleware } from './middleware/auth.middleware'
+import { Controller } from "honestjs";
+import { UseMiddleware } from "honestjs";
+import { AuthenticationMiddleware } from "./middleware/auth.middleware";
 
-@Controller('/profile')
+@Controller("/profile")
 @UseMiddleware(AuthenticationMiddleware)
 export class ProfileController {
-	// All routes in this controller will be protected by the AuthenticationMiddleware.
+  // All routes in this controller will be protected by the AuthenticationMiddleware.
 }
 ```
 
@@ -84,16 +84,16 @@ Middleware can also be applied to a specific route handler. This is useful when 
 **Example:**
 
 ```typescript
-import { Controller, Get, UseMiddleware } from 'honestjs'
-import { SpecificTaskMiddleware } from './middleware/specific-task.middleware'
+import { Controller, Get, UseMiddleware } from "honestjs";
+import { SpecificTaskMiddleware } from "./middleware/specific-task.middleware";
 
-@Controller('/tasks')
+@Controller("/tasks")
 export class TasksController {
-	@Get('/:id')
-	@UseMiddleware(SpecificTaskMiddleware)
-	getTask() {
-		// This route is the only one that uses the SpecificTaskMiddleware.
-	}
+  @Get("/:id")
+  @UseMiddleware(SpecificTaskMiddleware)
+  getTask() {
+    // This route is the only one that uses the SpecificTaskMiddleware.
+  }
 }
 ```
 
@@ -117,26 +117,26 @@ To use a Hono middleware, create a simple wrapper class.
 
 ```typescript [src/middleware/hono.middleware.ts]
 // A wrapper to use Hono's jsxRenderer with HonestJS.
-import { jsxRenderer } from 'hono/jsx-renderer'
-import type { IMiddleware } from 'honestjs'
-import type { Context, Next } from 'hono'
+import { jsxRenderer } from "hono/jsx-renderer";
+import type { IMiddleware } from "honestjs";
+import type { Context, Next } from "hono";
 
 export class HonoMiddleware implements IMiddleware {
-	constructor(private middleware: any) {}
+  constructor(private middleware: any) {}
 
-	use(c: Context, next: Next) {
-		return this.middleware(c, next)
-	}
+  use(c: Context, next: Next) {
+    return this.middleware(c, next);
+  }
 }
 ```
 
 ```typescript [src/main.ts]
 // In main.ts
 const { hono } = await Application.create(AppModule, {
-	components: {
-		middleware: [new HonoMiddleware(jsxRenderer(MainLayout))],
-	},
-})
+  components: {
+    middleware: [new HonoMiddleware(jsxRenderer(MainLayout))],
+  },
+});
 ```
 
 :::

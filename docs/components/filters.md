@@ -8,10 +8,10 @@ By default, HonestJS includes a built-in global exception filter that handles st
 
 Exception filters are essential for centralized error handling. Common use cases include:
 
--   **Logging Errors:** Capturing and logging unhandled exceptions for debugging purposes.
--   **Custom Error Responses:** Formatting error responses to match your API's error schema.
--   **Handling Specific Exceptions:** Creating dedicated filters for specific exceptions, such as `NotFoundException` or database-related errors.
--   **Monitoring and Alerting:** Sending notifications to a monitoring service when critical errors occur.
+- **Logging Errors:** Capturing and logging unhandled exceptions for debugging purposes.
+- **Custom Error Responses:** Formatting error responses to match your API's error schema.
+- **Handling Specific Exceptions:** Creating dedicated filters for specific exceptions, such as `NotFoundException` or database-related errors.
+- **Monitoring and Alerting:** Sending notifications to a monitoring service when critical errors occur.
 
 ## Creating an Exception Filter
 
@@ -19,36 +19,39 @@ An exception filter is a class that implements the `IFilter` interface. This int
 
 ```typescript
 interface IFilter {
-	catch(exception: Error, context: Context): Response | Promise<Response | undefined> | undefined
+  catch(
+    exception: Error,
+    context: Context,
+  ): Response | Promise<Response | undefined> | undefined;
 }
 ```
 
--   `exception`: The exception object that was thrown.
--   `context`: The Hono `Context` object.
--   **Returns:** A `Response` to send to the client, or `undefined` to pass the exception to the next filter.
+- `exception`: The exception object that was thrown.
+- `context`: The Hono `Context` object.
+- **Returns:** A `Response` to send to the client, or `undefined` to pass the exception to the next filter.
 
 The `catch` method is responsible for handling the exception and optionally returning a response.
 
 **Example:** A custom filter for a `NotFoundException`.
 
 ```typescript
-import { IFilter } from 'honestjs'
-import { Context } from 'hono'
-import { NotFoundException } from 'http-essentials'
+import { IFilter } from "honestjs";
+import { Context } from "hono";
+import { NotFoundException } from "http-essentials";
 
 export class NotFoundExceptionFilter implements IFilter<NotFoundException> {
-	catch(exception: NotFoundException, context: Context) {
-		if (exception instanceof NotFoundException) {
-			context.status(404)
-			return context.json({
-				statusCode: 404,
-				message: 'The requested resource was not found.',
-				error: 'Not Found',
-				timestamp: new Date().toISOString(),
-				path: context.req.path,
-			})
-		}
-	}
+  catch(exception: NotFoundException, context: Context) {
+    if (exception instanceof NotFoundException) {
+      context.status(404);
+      return context.json({
+        statusCode: 404,
+        message: "The requested resource was not found.",
+        error: "Not Found",
+        timestamp: new Date().toISOString(),
+        path: context.req.path,
+      });
+    }
+  }
 }
 ```
 
@@ -64,10 +67,10 @@ Global filters are ideal for handling common exceptions across an entire applica
 
 ```typescript
 const { hono } = await Application.create(AppModule, {
-	components: {
-		filters: [new NotFoundExceptionFilter()],
-	},
-})
+  components: {
+    filters: [new NotFoundExceptionFilter()],
+  },
+});
 ```
 
 ### Controller- and Handler-Level Filters
@@ -75,16 +78,16 @@ const { hono } = await Application.create(AppModule, {
 You can also apply filters to a specific controller or route handler, which is useful for handling exceptions specific to a particular part of your application.
 
 ```typescript
-import { Controller, Get, UseFilters } from 'honestjs'
-import { CustomExceptionFilter } from './filters/custom.filter'
+import { Controller, Get, UseFilters } from "honestjs";
+import { CustomExceptionFilter } from "./filters/custom.filter";
 
-@Controller('/special')
+@Controller("/special")
 @UseFilters(CustomExceptionFilter)
 export class SpecialController {
-	@Get()
-	doSomethingSpecial() {
-		// If this handler throws a CustomException, it will be caught by the CustomExceptionFilter.
-	}
+  @Get()
+  doSomethingSpecial() {
+    // If this handler throws a CustomException, it will be caught by the CustomExceptionFilter.
+  }
 }
 ```
 

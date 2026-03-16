@@ -47,11 +47,11 @@ Project
 
 ## Key Organizational Principles
 
--   **Modular Structure**: Each feature is organized into its own module with related components
--   **Separation of Concerns**: Controllers, services, and views are clearly separated
--   **Reusable Components**: Global components can be shared across modules
--   **Static Assets**: CSS and JavaScript files are organized by scope (global vs. view-specific)
--   **Testing**: Test files are co-located with the code they test
+- **Modular Structure**: Each feature is organized into its own module with related components
+- **Separation of Concerns**: Controllers, services, and views are clearly separated
+- **Reusable Components**: Global components can be shared across modules
+- **Static Assets**: CSS and JavaScript files are organized by scope (global vs. view-specific)
+- **Testing**: Test files are co-located with the code they test
 
 ## Module Organization
 
@@ -59,45 +59,45 @@ Each feature in your application should be organized into its own module. A modu
 
 ### Core Module Files
 
--   **Controller**: Handles HTTP requests and responses
--   **Service**: Contains business logic and data access
--   **Module**: Defines the module configuration and dependencies
--   **Views**: JSX components for rendering HTML (if using MVC)
+- **Controller**: Handles HTTP requests and responses
+- **Service**: Contains business logic and data access
+- **Module**: Defines the module configuration and dependencies
+- **Views**: JSX components for rendering HTML (if using MVC)
 
 ### Supporting Files
 
--   **DTOs**: Data Transfer Objects for input validation
--   **Models**: Data structures and type definitions
--   **Components**: Module-specific UI components
--   **Tests**: Unit and integration tests
+- **DTOs**: Data Transfer Objects for input validation
+- **Models**: Data structures and type definitions
+- **Components**: Module-specific UI components
+- **Tests**: Unit and integration tests
 
 ### Example Module Structure
 
 ```typescript
 // users.module.ts
 @Module({
-	controllers: [UsersController],
-	services: [UsersService],
+  controllers: [UsersController],
+  services: [UsersService],
 })
 class UsersModule {}
 
 // users.controller.ts
-@Controller('users')
+@Controller("users")
 class UsersController {
-	constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-	@Get()
-	async getUsers() {
-		return await this.usersService.findAll()
-	}
+  @Get()
+  async getUsers() {
+    return await this.usersService.findAll();
+  }
 }
 
 // users.service.ts
 @Service()
 class UsersService {
-	async findAll() {
-		// Business logic here
-	}
+  async findAll() {
+    // Business logic here
+  }
 }
 ```
 
@@ -112,13 +112,13 @@ Global components are available throughout the entire application and are typica
 ```typescript
 // Global middleware, guards, pipes, and filters
 const { app, hono } = await Application.create(AppModule, {
-	components: {
-		middleware: [new LoggerMiddleware()],
-		guards: [AuthGuard],
-		pipes: [ValidationPipe],
-		filters: [HttpExceptionFilter],
-	},
-})
+  components: {
+    middleware: [new LoggerMiddleware()],
+    guards: [AuthGuard],
+    pipes: [ValidationPipe],
+    filters: [HttpExceptionFilter],
+  },
+});
 ```
 
 ### Module-Specific Components
@@ -127,24 +127,24 @@ Module-specific components are scoped to a particular feature and can be applied
 
 ```typescript
 @Module({
-	controllers: [UsersController],
-	services: [UsersService],
+  controllers: [UsersController],
+  services: [UsersService],
 })
 class UsersModule {}
 
 // Or at the controller level
-@Controller('users')
+@Controller("users")
 @UseMiddleware(UsersMiddleware)
 @UseGuards(UsersGuard)
 class UsersController {}
 
 // Or at the handler level
-@Controller('users')
+@Controller("users")
 class UsersController {
-	@Get()
-	@UseGuards(AdminGuard)
-	@UsePipes(CustomPipe)
-	getUsers() {}
+  @Get()
+  @UseGuards(AdminGuard)
+  @UsePipes(CustomPipe)
+  getUsers() {}
 }
 ```
 
@@ -154,14 +154,14 @@ Static assets are organized to support both global and view-specific styling and
 
 ### Global Assets
 
--   **`main.css`** and **`main.js`** contain styles and scripts used across the entire application
--   These files are typically loaded on every page
+- **`main.css`** and **`main.js`** contain styles and scripts used across the entire application
+- These files are typically loaded on every page
 
 ### View-Specific Assets
 
--   View-specific CSS and JS files are organized in subdirectories to avoid conflicts
--   Enables lazy loading and better performance
--   Example: `static/css/views/users.css` for user-specific styles
+- View-specific CSS and JS files are organized in subdirectories to avoid conflicts
+- Enables lazy loading and better performance
+- Example: `static/css/views/users.css` for user-specific styles
 
 ## Layout and Component Organization
 
@@ -225,16 +225,16 @@ Tests should be co-located with the code they test:
 
 ```typescript
 // src/modules/users/users.service.test.ts
-import { describe, it, expect } from 'bun:test'
-import { UsersService } from './users.service'
+import { describe, it, expect } from "bun:test";
+import { UsersService } from "./users.service";
 
-describe('UsersService', () => {
-	it('should return all users', async () => {
-		const service = new UsersService()
-		const users = await service.findAll()
-		expect(users).toBeDefined()
-	})
-})
+describe("UsersService", () => {
+  it("should return all users", async () => {
+    const service = new UsersService();
+    const users = await service.findAll();
+    expect(users).toBeDefined();
+  });
+});
 ```
 
 ## Best Practices
@@ -272,16 +272,16 @@ src/modules/users/
 
 This organization makes it easy to:
 
--   Find related code quickly
--   Understand the module's structure at a glance
--   Maintain separation of concerns
--   Scale the application as it grows
+- Find related code quickly
+- Understand the module's structure at a glance
+- Maintain separation of concerns
+- Scale the application as it grows
 
 ## Next Steps
 
 Now that you understand project organization, explore:
 
--   [Getting Started](../getting-started.md) - Build your first application
--   [Modules](../dependency-injection.md) - Learn about module configuration
--   [Components](../components/overview.md) - Understand the component system
--   [MVC Support](../features/mvc.md) - Build full-stack applications
+- [Getting Started](../getting-started.md) - Build your first application
+- [Modules](../dependency-injection.md) - Learn about module configuration
+- [Components](../components/overview.md) - Understand the component system
+- [MVC Support](../features/mvc.md) - Build full-stack applications

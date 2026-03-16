@@ -14,7 +14,7 @@ import { Application } from "honestjs";
 import AppModule from "./app.module";
 
 const { app, hono } = await Application.create(AppModule, {
-	// Configuration options go here
+  // Configuration options go here
 });
 ```
 
@@ -29,18 +29,18 @@ import { Container } from "honestjs";
 import type { DiContainer } from "honestjs";
 
 class CustomContainer implements DiContainer {
-	resolve<T>(target: Constructor<T>): T {
-		// Custom resolution logic
-		return new target();
-	}
+  resolve<T>(target: Constructor<T>): T {
+    // Custom resolution logic
+    return new target();
+  }
 
-	register<T>(target: Constructor<T>, instance: T): void {
-		// Custom registration logic
-	}
+  register<T>(target: Constructor<T>, instance: T): void {
+    // Custom registration logic
+  }
 }
 
 const { app, hono } = await Application.create(AppModule, {
-	container: new CustomContainer(),
+  container: new CustomContainer(),
 });
 ```
 
@@ -50,17 +50,17 @@ Configure the underlying Hono instance:
 
 ```typescript
 const { app, hono } = await Application.create(AppModule, {
-	hono: {
-		// Whether to use strict matching for routes
-		strict: true,
-		// Custom router implementation
-		router: customRouter,
-		// Custom path extraction function
-		getPath: (request, options) => {
-			// Custom logic to extract path from request
-			return request.url;
-		},
-	},
+  hono: {
+    // Whether to use strict matching for routes
+    strict: true,
+    // Custom router implementation
+    router: customRouter,
+    // Custom path extraction function
+    getPath: (request, options) => {
+      // Custom logic to extract path from request
+      return request.url;
+    },
+  },
 });
 ```
 
@@ -72,15 +72,15 @@ Set global routing options that apply to all routes:
 import { VERSION_NEUTRAL } from "honestjs";
 
 const { app, hono } = await Application.create(AppModule, {
-	routing: {
-		// Global API prefix (e.g., all routes become /api/*)
-		prefix: "api",
-		// Global API version (e.g., all routes become /v1/*)
-		version: 1,
-		// You can also use VERSION_NEUTRAL or an array of versions
-		// version: VERSION_NEUTRAL  // Routes accessible with and without version
-		// version: [1, 2]          // Routes available at both /v1/* and /v2/*
-	},
+  routing: {
+    // Global API prefix (e.g., all routes become /api/*)
+    prefix: "api",
+    // Global API version (e.g., all routes become /v1/*)
+    version: 1,
+    // You can also use VERSION_NEUTRAL or an array of versions
+    // version: VERSION_NEUTRAL  // Routes accessible with and without version
+    // version: [1, 2]          // Routes available at both /v1/* and /v2/*
+  },
 });
 ```
 
@@ -93,16 +93,16 @@ Use startup diagnostics while developing, and opt into stricter startup checks w
 
 ```typescript
 const { app, hono } = await Application.create(AppModule, {
-	debug: { routes: true, plugins: true },
-	strict: {
-		// Fails startup if no routes were registered
-		requireRoutes: true,
-	},
-	deprecations: {
-		// Prints pre-v1 warning at startup
-		printPreV1Warning: true,
-	},
-})
+  debug: { routes: true, plugins: true },
+  strict: {
+    // Fails startup if no routes were registered
+    requireRoutes: true,
+  },
+  deprecations: {
+    // Prints pre-v1 warning at startup
+    printPreV1Warning: true,
+  },
+});
 ```
 
 ### Global Components Configuration
@@ -117,20 +117,20 @@ import { ValidationPipe } from "./pipes/validation.pipe";
 import { HttpExceptionFilter } from "./filters/http-exception.filter";
 
 const { app, hono } = await Application.create(AppModule, {
-	components: {
-		// Global middleware applied to every route
-		middleware: [
-			new LoggerMiddleware(),
-			// You can also pass classes; they will be instantiated by the container
-			SomeOtherMiddleware,
-		],
-		// Global guards for authentication/authorization
-		guards: [new AuthGuard()],
-		// Global pipes for data transformation/validation
-		pipes: [new ValidationPipe()],
-		// Global exception filters for error handling
-		filters: [new HttpExceptionFilter()],
-	},
+  components: {
+    // Global middleware applied to every route
+    middleware: [
+      new LoggerMiddleware(),
+      // You can also pass classes; they will be instantiated by the container
+      SomeOtherMiddleware,
+    ],
+    // Global guards for authentication/authorization
+    guards: [new AuthGuard()],
+    // Global pipes for data transformation/validation
+    pipes: [new ValidationPipe()],
+    // Global exception filters for error handling
+    filters: [new HttpExceptionFilter()],
+  },
 });
 ```
 
@@ -159,34 +159,34 @@ import type { IPlugin } from "honestjs";
 import { Application } from "honestjs";
 
 class DatabasePlugin implements IPlugin {
-	async beforeModulesRegistered(app: Application, hono: Hono) {
-		// Setup database connection
-		console.log("Setting up database...");
-	}
+  async beforeModulesRegistered(app: Application, hono: Hono) {
+    // Setup database connection
+    console.log("Setting up database...");
+  }
 
-	async afterModulesRegistered(app: Application, hono: Hono) {
-		// Perform post-registration tasks
-		console.log("Database setup complete");
-	}
+  async afterModulesRegistered(app: Application, hono: Hono) {
+    // Perform post-registration tasks
+    console.log("Database setup complete");
+  }
 }
 
 class CachePlugin implements IPlugin {
-	constructor(private options: { ttl: number; maxSize: number }) {}
+  constructor(private options: { ttl: number; maxSize: number }) {}
 
-	async beforeModulesRegistered(app: Application, hono: Hono) {
-		// Initialize cache
-		console.log(`Initializing cache with TTL: ${this.options.ttl}`);
-	}
+  async beforeModulesRegistered(app: Application, hono: Hono) {
+    // Initialize cache
+    console.log(`Initializing cache with TTL: ${this.options.ttl}`);
+  }
 }
 
 const { app, hono } = await Application.create(AppModule, {
-	plugins: [
-		new DatabasePlugin(),
-		new CachePlugin({
-			ttl: 3600,
-			maxSize: 1000,
-		}),
-	],
+  plugins: [
+    new DatabasePlugin(),
+    new CachePlugin({
+      ttl: 3600,
+      maxSize: 1000,
+    }),
+  ],
 });
 ```
 
@@ -201,30 +201,30 @@ Customize global error handling:
 import type { Context } from "hono";
 
 const { app, hono } = await Application.create(AppModule, {
-	// Custom error handler for unhandled exceptions
-	onError: (error: Error, context: Context) => {
-		console.error("Unhandled error:", error);
-		return context.json(
-			{
-				error: "Internal Server Error",
-				message: "Something went wrong",
-				timestamp: new Date().toISOString(),
-				path: context.req.path,
-			},
-			500,
-		);
-	},
-	// Custom handler for routes that don't match any pattern
-	notFound: (context: Context) => {
-		return context.json(
-			{
-				error: "Not Found",
-				message: `Route ${context.req.path} not found`,
-				timestamp: new Date().toISOString(),
-			},
-			404,
-		);
-	},
+  // Custom error handler for unhandled exceptions
+  onError: (error: Error, context: Context) => {
+    console.error("Unhandled error:", error);
+    return context.json(
+      {
+        error: "Internal Server Error",
+        message: "Something went wrong",
+        timestamp: new Date().toISOString(),
+        path: context.req.path,
+      },
+      500,
+    );
+  },
+  // Custom handler for routes that don't match any pattern
+  notFound: (context: Context) => {
+    return context.json(
+      {
+        error: "Not Found",
+        message: `Route ${context.req.path} not found`,
+        timestamp: new Date().toISOString(),
+      },
+      404,
+    );
+  },
 });
 ```
 
@@ -243,54 +243,54 @@ import { DatabasePlugin } from "./plugins/database.plugin";
 import AppModule from "./app.module";
 
 const options: HonestOptions = {
-	// Custom DI container (optional)
-	// container: new CustomContainer(),
+  // Custom DI container (optional)
+  // container: new CustomContainer(),
 
-	// Hono configuration
-	hono: {
-		strict: true,
-	},
+  // Hono configuration
+  hono: {
+    strict: true,
+  },
 
-	// Global routing configuration
-	routing: {
-		prefix: "api",
-		version: 1,
-	},
+  // Global routing configuration
+  routing: {
+    prefix: "api",
+    version: 1,
+  },
 
-	// Global components
-	components: {
-		middleware: [new LoggerMiddleware()],
-		guards: [new AuthGuard()],
-		pipes: [new ValidationPipe()],
-		filters: [new HttpExceptionFilter()],
-	},
+  // Global components
+  components: {
+    middleware: [new LoggerMiddleware()],
+    guards: [new AuthGuard()],
+    pipes: [new ValidationPipe()],
+    filters: [new HttpExceptionFilter()],
+  },
 
-	// Plugins
-	plugins: [new DatabasePlugin()],
+  // Plugins
+  plugins: [new DatabasePlugin()],
 
-	// Custom error handlers
-	onError: (error, context) => {
-		console.error("Error:", error);
-		return context.json(
-			{
-				error: "Internal Server Error",
-				timestamp: new Date().toISOString(),
-				path: context.req.path,
-			},
-			500,
-		);
-	},
+  // Custom error handlers
+  onError: (error, context) => {
+    console.error("Error:", error);
+    return context.json(
+      {
+        error: "Internal Server Error",
+        timestamp: new Date().toISOString(),
+        path: context.req.path,
+      },
+      500,
+    );
+  },
 
-	notFound: (context) => {
-		return context.json(
-			{
-				error: "Route not found",
-				path: context.req.path,
-				timestamp: new Date().toISOString(),
-			},
-			404,
-		);
-	},
+  notFound: (context) => {
+    return context.json(
+      {
+        error: "Route not found",
+        path: context.req.path,
+        timestamp: new Date().toISOString(),
+      },
+      404,
+    );
+  },
 };
 
 const { app, hono } = await Application.create(AppModule, options);
@@ -307,15 +307,16 @@ environments:
 
 ```typescript
 const options: HonestOptions = {
-	routing: {
-		prefix: process.env.API_PREFIX || "api",
-		version: parseInt(process.env.API_VERSION || "1"),
-	},
-	components: {
-		middleware: process.env.NODE_ENV === "production"
-			? [new ProductionLoggerMiddleware()]
-			: [new DevelopmentLoggerMiddleware()],
-	},
+  routing: {
+    prefix: process.env.API_PREFIX || "api",
+    version: parseInt(process.env.API_VERSION || "1"),
+  },
+  components: {
+    middleware:
+      process.env.NODE_ENV === "production"
+        ? [new ProductionLoggerMiddleware()]
+        : [new DevelopmentLoggerMiddleware()],
+  },
 };
 ```
 
@@ -327,15 +328,15 @@ Split your configuration into logical modules:
 
 ```typescript [config/database.ts]
 export const databaseConfig = {
-	host: process.env.DB_HOST || "localhost",
-	port: parseInt(process.env.DB_PORT || "5432"),
+  host: process.env.DB_HOST || "localhost",
+  port: parseInt(process.env.DB_PORT || "5432"),
 };
 ```
 
 ```typescript [config/security.ts]
 export const securityConfig = {
-	jwtSecret: process.env.JWT_SECRET || "default-secret",
-	bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || "10"),
+  jwtSecret: process.env.JWT_SECRET || "default-secret",
+  bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || "10"),
 };
 ```
 
@@ -344,10 +345,10 @@ import { databaseConfig } from "./config/database";
 import { securityConfig } from "./config/security";
 
 const { app, hono } = await Application.create(AppModule, {
-	plugins: [
-		new DatabasePlugin(databaseConfig),
-		new SecurityPlugin(securityConfig),
-	],
+  plugins: [
+    new DatabasePlugin(databaseConfig),
+    new SecurityPlugin(securityConfig),
+  ],
 });
 ```
 
@@ -359,44 +360,44 @@ Create typed configuration objects for better type safety:
 
 ```typescript
 interface AppConfig {
-	database: {
-		host: string;
-		port: number;
-	};
-	security: {
-		jwtSecret: string;
-		bcryptRounds: number;
-	};
-	api: {
-		prefix: string;
-		version: number;
-	};
+  database: {
+    host: string;
+    port: number;
+  };
+  security: {
+    jwtSecret: string;
+    bcryptRounds: number;
+  };
+  api: {
+    prefix: string;
+    version: number;
+  };
 }
 
 const config: AppConfig = {
-	database: {
-		host: process.env.DB_HOST || "localhost",
-		port: parseInt(process.env.DB_PORT || "5432"),
-	},
-	security: {
-		jwtSecret: process.env.JWT_SECRET || "default-secret",
-		bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || "10"),
-	},
-	api: {
-		prefix: process.env.API_PREFIX || "api",
-		version: parseInt(process.env.API_VERSION || "1"),
-	},
+  database: {
+    host: process.env.DB_HOST || "localhost",
+    port: parseInt(process.env.DB_PORT || "5432"),
+  },
+  security: {
+    jwtSecret: process.env.JWT_SECRET || "default-secret",
+    bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || "10"),
+  },
+  api: {
+    prefix: process.env.API_PREFIX || "api",
+    version: parseInt(process.env.API_VERSION || "1"),
+  },
 };
 
 const { app, hono } = await Application.create(AppModule, {
-	routing: {
-		prefix: config.api.prefix,
-		version: config.api.version,
-	},
-	plugins: [
-		new DatabasePlugin(config.database),
-		new SecurityPlugin(config.security),
-	],
+  routing: {
+    prefix: config.api.prefix,
+    version: config.api.version,
+  },
+  plugins: [
+    new DatabasePlugin(config.database),
+    new SecurityPlugin(config.security),
+  ],
 });
 ```
 

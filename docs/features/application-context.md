@@ -70,9 +70,9 @@ app.getContext().set("app.config", {
 });
 
 // Later, from anywhere that has app
-const config = app.getContext().get<{ env: string; version: string }>(
-  "app.config",
-);
+const config = app
+  .getContext()
+  .get<{ env: string; version: string }>("app.config");
 ```
 
 ## Key conventions

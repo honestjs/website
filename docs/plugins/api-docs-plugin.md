@@ -30,7 +30,7 @@ import { ApiDocsPlugin } from "@honestjs/api-docs-plugin";
 import AppModule from "./app.module";
 
 const { hono } = await Application.create(AppModule, {
-	plugins: [new RPCPlugin(), new ApiDocsPlugin()],
+  plugins: [new RPCPlugin(), new ApiDocsPlugin()],
 });
 
 export default hono;
@@ -53,17 +53,17 @@ You can pass the artifact object directly instead of a context key:
 import { ApiDocsPlugin } from "@honestjs/api-docs-plugin";
 
 const artifact = {
-	artifactVersion: "1",
-	routes: [
-		{
-			method: "GET",
-			handler: "list",
-			controller: "UsersController",
-			fullPath: "/users",
-			parameters: [],
-		},
-	],
-	schemas: [],
+  artifactVersion: "1",
+  routes: [
+    {
+      method: "GET",
+      handler: "list",
+      controller: "UsersController",
+      fullPath: "/users",
+      parameters: [],
+    },
+  ],
+  schemas: [],
 };
 
 // In Application.create options:
@@ -74,22 +74,22 @@ plugins: [new ApiDocsPlugin({ artifact })];
 
 ```typescript
 interface ApiDocsPluginOptions {
-	// Optional: artifact - direct object or context key. Default: 'rpc.artifact'
-	artifact?: OpenApiArtifactInput | string;
+  // Optional: artifact - direct object or context key. Default: 'rpc.artifact'
+  artifact?: OpenApiArtifactInput | string;
 
-	// OpenAPI metadata (when converting artifact to spec)
-	title?: string;
-	version?: string;
-	description?: string;
-	servers?: readonly { url: string; description?: string }[];
+  // OpenAPI metadata (when converting artifact to spec)
+  title?: string;
+  version?: string;
+  description?: string;
+  servers?: readonly { url: string; description?: string }[];
 
-	// Serving
-	openApiRoute?: string; // default: '/openapi.json'
-	uiRoute?: string; // default: '/docs'
-	uiTitle?: string; // default: 'API Docs'
-	reloadOnRequest?: boolean; // default: false
-	onOpenApiRequest?: (c, next) => void | Response | Promise<void | Response>; // optional route auth hook
-	onUiRequest?: (c, next) => void | Response | Promise<void | Response>; // optional route auth hook
+  // Serving
+  openApiRoute?: string; // default: '/openapi.json'
+  uiRoute?: string; // default: '/docs'
+  uiTitle?: string; // default: 'API Docs'
+  reloadOnRequest?: boolean; // default: false
+  onOpenApiRequest?: (c, next) => void | Response | Promise<void | Response>; // optional route auth hook
+  onUiRequest?: (c, next) => void | Response | Promise<void | Response>; // optional route auth hook
 }
 ```
 
@@ -101,19 +101,19 @@ interface ApiDocsPluginOptions {
 | `uiRoute`                                    | Path where Swagger UI is served. Default: `'/docs'`.                                          |
 | `uiTitle`                                    | Title shown in the Swagger UI page. Default: `'API Docs'`.                                    |
 | `reloadOnRequest`                            | If `true`, the spec is regenerated on each request; otherwise it is cached. Default: `false`. |
-| `onOpenApiRequest`, `onUiRequest`            | Optional hook points to protect `/openapi.json` and `/docs` (auth/allowlist/custom checks). |
+| `onOpenApiRequest`, `onUiRequest`            | Optional hook points to protect `/openapi.json` and `/docs` (auth/allowlist/custom checks).   |
 
 ## Custom OpenAPI metadata
 
 ```typescript
 new ApiDocsPlugin({
-	title: "My API",
-	version: "1.0.0",
-	description: "REST API for the application.",
-	servers: [{ url: "https://api.example.com", description: "Production" }],
-	openApiRoute: "/api-spec.json",
-	uiRoute: "/api-docs",
-	uiTitle: "My API Docs",
+  title: "My API",
+  version: "1.0.0",
+  description: "REST API for the application.",
+  servers: [{ url: "https://api.example.com", description: "Production" }],
+  openApiRoute: "/api-spec.json",
+  uiRoute: "/api-docs",
+  uiTitle: "My API Docs",
 });
 ```
 
@@ -142,15 +142,15 @@ await write(spec, './generated/openapi.json')
 
 ```typescript
 new ApiDocsPlugin({
-	onOpenApiRequest: async (c, next) => {
-		if (c.req.header("x-api-key") !== "secret") {
-			return new Response("Unauthorized", { status: 401 });
-		}
-		await next();
-	},
-	onUiRequest: async (_c, next) => {
-		await next();
-	},
+  onOpenApiRequest: async (c, next) => {
+    if (c.req.header("x-api-key") !== "secret") {
+      return new Response("Unauthorized", { status: 401 });
+    }
+    await next();
+  },
+  onUiRequest: async (_c, next) => {
+    await next();
+  },
 });
 ```
 

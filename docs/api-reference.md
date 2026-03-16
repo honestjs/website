@@ -41,7 +41,7 @@ static async create(
 
 ```typescript
 const { app, hono } = await Application.create(AppModule, {
-	routing: { prefix: "/api", version: 1 },
+  routing: { prefix: "/api", version: 1 },
 });
 ```
 
@@ -89,8 +89,8 @@ Marks a class as a controller and defines the base route for all its endpoints.
 
 ```typescript
 function Controller(
-	route?: string,
-	options?: ControllerOptions,
+  route?: string,
+  options?: ControllerOptions,
 ): ClassDecorator;
 ```
 
@@ -197,9 +197,9 @@ function Module(options?: ModuleOptions): ClassDecorator;
 
 ```typescript
 @Module({
-	controllers: [UsersController],
-	services: [UserService],
-	imports: [AuthModule],
+  controllers: [UsersController],
+  services: [UserService],
+  imports: [AuthModule],
 })
 class AppModule {}
 ```
@@ -370,7 +370,7 @@ Applies middleware to a controller or method.
 
 ```typescript
 function UseMiddleware(
-	...middleware: MiddlewareType[]
+  ...middleware: MiddlewareType[]
 ): ClassDecorator | MethodDecorator;
 ```
 
@@ -384,9 +384,9 @@ function UseMiddleware(
 @UseMiddleware(LoggerMiddleware, AuthMiddleware)
 @Controller("users")
 class UsersController {
-	@UseMiddleware(RateLimitMiddleware)
-	@Get()
-	getUsers() {}
+  @UseMiddleware(RateLimitMiddleware)
+  @Get()
+  getUsers() {}
 }
 ```
 
@@ -408,9 +408,9 @@ function UseGuards(...guards: GuardType[]): ClassDecorator | MethodDecorator;
 @UseGuards(AuthGuard, RoleGuard)
 @Controller("admin")
 class AdminController {
-	@UseGuards(AdminGuard)
-	@Get("users")
-	getUsers() {}
+  @UseGuards(AdminGuard)
+  @Get("users")
+  getUsers() {}
 }
 ```
 
@@ -432,9 +432,9 @@ function UsePipes(...pipes: PipeType[]): ClassDecorator | MethodDecorator;
 @UsePipes(ValidationPipe, TransformPipe)
 @Controller("users")
 class UsersController {
-	@UsePipes(CustomPipe)
-	@Post()
-	createUser(@Body() user: UserDto) {}
+  @UsePipes(CustomPipe)
+  @Post()
+  createUser(@Body() user: UserDto) {}
 }
 ```
 
@@ -456,9 +456,9 @@ function UseFilters(...filters: FilterType[]): ClassDecorator | MethodDecorator;
 @UseFilters(HttpExceptionFilter, ValidationExceptionFilter)
 @Controller("users")
 class UsersController {
-	@UseFilters(CustomExceptionFilter)
-	@Get()
-	getUsers() {}
+  @UseFilters(CustomExceptionFilter)
+  @Get()
+  getUsers() {}
 }
 ```
 
@@ -486,7 +486,7 @@ Enhanced module decorator with view support.
 
 ```typescript
 function MvcModule(
-	options?: ModuleOptions & { views?: Constructor[] },
+  options?: ModuleOptions & { views?: Constructor[] },
 ): ClassDecorator;
 ```
 
@@ -510,9 +510,9 @@ function Layout(props: PropsWithChildren<SiteData>): string;
 
 ```typescript
 const html = Layout({
-	title: "My App",
-	description: "A modern web application",
-	children: "<h1>Hello World</h1>",
+  title: "My App",
+  description: "A modern web application",
+  children: "<h1>Hello World</h1>",
 });
 ```
 
@@ -526,32 +526,32 @@ Configuration options for the HonestJS application.
 
 ```typescript
 interface HonestOptions {
-	debug?: boolean | { routes?: boolean; plugins?: boolean };
-	strict?: {
-		requireRoutes?: boolean;
-	};
-	deprecations?: {
-		printPreV1Warning?: boolean;
-	};
-	container?: DiContainer;
-	hono?: {
-		strict?: boolean;
-		router?: any;
-		getPath?: (request: Request, options?: any) => string;
-	};
-	routing?: {
-		prefix?: string;
-		version?: number | typeof VERSION_NEUTRAL | number[];
-	};
-	components?: {
-		middleware?: MiddlewareType[];
-		guards?: GuardType[];
-		pipes?: PipeType[];
-		filters?: FilterType[];
-	};
-	plugins?: PluginEntry[];
-	onError?: (error: Error, context: Context) => Response | Promise<Response>;
-	notFound?: (context: Context) => Response | Promise<Response>;
+  debug?: boolean | { routes?: boolean; plugins?: boolean };
+  strict?: {
+    requireRoutes?: boolean;
+  };
+  deprecations?: {
+    printPreV1Warning?: boolean;
+  };
+  container?: DiContainer;
+  hono?: {
+    strict?: boolean;
+    router?: any;
+    getPath?: (request: Request, options?: any) => string;
+  };
+  routing?: {
+    prefix?: string;
+    version?: number | typeof VERSION_NEUTRAL | number[];
+  };
+  components?: {
+    middleware?: MiddlewareType[];
+    guards?: GuardType[];
+    pipes?: PipeType[];
+    filters?: FilterType[];
+  };
+  plugins?: PluginEntry[];
+  onError?: (error: Error, context: Context) => Response | Promise<Response>;
+  notFound?: (context: Context) => Response | Promise<Response>;
 }
 ```
 
@@ -561,8 +561,8 @@ Configuration options for controllers.
 
 ```typescript
 interface ControllerOptions {
-	prefix?: string | null;
-	version?: number | null | typeof VERSION_NEUTRAL | number[];
+  prefix?: string | null;
+  version?: number | null | typeof VERSION_NEUTRAL | number[];
 }
 ```
 
@@ -572,8 +572,8 @@ Configuration options for HTTP method decorators.
 
 ```typescript
 interface HttpMethodOptions {
-	prefix?: string | null;
-	version?: number | null | typeof VERSION_NEUTRAL | number[];
+  prefix?: string | null;
+  version?: number | null | typeof VERSION_NEUTRAL | number[];
 }
 ```
 
@@ -583,9 +583,9 @@ Configuration options for modules.
 
 ```typescript
 interface ModuleOptions {
-	controllers?: Constructor[];
-	services?: Constructor[];
-	imports?: Constructor[];
+  controllers?: Constructor[];
+  services?: Constructor[];
+  imports?: Constructor[];
 }
 ```
 
@@ -597,7 +597,7 @@ Interface for middleware classes.
 
 ```typescript
 interface IMiddleware {
-	use(c: Context, next: Next): Promise<Response | void>;
+  use(c: Context, next: Next): Promise<Response | void>;
 }
 ```
 
@@ -607,7 +607,7 @@ Interface for guard classes.
 
 ```typescript
 interface IGuard {
-	canActivate(context: Context): boolean | Promise<boolean>;
+  canActivate(context: Context): boolean | Promise<boolean>;
 }
 ```
 
@@ -617,10 +617,10 @@ Interface for pipe classes.
 
 ```typescript
 interface IPipe {
-	transform(
-		value: unknown,
-		metadata: ArgumentMetadata,
-	): Promise<unknown> | unknown;
+  transform(
+    value: unknown,
+    metadata: ArgumentMetadata,
+  ): Promise<unknown> | unknown;
 }
 ```
 
@@ -630,10 +630,10 @@ Interface for exception filter classes.
 
 ```typescript
 interface IFilter {
-	catch(
-		exception: Error,
-		context: Context,
-	): Promise<Response | undefined> | Response | undefined;
+  catch(
+    exception: Error,
+    context: Context,
+  ): Promise<Response | undefined> | Response | undefined;
 }
 ```
 
@@ -643,14 +643,14 @@ Interface for plugin classes.
 
 ```typescript
 interface IPlugin {
-	beforeModulesRegistered?: (
-		app: Application,
-		hono: Hono,
-	) => void | Promise<void>;
-	afterModulesRegistered?: (
-		app: Application,
-		hono: Hono,
-	) => void | Promise<void>;
+  beforeModulesRegistered?: (
+    app: Application,
+    hono: Hono,
+  ) => void | Promise<void>;
+  afterModulesRegistered?: (
+    app: Application,
+    hono: Hono,
+  ) => void | Promise<void>;
 }
 ```
 
@@ -662,8 +662,8 @@ Interface for dependency injection containers.
 
 ```typescript
 interface DiContainer {
-	resolve<T>(target: Constructor<T>): T;
-	register<T>(target: Constructor<T>, instance: T): void;
+  resolve<T>(target: Constructor<T>): T;
+  register<T>(target: Constructor<T>, instance: T): void;
 }
 ```
 
@@ -675,12 +675,12 @@ Definition of a route.
 
 ```typescript
 interface RouteDefinition {
-	path: string;
-	method: string;
-	handlerName: string | symbol;
-	parameterMetadata: ParameterMetadata[];
-	version?: number | null | typeof VERSION_NEUTRAL | number[];
-	prefix?: string | null;
+  path: string;
+  method: string;
+  handlerName: string | symbol;
+  parameterMetadata: ParameterMetadata[];
+  version?: number | null | typeof VERSION_NEUTRAL | number[];
+  prefix?: string | null;
 }
 ```
 
@@ -690,15 +690,15 @@ Information about a registered route.
 
 ```typescript
 interface RouteInfo {
-	controller: string | symbol;
-	handler: string | symbol;
-	method: string;
-	prefix: string;
-	version?: string;
-	route: string;
-	path: string;
-	fullPath: string;
-	parameters: ParameterMetadata[];
+  controller: string | symbol;
+  handler: string | symbol;
+  method: string;
+  prefix: string;
+  version?: string;
+  route: string;
+  path: string;
+  fullPath: string;
+  parameters: ParameterMetadata[];
 }
 ```
 
@@ -708,11 +708,11 @@ Metadata about a parameter.
 
 ```typescript
 interface ParameterMetadata {
-	index: number;
-	name: string;
-	data?: any;
-	factory: (data: any, ctx: Context) => any;
-	metatype?: Constructor<unknown>;
+  index: number;
+  name: string;
+  data?: any;
+  factory: (data: any, ctx: Context) => any;
+  metatype?: Constructor<unknown>;
 }
 ```
 
@@ -722,9 +722,9 @@ Metadata about an argument for pipes.
 
 ```typescript
 interface ArgumentMetadata {
-	type: "body" | "query" | "param" | "custom";
-	metatype?: Constructor<unknown>;
-	data?: string;
+  type: "body" | "query" | "param" | "custom";
+  metatype?: Constructor<unknown>;
+  data?: string;
 }
 ```
 
@@ -736,14 +736,14 @@ Standard error response format.
 
 ```typescript
 interface ErrorResponse {
-	status: number;
-	message: string;
-	timestamp: string;
-	path: string;
-	requestId?: string;
-	code?: string;
-	details?: Record<string, any>;
-	errors?: Array<{ property: string; constraints: Record<string, string> }>;
+  status: number;
+  message: string;
+  timestamp: string;
+  path: string;
+  requestId?: string;
+  code?: string;
+  details?: Record<string, any>;
+  errors?: Array<{ property: string; constraints: Record<string, string> }>;
 }
 ```
 
@@ -755,22 +755,22 @@ Configuration for the Layout component.
 
 ```typescript
 interface SiteData {
-	title: string;
-	description?: string;
-	image?: string;
-	url?: string;
-	locale?: string;
-	type?: string;
-	siteName?: string;
-	customMeta?: MetaTag[];
-	scripts?: (string | ScriptOptions)[];
-	stylesheets?: string[];
-	favicon?: string;
-	twitterCard?: "summary" | "summary_large_image" | "app" | "player";
-	csp?: string;
-	htmlAttributes?: HtmlAttributes;
-	headAttributes?: HtmlAttributes;
-	bodyAttributes?: HtmlAttributes;
+  title: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  locale?: string;
+  type?: string;
+  siteName?: string;
+  customMeta?: MetaTag[];
+  scripts?: (string | ScriptOptions)[];
+  stylesheets?: string[];
+  favicon?: string;
+  twitterCard?: "summary" | "summary_large_image" | "app" | "player";
+  csp?: string;
+  htmlAttributes?: HtmlAttributes;
+  headAttributes?: HtmlAttributes;
+  bodyAttributes?: HtmlAttributes;
 }
 ```
 
@@ -780,10 +780,10 @@ Custom meta tag configuration.
 
 ```typescript
 interface MetaTag {
-	property: string;
-	content: string;
-	name?: string;
-	prefix?: string;
+  property: string;
+  content: string;
+  name?: string;
+  prefix?: string;
 }
 ```
 
@@ -853,11 +853,13 @@ Type for plugin registration entries. Supports plain plugins or wrapped entries
 with optional pre/post processors.
 
 ```typescript
-type PluginEntry = PluginType | {
-	plugin: IPlugin | Constructor<IPlugin>;
-	preProcessors?: PluginProcessor[];
-	postProcessors?: PluginProcessor[];
-};
+type PluginEntry =
+  | PluginType
+  | {
+      plugin: IPlugin | Constructor<IPlugin>;
+      preProcessors?: PluginProcessor[];
+      postProcessors?: PluginProcessor[];
+    };
 ```
 
 ## Constants
@@ -875,10 +877,10 @@ const VERSION_NEUTRAL = Symbol("VERSION_NEUTRAL");
 ```typescript
 @Controller("health", { version: VERSION_NEUTRAL })
 class HealthController {
-	@Get("status")
-	getStatus() {
-		// Accessible at both /health/status and /v1/health/status
-	}
+  @Get("status")
+  getStatus() {
+    // Accessible at both /health/status and /v1/health/status
+  }
 }
 ```
 
@@ -892,8 +894,8 @@ Creates a custom parameter decorator.
 
 ```typescript
 function createParamDecorator<T = any>(
-	type: string,
-	factory?: (data: any, ctx: Context) => T,
+  type: string,
+  factory?: (data: any, ctx: Context) => T,
 ): (data?: any) => ParameterDecorator;
 ```
 
@@ -906,8 +908,8 @@ function createParamDecorator<T = any>(
 
 ```typescript
 export const CurrentUser = createParamDecorator("user", (_, ctx) => {
-	const token = ctx.req.header("authorization")?.replace("Bearer ", "");
-	return token ? decodeJWT(token) : null;
+  const token = ctx.req.header("authorization")?.replace("Bearer ", "");
+  return token ? decodeJWT(token) : null;
 });
 ```
 
@@ -917,7 +919,7 @@ Creates an HTTP method decorator.
 
 ```typescript
 function createHttpMethodDecorator(
-	method: string,
+  method: string,
 ): (path?: string, options?: HttpMethodOptions) => MethodDecorator;
 ```
 
@@ -937,15 +939,15 @@ Creates a standardized error response.
 
 ```typescript
 function createErrorResponse(
-	exception: Error,
-	context: Context,
-	options?: {
-		status?: number;
-		title?: string;
-		detail?: string;
-		code?: string;
-		additionalDetails?: Record<string, any>;
-	},
+  exception: Error,
+  context: Context,
+  options?: {
+    status?: number;
+    title?: string;
+    detail?: string;
+    code?: string;
+    additionalDetails?: Record<string, any>;
+  },
 ): { response: ErrorResponse; status: ContentfulStatusCode };
 ```
 
