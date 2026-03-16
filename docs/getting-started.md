@@ -11,7 +11,7 @@ Before you begin, make sure you have the following installed:
 
 ## Project Setup
 
-The fastest way to create a new Honest application is with the HonestJS CLI.
+The fastest way to create a new Honest application is with the [HonestJS CLI](./cli.md).
 
 ### 1. Install the CLI
 

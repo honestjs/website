@@ -21,7 +21,7 @@ HonestJS provides a clean, decorator-based API for building web applications wit
 
 ## Quick Start
 
-Get up and running with HonestJS in minutes! Use the CLI (`bun add -g @honestjs/cli` then `honestjs new my-app`) or
+Get up and running with HonestJS in minutes! Use the [CLI](./cli.md) (`bun add -g @honestjs/cli` then `honestjs new my-app`) or
 check our [Getting Started](./getting-started.md) guide for a complete tutorial. Or jump right in with this minimal
 example:
 
@@ -61,6 +61,7 @@ export default hono
 ### Getting Started
 
 - **[Getting Started](./getting-started.md)** - Complete tutorial to build your first app
+- **[CLI](./cli.md)** - Command reference for scaffolding and code generation
 - **[Project Organization](./concepts/project-organization.md)** - Folder structure and organization patterns
 - **[Configuration](./configuration.md)** - Application configuration options
 - **[API Reference](./api-reference.md)** - Complete API documentation
