@@ -10,8 +10,9 @@ HonestJS comes with a comprehensive set of built-in decorators for common use ca
 ### Request Data Decorators
 
 - `@Body(data?: string)`: Extracts the request body. Can optionally extract a specific property from the body.
-- `@Param(data?: string)`: Extracts route parameters.
-- `@Query(data?: string)`: Extracts query parameters.
+- `@Param(data?: string)`: Extracts route parameters (always strings).
+- `@Query(data?: string)`: Extracts query parameters. Without a key, returns the full `Record<string, string>`. Query
+  values are always strings — use pipes to parse numbers or booleans.
 - `@Header(data?: string)`: Extracts request headers.
 
 ### Context Decorators
@@ -189,11 +190,6 @@ interface CreateUserDto {
 	age: number
 }
 
-interface PaginationQuery {
-	page: number
-	limit: number
-}
-
 @Controller('users')
 export class UsersController {
 	@Post()
@@ -204,9 +200,16 @@ export class UsersController {
 	}
 
 	@Get()
-	async findAll(@Query() query: PaginationQuery) {
-		// query is typed as PaginationQuery
-		return await this.usersService.findAll(query)
+	async findAll(
+		@Query('page') page?: string,
+		@Query('limit') limit?: string
+	) {
+		// Query params are always strings — parse with parseInt/Number or use pipes
+		const pagination = {
+			page: page ? parseInt(page, 10) : 1,
+			limit: limit ? parseInt(limit, 10) : 10
+		}
+		return await this.usersService.findAll(pagination)
 	}
 
 	@Get(':id')
@@ -216,6 +219,10 @@ export class UsersController {
 	}
 }
 ```
+
+> **Note:** `@Query()` and `@Query()` without a key return raw values from the request. Query parameters are always
+> strings. Use `@Query('name')` for a single value, or `@Query()` for the full `Record<string, string>`. For numeric or
+> boolean values, parse with `parseInt`, `Number`, or use pipes like `PrimitiveValidationPipe` or `ClassValidatorPipe`.
 
 ## Creating Custom Parameter Decorators
 

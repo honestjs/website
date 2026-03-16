@@ -525,9 +525,9 @@ Configure the JsxRenderer middleware in your application:
 ::: code-group
 
 ```typescript [main.ts]
+import 'reflect-metadata'
 import { Application } from 'honestjs'
 import { JsxRendererMiddleware } from '@honestjs/middleware'
-import 'reflect-metadata'
 import AppModule from './app.module'
 import { MainLayout } from './layouts/MainLayout'
 

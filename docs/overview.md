@@ -26,8 +26,8 @@ check our [Getting Started](./getting-started.md) guide for a complete tutorial.
 example:
 
 ```typescript
-import { Application, Controller, Get, Module, Service } from 'honestjs'
 import 'reflect-metadata'
+import { Application, Controller, Get, Module, Service } from 'honestjs'
 
 @Service()
 class AppService {
@@ -213,6 +213,7 @@ import { Controller, Get, Layout } from 'honestjs'
 class PagesController {
 	@Get('home')
 	home() {
+		// Layout returns a Response (from hono/html) — return it directly
 		return Layout({
 			title: 'Home - My App',
 			description: 'Welcome to our application',

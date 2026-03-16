@@ -240,8 +240,8 @@ Finally, create the main application file to bootstrap the HonestJS app.
 ::: code-group
 
 ```typescript [main.ts]
-import { Application } from 'honestjs'
 import 'reflect-metadata'
+import { Application } from 'honestjs'
 import AppModule from './app.module'
 
 const { app, hono } = await Application.create(AppModule)
@@ -275,7 +275,7 @@ The magic happens through:
 
 - **Decorators**: `@Service()`, `@Controller()`, `@Get()`, `@Module()` tell HonestJS how to handle each class
 - **Dependency Injection**: The controller automatically receives the service instance
-- **Reflection**: TypeScript's reflection metadata enables the DI system to work
+- **Reflection**: TypeScript's reflection metadata enables the DI system to work. Always import `reflect-metadata` once at the top of your entry file, before any Honest decorators are loaded.
 
 ## Project Organization
 
