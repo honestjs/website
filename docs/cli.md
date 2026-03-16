@@ -22,7 +22,7 @@ honestjs new [project-name]
 
 | Option | Description |
 |--------|-------------|
-| `-t, --template <template>` | Template name (`barebone`, `blank`, `mvc`, `api-starter`) or local path (`./path`, `~/path`) |
+| `-t, --template <template>` | Template name (`barebone`, `blank`, `mvc`) or local path (`./path`, `~/path`) |
 | `-p, --package-manager <manager>` | Package manager: `bun`, `npm`, `yarn`, `pnpm` |
 | `--typescript` | Use TypeScript (default) |
 | `--no-typescript` | Skip TypeScript |
@@ -47,7 +47,7 @@ honestjs new my-app
 honestjs new my-app -t mvc -y
 honestjs new my-app --template barebone --package-manager pnpm
 # Local templates (repo root or single template dir)
-honestjs new my-app --template ./templates/api-starter
+honestjs new my-app --template ./path/to/templates
 honestjs new my-app -t ~/company/honest-templates -y
 ```
 
