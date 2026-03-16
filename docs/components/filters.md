@@ -1,8 +1,10 @@
 # Filters
 
-Exception filters provide a mechanism for handling unhandled exceptions that occur during the request-response cycle. They allow you to catch specific types of errors and send a customized response to the client.
+Exception filters provide a mechanism for handling unhandled exceptions that occur during the request-response cycle.
+They allow you to catch specific types of errors and send a customized response to the client.
 
-By default, HonestJS includes a built-in global exception filter that handles standard `Error` objects and `HttpException`s from Hono. However, you can create custom filters to handle specific error cases.
+By default, HonestJS includes a built-in global exception filter that handles standard `Error` objects and
+`HttpException`s from Hono. However, you can create custom filters to handle specific error cases.
 
 ## Use Cases
 
@@ -10,19 +12,18 @@ Exception filters are essential for centralized error handling. Common use cases
 
 - **Logging Errors:** Capturing and logging unhandled exceptions for debugging purposes.
 - **Custom Error Responses:** Formatting error responses to match your API's error schema.
-- **Handling Specific Exceptions:** Creating dedicated filters for specific exceptions, such as `NotFoundException` or database-related errors.
+- **Handling Specific Exceptions:** Creating dedicated filters for specific exceptions, such as `NotFoundException` or
+  database-related errors.
 - **Monitoring and Alerting:** Sending notifications to a monitoring service when critical errors occur.
 
 ## Creating an Exception Filter
 
-An exception filter is a class that implements the `IFilter` interface. This interface has a `catch` method that receives the exception and the Hono `Context`.
+An exception filter is a class that implements the `IFilter` interface. This interface has a `catch` method that
+receives the exception and the Hono `Context`.
 
 ```typescript
 interface IFilter {
-  catch(
-    exception: Error,
-    context: Context,
-  ): Response | Promise<Response | undefined> | undefined;
+	catch(exception: Error, context: Context): Response | Promise<Response | undefined> | undefined
 }
 ```
 
@@ -35,23 +36,23 @@ The `catch` method is responsible for handling the exception and optionally retu
 **Example:** A custom filter for a `NotFoundException`.
 
 ```typescript
-import { IFilter } from "honestjs";
-import { Context } from "hono";
-import { NotFoundException } from "http-essentials";
+import { IFilter } from 'honestjs'
+import { Context } from 'hono'
+import { NotFoundException } from 'http-essentials'
 
 export class NotFoundExceptionFilter implements IFilter<NotFoundException> {
-  catch(exception: NotFoundException, context: Context) {
-    if (exception instanceof NotFoundException) {
-      context.status(404);
-      return context.json({
-        statusCode: 404,
-        message: "The requested resource was not found.",
-        error: "Not Found",
-        timestamp: new Date().toISOString(),
-        path: context.req.path,
-      });
-    }
-  }
+	catch(exception: NotFoundException, context: Context) {
+		if (exception instanceof NotFoundException) {
+			context.status(404)
+			return context.json({
+				statusCode: 404,
+				message: 'The requested resource was not found.',
+				error: 'Not Found',
+				timestamp: new Date().toISOString(),
+				path: context.req.path
+			})
+		}
+	}
 }
 ```
 
@@ -67,34 +68,39 @@ Global filters are ideal for handling common exceptions across an entire applica
 
 ```typescript
 const { hono } = await Application.create(AppModule, {
-  components: {
-    filters: [new NotFoundExceptionFilter()],
-  },
-});
+	components: {
+		filters: [new NotFoundExceptionFilter()]
+	}
+})
 ```
 
 ### Controller- and Handler-Level Filters
 
-You can also apply filters to a specific controller or route handler, which is useful for handling exceptions specific to a particular part of your application.
+You can also apply filters to a specific controller or route handler, which is useful for handling exceptions specific
+to a particular part of your application.
 
 ```typescript
-import { Controller, Get, UseFilters } from "honestjs";
-import { CustomExceptionFilter } from "./filters/custom.filter";
+import { Controller, Get, UseFilters } from 'honestjs'
+import { CustomExceptionFilter } from './filters/custom.filter'
 
-@Controller("/special")
+@Controller('/special')
 @UseFilters(CustomExceptionFilter)
 export class SpecialController {
-  @Get()
-  doSomethingSpecial() {
-    // If this handler throws a CustomException, it will be caught by the CustomExceptionFilter.
-  }
+	@Get()
+	doSomethingSpecial() {
+		// If this handler throws a CustomException, it will be caught by the CustomExceptionFilter.
+	}
 }
 ```
 
 ## How It Works
 
-When an unhandled exception is thrown during the request lifecycle, the HonestJS exception handling mechanism takes over. It searches for a suitable filter to handle the exception, starting at the handler level, then moving to the controller level, and finally checking for global filters.
+When an unhandled exception is thrown during the request lifecycle, the HonestJS exception handling mechanism takes
+over. It searches for a suitable filter to handle the exception, starting at the handler level, then moving to the
+controller level, and finally checking for global filters.
 
-The first filter that matches the exception type is used to handle the exception. If no specific filter is found, the default global exception filter is used.
+The first filter that matches the exception type is used to handle the exception. If no specific filter is found, the
+default global exception filter is used.
 
-Using exception filters allows you to centralize error handling logic and provide consistent, well-formatted error responses.
+Using exception filters allows you to centralize error handling logic and provide consistent, well-formatted error
+responses.

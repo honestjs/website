@@ -1,9 +1,8 @@
 # API Docs Plugin
 
-The API Docs Plugin generates OpenAPI JSON from an artifact and serves it
-together with Swagger UI. The artifact can be a direct object or an application
-context key. When used with [RPC Plugin](./rpc-plugin), it defaults to the
-context key `'rpc.artifact'`, so you can register it with no options.
+The API Docs Plugin generates OpenAPI JSON from an artifact and serves it together with Swagger UI. The artifact can be
+a direct object or an application context key. When used with [RPC Plugin](./rpc-plugin), it defaults to the context key
+`'rpc.artifact'`, so you can register it with no options.
 
 ## Installation
 
@@ -19,25 +18,23 @@ pnpm add @honestjs/api-docs-plugin
 
 ### Using artifact from RPC Plugin
 
-The RPC plugin writes its artifact to the application context. API Docs defaults
-to the context key `'rpc.artifact'`, so you can omit options when using both
-plugins. Ensure RPC runs **before** ApiDocs in the plugins array:
+The RPC plugin writes its artifact to the application context. API Docs defaults to the context key `'rpc.artifact'`, so
+you can omit options when using both plugins. Ensure RPC runs **before** ApiDocs in the plugins array:
 
 ```typescript
-import { Application } from "honestjs";
-import { RPCPlugin } from "@honestjs/rpc-plugin";
-import { ApiDocsPlugin } from "@honestjs/api-docs-plugin";
-import AppModule from "./app.module";
+import { Application } from 'honestjs'
+import { RPCPlugin } from '@honestjs/rpc-plugin'
+import { ApiDocsPlugin } from '@honestjs/api-docs-plugin'
+import AppModule from './app.module'
 
 const { hono } = await Application.create(AppModule, {
-  plugins: [new RPCPlugin(), new ApiDocsPlugin()],
-});
+	plugins: [new RPCPlugin(), new ApiDocsPlugin()]
+})
 
-export default hono;
+export default hono
 ```
 
-If RPC uses custom `context.namespace` or `context.keys.artifact`, pass the
-resulting full key to `artifact` (e.g.
+If RPC uses custom `context.namespace` or `context.keys.artifact`, pass the resulting full key to `artifact` (e.g.
 `new ApiDocsPlugin({ artifact: 'custom.artifact' })`).
 
 By default:
@@ -50,46 +47,46 @@ By default:
 You can pass the artifact object directly instead of a context key:
 
 ```typescript
-import { ApiDocsPlugin } from "@honestjs/api-docs-plugin";
+import { ApiDocsPlugin } from '@honestjs/api-docs-plugin'
 
 const artifact = {
-  artifactVersion: "1",
-  routes: [
-    {
-      method: "GET",
-      handler: "list",
-      controller: "UsersController",
-      fullPath: "/users",
-      parameters: [],
-    },
-  ],
-  schemas: [],
-};
+	artifactVersion: '1',
+	routes: [
+		{
+			method: 'GET',
+			handler: 'list',
+			controller: 'UsersController',
+			fullPath: '/users',
+			parameters: []
+		}
+	],
+	schemas: []
+}
 
 // In Application.create options:
-plugins: [new ApiDocsPlugin({ artifact })];
+plugins: [new ApiDocsPlugin({ artifact })]
 ```
 
 ## Configuration Options
 
 ```typescript
 interface ApiDocsPluginOptions {
-  // Optional: artifact - direct object or context key. Default: 'rpc.artifact'
-  artifact?: OpenApiArtifactInput | string;
+	// Optional: artifact - direct object or context key. Default: 'rpc.artifact'
+	artifact?: OpenApiArtifactInput | string
 
-  // OpenAPI metadata (when converting artifact to spec)
-  title?: string;
-  version?: string;
-  description?: string;
-  servers?: readonly { url: string; description?: string }[];
+	// OpenAPI metadata (when converting artifact to spec)
+	title?: string
+	version?: string
+	description?: string
+	servers?: readonly { url: string; description?: string }[]
 
-  // Serving
-  openApiRoute?: string; // default: '/openapi.json'
-  uiRoute?: string; // default: '/docs'
-  uiTitle?: string; // default: 'API Docs'
-  reloadOnRequest?: boolean; // default: false
-  onOpenApiRequest?: (c, next) => void | Response | Promise<void | Response>; // optional route auth hook
-  onUiRequest?: (c, next) => void | Response | Promise<void | Response>; // optional route auth hook
+	// Serving
+	openApiRoute?: string // default: '/openapi.json'
+	uiRoute?: string // default: '/docs'
+	uiTitle?: string // default: 'API Docs'
+	reloadOnRequest?: boolean // default: false
+	onOpenApiRequest?: (c, next) => void | Response | Promise<void | Response> // optional route auth hook
+	onUiRequest?: (c, next) => void | Response | Promise<void | Response> // optional route auth hook
 }
 ```
 
@@ -107,20 +104,19 @@ interface ApiDocsPluginOptions {
 
 ```typescript
 new ApiDocsPlugin({
-  title: "My API",
-  version: "1.0.0",
-  description: "REST API for the application.",
-  servers: [{ url: "https://api.example.com", description: "Production" }],
-  openApiRoute: "/api-spec.json",
-  uiRoute: "/api-docs",
-  uiTitle: "My API Docs",
-});
+	title: 'My API',
+	version: '1.0.0',
+	description: 'REST API for the application.',
+	servers: [{ url: 'https://api.example.com', description: 'Production' }],
+	openApiRoute: '/api-spec.json',
+	uiRoute: '/api-docs',
+	uiTitle: 'My API Docs'
+})
 ```
 
 ## Programmatic API
 
-For custom workflows (e.g. writing the spec to a file), use the exported
-utilities:
+For custom workflows (e.g. writing the spec to a file), use the exported utilities:
 
 ```typescript
 import {
@@ -142,29 +138,26 @@ await write(spec, './generated/openapi.json')
 
 ```typescript
 new ApiDocsPlugin({
-  onOpenApiRequest: async (c, next) => {
-    if (c.req.header("x-api-key") !== "secret") {
-      return new Response("Unauthorized", { status: 401 });
-    }
-    await next();
-  },
-  onUiRequest: async (_c, next) => {
-    await next();
-  },
-});
+	onOpenApiRequest: async (c, next) => {
+		if (c.req.header('x-api-key') !== 'secret') {
+			return new Response('Unauthorized', { status: 401 })
+		}
+		await next()
+	},
+	onUiRequest: async (_c, next) => {
+		await next()
+	}
+})
 ```
 
 ## Artifact Contract Notes
 
 - `artifactVersion` is optional in input artifacts.
 - When present, supported value is currently `"1"`.
-- Unsupported versions fail with a clear runtime error so contract mismatches are
-  visible early.
+- Unsupported versions fail with a clear runtime error so contract mismatches are visible early.
 
 ## Integration with RPC Plugin
 
-See
-[RPC Plugin - Application Context Artifact](./rpc-plugin#application-context-artifact)
-for how the RPC plugin publishes its artifact. API Docs defaults to reading
-`'rpc.artifact'`, so with both plugins you can use `new ApiDocsPlugin()`; pass
-`artifact` only if RPC uses a custom context key.
+See [RPC Plugin - Application Context Artifact](./rpc-plugin#application-context-artifact) for how the RPC plugin
+publishes its artifact. API Docs defaults to reading `'rpc.artifact'`, so with both plugins you can use
+`new ApiDocsPlugin()`; pass `artifact` only if RPC uses a custom context key.

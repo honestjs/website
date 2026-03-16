@@ -1,6 +1,7 @@
 # Project Organization
 
-Understanding how to organize your HonestJS application is crucial for building maintainable and scalable projects. This guide covers the recommended folder structure and organizational patterns.
+Understanding how to organize your HonestJS application is crucial for building maintainable and scalable projects. This
+guide covers the recommended folder structure and organizational patterns.
 
 ## Recommended Folder Structure
 
@@ -76,28 +77,28 @@ Each feature in your application should be organized into its own module. A modu
 ```typescript
 // users.module.ts
 @Module({
-  controllers: [UsersController],
-  services: [UsersService],
+	controllers: [UsersController],
+	services: [UsersService]
 })
 class UsersModule {}
 
 // users.controller.ts
-@Controller("users")
+@Controller('users')
 class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+	constructor(private readonly usersService: UsersService) {}
 
-  @Get()
-  async getUsers() {
-    return await this.usersService.findAll();
-  }
+	@Get()
+	async getUsers() {
+		return await this.usersService.findAll()
+	}
 }
 
 // users.service.ts
 @Service()
 class UsersService {
-  async findAll() {
-    // Business logic here
-  }
+	async findAll() {
+		// Business logic here
+	}
 }
 ```
 
@@ -107,18 +108,19 @@ HonestJS supports both global and module-specific components:
 
 ### Global Components
 
-Global components are available throughout the entire application and are typically defined in the root module or configuration:
+Global components are available throughout the entire application and are typically defined in the root module or
+configuration:
 
 ```typescript
 // Global middleware, guards, pipes, and filters
 const { app, hono } = await Application.create(AppModule, {
-  components: {
-    middleware: [new LoggerMiddleware()],
-    guards: [AuthGuard],
-    pipes: [ValidationPipe],
-    filters: [HttpExceptionFilter],
-  },
-});
+	components: {
+		middleware: [new LoggerMiddleware()],
+		guards: [AuthGuard],
+		pipes: [ValidationPipe],
+		filters: [HttpExceptionFilter]
+	}
+})
 ```
 
 ### Module-Specific Components
@@ -127,24 +129,24 @@ Module-specific components are scoped to a particular feature and can be applied
 
 ```typescript
 @Module({
-  controllers: [UsersController],
-  services: [UsersService],
+	controllers: [UsersController],
+	services: [UsersService]
 })
 class UsersModule {}
 
 // Or at the controller level
-@Controller("users")
+@Controller('users')
 @UseMiddleware(UsersMiddleware)
 @UseGuards(UsersGuard)
 class UsersController {}
 
 // Or at the handler level
-@Controller("users")
+@Controller('users')
 class UsersController {
-  @Get()
-  @UseGuards(AdminGuard)
-  @UsePipes(CustomPipe)
-  getUsers() {}
+	@Get()
+	@UseGuards(AdminGuard)
+	@UsePipes(CustomPipe)
+	getUsers() {}
 }
 ```
 
@@ -225,16 +227,16 @@ Tests should be co-located with the code they test:
 
 ```typescript
 // src/modules/users/users.service.test.ts
-import { describe, it, expect } from "bun:test";
-import { UsersService } from "./users.service";
+import { describe, it, expect } from 'bun:test'
+import { UsersService } from './users.service'
 
-describe("UsersService", () => {
-  it("should return all users", async () => {
-    const service = new UsersService();
-    const users = await service.findAll();
-    expect(users).toBeDefined();
-  });
-});
+describe('UsersService', () => {
+	it('should return all users', async () => {
+		const service = new UsersService()
+		const users = await service.findAll()
+		expect(users).toBeDefined()
+	})
+})
 ```
 
 ## Best Practices

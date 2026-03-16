@@ -1,35 +1,39 @@
 # Dependency Injection
 
-HonestJS includes a simple and effective dependency injection (DI) container that manages the instantiation of your classes and their dependencies. This allows you to write loosely coupled, testable, and maintainable code.
+HonestJS includes a simple and effective dependency injection (DI) container that manages the instantiation of your
+classes and their dependencies. This allows you to write loosely coupled, testable, and maintainable code.
 
 ## Core Concepts
 
 The DI system is built around a few key concepts:
 
-- **Services:** Classes managed by the DI container. In current HonestJS, these are typically declared with `@Service()` and/or listed in module `services`.
+- **Services:** Classes managed by the DI container. In current HonestJS, these are typically declared with `@Service()`
+  and/or listed in module `services`.
 - **Consumers:** Classes that consume services. **Controllers** are the most common consumers.
-- **Injection:** This is the process of providing an instance of a dependency to a consumer. HonestJS primarily uses **constructor injection**.
+- **Injection:** This is the process of providing an instance of a dependency to a consumer. HonestJS primarily uses
+  **constructor injection**.
 - **Container:** The DI container manages service lifecycle and dependency resolution.
 
 ## Services
 
-Services are the primary candidates for dependency injection. They are typically used to encapsulate business logic, data access, or other concerns. To define a service, use the `@Service()` decorator.
+Services are the primary candidates for dependency injection. They are typically used to encapsulate business logic,
+data access, or other concerns. To define a service, use the `@Service()` decorator.
 
 **Example:**
 
 ::: code-group
 
 ```typescript [app.service.ts]
-import { Service } from "honestjs";
+import { Service } from 'honestjs'
 
 @Service()
 class AppService {
-  helloWorld(): string {
-    return "Hello, World!";
-  }
+	helloWorld(): string {
+		return 'Hello, World!'
+	}
 }
 
-export default AppService;
+export default AppService
 ```
 
 :::
@@ -38,27 +42,28 @@ The `@Service()` decorator marks the `AppService` class as a provider that can b
 
 ## Constructor Injection
 
-To inject a service into a controller (or another service), you simply declare it as a parameter in the consumer's constructor.
+To inject a service into a controller (or another service), you simply declare it as a parameter in the consumer's
+constructor.
 
 **Example:**
 
 ::: code-group
 
 ```typescript [app.controller.ts]
-import { Controller, Get } from "honestjs";
-import AppService from "./app.service";
+import { Controller, Get } from 'honestjs'
+import AppService from './app.service'
 
 @Controller()
 class AppController {
-  constructor(private readonly appService: AppService) {}
+	constructor(private readonly appService: AppService) {}
 
-  @Get()
-  helloWorld(): string {
-    return this.appService.helloWorld();
-  }
+	@Get()
+	helloWorld(): string {
+		return this.appService.helloWorld()
+	}
 }
 
-export default AppController;
+export default AppController
 ```
 
 :::
@@ -81,19 +86,20 @@ HonestJS's DI container maintains a map of class constructors to their instances
 
 ## Service Registration
 
-Services are automatically registered when you use the `@Service()` decorator. However, you can also register them explicitly in your modules:
+Services are automatically registered when you use the `@Service()` decorator. However, you can also register them
+explicitly in your modules:
 
 ::: code-group
 
 ```typescript [users.module.ts]
-import { Module } from "honestjs";
-import { UsersController } from "./users.controller";
-import { UsersService } from "./users.service";
-import { DatabaseService } from "./database.service";
+import { Module } from 'honestjs'
+import { UsersController } from './users.controller'
+import { UsersService } from './users.service'
+import { DatabaseService } from './database.service'
 
 @Module({
-  controllers: [UsersController],
-  services: [UsersService, DatabaseService],
+	controllers: [UsersController],
+	services: [UsersService, DatabaseService]
 })
 class UsersModule {}
 ```
@@ -105,53 +111,53 @@ class UsersModule {}
 The DI container can handle complex dependency chains automatically:
 
 ```typescript
-import { Service } from "honestjs";
+import { Service } from 'honestjs'
 
 @Service()
 class DatabaseService {
-  connect() {
-    console.log("Database connected");
-  }
+	connect() {
+		console.log('Database connected')
+	}
 }
 
 @Service()
 class LoggerService {
-  log(message: string) {
-    console.log(`[LOG] ${message}`);
-  }
+	log(message: string) {
+		console.log(`[LOG] ${message}`)
+	}
 }
 
 @Service()
 class UserRepository {
-  constructor(
-    private readonly database: DatabaseService,
-    private readonly logger: LoggerService,
-  ) {}
+	constructor(
+		private readonly database: DatabaseService,
+		private readonly logger: LoggerService
+	) {}
 
-  findAll() {
-    this.logger.log("Finding all users");
-    this.database.connect();
-    return ["user1", "user2"];
-  }
+	findAll() {
+		this.logger.log('Finding all users')
+		this.database.connect()
+		return ['user1', 'user2']
+	}
 }
 
 @Service()
 class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+	constructor(private readonly userRepository: UserRepository) {}
 
-  getUsers() {
-    return this.userRepository.findAll();
-  }
+	getUsers() {
+		return this.userRepository.findAll()
+	}
 }
 
-@Controller("users")
+@Controller('users')
 class UsersController {
-  constructor(private readonly userService: UserService) {}
+	constructor(private readonly userService: UserService) {}
 
-  @Get()
-  getUsers() {
-    return this.userService.getUsers();
-  }
+	@Get()
+	getUsers() {
+		return this.userService.getUsers()
+	}
 }
 ```
 
@@ -168,71 +174,72 @@ In this example, when `UsersController` is instantiated, the container will:
 You can provide a custom DI container if you need special functionality:
 
 ```typescript
-import type { DiContainer } from "honestjs";
-import type { Constructor } from "honestjs";
+import type { DiContainer } from 'honestjs'
+import type { Constructor } from 'honestjs'
 
 class CustomContainer implements DiContainer {
-  private instances = new Map<Constructor, any>();
+	private instances = new Map<Constructor, any>()
 
-  resolve<T>(target: Constructor<T>): T {
-    if (this.instances.has(target)) {
-      return this.instances.get(target);
-    }
+	resolve<T>(target: Constructor<T>): T {
+		if (this.instances.has(target)) {
+			return this.instances.get(target)
+		}
 
-    // Custom resolution logic
-    const instance = new target();
-    this.instances.set(target, instance);
-    return instance;
-  }
+		// Custom resolution logic
+		const instance = new target()
+		this.instances.set(target, instance)
+		return instance
+	}
 
-  register<T>(target: Constructor<T>, instance: T): void {
-    this.instances.set(target, instance);
-  }
+	register<T>(target: Constructor<T>, instance: T): void {
+		this.instances.set(target, instance)
+	}
 }
 
 const { app, hono } = await Application.create(AppModule, {
-  container: new CustomContainer(),
-});
+	container: new CustomContainer()
+})
 ```
 
 ## Service Lifecycle
 
 ### Singleton Scope
 
-By default, all registered services are singletons. This means that the same instance of a service is shared across the entire application:
+By default, all registered services are singletons. This means that the same instance of a service is shared across the
+entire application:
 
 ```typescript
 @Service()
 class CounterService {
-  private count = 0;
+	private count = 0
 
-  increment() {
-    return ++this.count;
-  }
+	increment() {
+		return ++this.count
+	}
 
-  getCount() {
-    return this.count;
-  }
+	getCount() {
+		return this.count
+	}
 }
 
-@Controller("counter1")
+@Controller('counter1')
 class CounterController1 {
-  constructor(private counter: CounterService) {}
+	constructor(private counter: CounterService) {}
 
-  @Get("increment")
-  increment() {
-    return { count: this.counter.increment() };
-  }
+	@Get('increment')
+	increment() {
+		return { count: this.counter.increment() }
+	}
 }
 
-@Controller("counter2")
+@Controller('counter2')
 class CounterController2 {
-  constructor(private counter: CounterService) {}
+	constructor(private counter: CounterService) {}
 
-  @Get("count")
-  getCount() {
-    return { count: this.counter.getCount() };
-  }
+	@Get('count')
+	getCount() {
+		return { count: this.counter.getCount() }
+	}
 }
 ```
 
@@ -247,12 +254,12 @@ The container can detect and throw an error for circular dependencies:
 ```typescript
 @Service()
 class ServiceA {
-  constructor(private serviceB: ServiceB) {}
+	constructor(private serviceB: ServiceB) {}
 }
 
 @Service()
 class ServiceB {
-  constructor(private serviceA: ServiceA) {} // This will throw an error
+	constructor(private serviceA: ServiceA) {} // This will throw an error
 }
 ```
 
@@ -263,9 +270,9 @@ Error message: `Circular dependency detected: ServiceA -> ServiceB -> ServiceA`
 If a dependency cannot be resolved, the container will throw a clear error:
 
 ```typescript
-@Controller("users")
+@Controller('users')
 class UsersController {
-  constructor(private userService: UserService) {} // Error if UserService is not registered
+	constructor(private userService: UserService) {} // Error if UserService is not registered
 }
 ```
 
@@ -277,9 +284,9 @@ Prefer constructor injection. Property injection is not currently part of Honest
 
 ```typescript
 // ✅ Good
-@Controller("users")
+@Controller('users')
 class UsersController {
-  constructor(private readonly userService: UserService) {}
+	constructor(private readonly userService: UserService) {}
 }
 
 // ❌ Not supported in current HonestJS core
@@ -294,28 +301,28 @@ Each service should have a single responsibility:
 // ✅ Good - Single responsibility
 @Service()
 class UserService {
-  async findById(id: string) {
-    // User-specific logic
-  }
+	async findById(id: string) {
+		// User-specific logic
+	}
 }
 
 @Service()
 class EmailService {
-  async sendEmail(to: string, subject: string) {
-    // Email-specific logic
-  }
+	async sendEmail(to: string, subject: string) {
+		// Email-specific logic
+	}
 }
 
 // ❌ Avoid - Multiple responsibilities
 @Service()
 class UserService {
-  async findById(id: string) {
-    // User logic
-  }
+	async findById(id: string) {
+		// User logic
+	}
 
-  async sendEmail(to: string, subject: string) {
-    // Email logic - should be in EmailService
-  }
+	async sendEmail(to: string, subject: string) {
+		// Email logic - should be in EmailService
+	}
 }
 ```
 
@@ -325,24 +332,24 @@ Define interfaces for your services to make them easier to test:
 
 ```typescript
 interface IUserService {
-  findById(id: string): Promise<User>;
-  create(user: CreateUserDto): Promise<User>;
+	findById(id: string): Promise<User>
+	create(user: CreateUserDto): Promise<User>
 }
 
 @Service()
 class UserService implements IUserService {
-  async findById(id: string): Promise<User> {
-    // Implementation
-  }
+	async findById(id: string): Promise<User> {
+		// Implementation
+	}
 
-  async create(user: CreateUserDto): Promise<User> {
-    // Implementation
-  }
+	async create(user: CreateUserDto): Promise<User> {
+		// Implementation
+	}
 }
 
-@Controller("users")
+@Controller('users')
 class UsersController {
-  constructor(private readonly userService: IUserService) {}
+	constructor(private readonly userService: IUserService) {}
 }
 ```
 
@@ -354,29 +361,29 @@ Design your services to avoid circular references:
 // ✅ Good - No circular dependency
 @Service()
 class UserService {
-  async findById(id: string) {
-    // User logic
-  }
+	async findById(id: string) {
+		// User logic
+	}
 }
 
 @Service()
 class PostService {
-  constructor(private userService: UserService) {}
+	constructor(private userService: UserService) {}
 
-  async findByUserId(userId: string) {
-    // Post logic that uses UserService
-  }
+	async findByUserId(userId: string) {
+		// Post logic that uses UserService
+	}
 }
 
 // ❌ Avoid - Circular dependency
 @Service()
 class UserService {
-  constructor(private postService: PostService) {}
+	constructor(private postService: PostService) {}
 }
 
 @Service()
 class PostService {
-  constructor(private userService: UserService) {}
+	constructor(private userService: UserService) {}
 }
 ```
 
@@ -388,24 +395,24 @@ Organize your services into logical modules:
 
 ```typescript [modules/users/users.module.ts]
 @Module({
-  controllers: [UsersController],
-  services: [UserService, UserRepository],
+	controllers: [UsersController],
+	services: [UserService, UserRepository]
 })
 class UsersModule {}
 ```
 
 ```typescript [modules/posts/posts.module.ts]
 @Module({
-  controllers: [PostsController],
-  services: [PostService, PostRepository],
+	controllers: [PostsController],
+	services: [PostService, PostRepository]
 })
 class PostsModule {}
 ```
 
 ```typescript [app.module.ts]
 @Module({
-  imports: [UsersModule, PostsModule],
-  services: [DatabaseService, LoggerService],
+	imports: [UsersModule, PostsModule],
+	services: [DatabaseService, LoggerService]
 })
 class AppModule {}
 ```
@@ -414,20 +421,23 @@ class AppModule {}
 
 ## Type Limitations
 
-The DI system relies on TypeScript's `emitDecoratorMetadata` feature, which uses `reflect-metadata`. This works well for classes, but it has a limitation: you cannot inject a dependency using an interface as a type hint, because interfaces do not exist at runtime.
+The DI system relies on TypeScript's `emitDecoratorMetadata` feature, which uses `reflect-metadata`. This works well for
+classes, but it has a limitation: you cannot inject a dependency using an interface as a type hint, because interfaces
+do not exist at runtime.
 
 ```typescript
 // ❌ This won't work
-@Controller("users")
+@Controller('users')
 class UsersController {
-  constructor(private userService: IUserService) {} // Interface not available at runtime
+	constructor(private userService: IUserService) {} // Interface not available at runtime
 }
 
 // ✅ This works
-@Controller("users")
+@Controller('users')
 class UsersController {
-  constructor(private userService: UserService) {} // Class is available at runtime
+	constructor(private userService: UserService) {} // Class is available at runtime
 }
 ```
 
-By following these principles, you can build robust and well-structured applications with clear separation of concerns and excellent testability.
+By following these principles, you can build robust and well-structured applications with clear separation of concerns
+and excellent testability.
