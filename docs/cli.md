@@ -22,7 +22,7 @@ honestjs new [project-name]
 
 | Option | Description |
 |--------|-------------|
-| `-t, --template <template>` | Template to use: `barebone`, `blank`, `mvc` |
+| `-t, --template <template>` | Template name (`barebone`, `blank`, `mvc`, `api-starter`) or local path (`./path`, `~/path`) |
 | `-p, --package-manager <manager>` | Package manager: `bun`, `npm`, `yarn`, `pnpm` |
 | `--typescript` | Use TypeScript (default) |
 | `--no-typescript` | Skip TypeScript |
@@ -46,6 +46,9 @@ honestjs new [project-name]
 honestjs new my-app
 honestjs new my-app -t mvc -y
 honestjs new my-app --template barebone --package-manager pnpm
+# Local templates (repo root or single template dir)
+honestjs new my-app --template ./templates/api-starter
+honestjs new my-app -t ~/company/honest-templates -y
 ```
 
 ---
@@ -65,6 +68,7 @@ honestjs list
 | `-j, --json` | Output in JSON format |
 | `-c, --category <category>` | Filter by category |
 | `-t, --tag <tag>` | Filter by tag |
+| `-l, --local <path>` | List templates from a local path (repo root or single template) |
 | `--offline` | Use cached templates only (no network) |
 | `--refresh-templates` | Force refresh template cache before use |
 
@@ -75,6 +79,7 @@ honestjs list
 honestjs list --json
 honestjs list --category app
 honestjs list --tag minimal
+honestjs list --local ./templates
 ```
 
 ---
@@ -85,7 +90,14 @@ Show CLI version, available templates, and environment info.
 
 ```bash
 honestjs info
+honestjs info --local ./templates
 ```
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-l, --local <path>` | Show templates from a local path instead of remote |
 
 Displays:
 
