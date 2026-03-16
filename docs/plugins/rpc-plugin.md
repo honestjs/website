@@ -233,7 +233,7 @@ expect(mockFetch).toHaveBeenCalledWith('http://test.com/api/v1/users/123', expec
 
 ### 1. Route Analysis
 
--   Scans your HonestJS route registry
+-   Scans your HonestJS application routes (from `app.getRoutes()`)
 -   Uses ts-morph to analyze controller source code
 -   Extracts method signatures, parameter types, and return types
 -   Builds comprehensive route metadata

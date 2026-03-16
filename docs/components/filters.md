@@ -18,15 +18,16 @@ Exception filters are essential for centralized error handling. Common use cases
 An exception filter is a class that implements the `IFilter` interface. This interface has a `catch` method that receives the exception and the Hono `Context`.
 
 ```typescript
-interface IFilter<T = any> {
-	catch(exception: T, context: Context): void | Promise<void>
+interface IFilter {
+	catch(exception: Error, context: Context): Response | Promise<Response | undefined> | undefined
 }
 ```
 
 -   `exception`: The exception object that was thrown.
 -   `context`: The Hono `Context` object.
+-   **Returns:** A `Response` to send to the client, or `undefined` to pass the exception to the next filter.
 
-The `catch` method is responsible for handling the exception and sending a response to the client.
+The `catch` method is responsible for handling the exception and optionally returning a response.
 
 **Example:** A custom filter for a `NotFoundException`.
 
