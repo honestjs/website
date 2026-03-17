@@ -275,7 +275,8 @@ The magic happens through:
 
 - **Decorators**: `@Service()`, `@Controller()`, `@Get()`, `@Module()` tell HonestJS how to handle each class
 - **Dependency Injection**: The controller automatically receives the service instance
-- **Reflection**: TypeScript's reflection metadata enables the DI system to work. Always import `reflect-metadata` once at the top of your entry file, before any Honest decorators are loaded.
+- **Reflection**: TypeScript's reflection metadata enables the DI system to work. Always import `reflect-metadata` once
+  at the top of your entry file, before any Honest decorators are loaded.
 
 ## Project Organization
 

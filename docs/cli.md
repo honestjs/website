@@ -20,25 +20,25 @@ honestjs new [project-name]
 
 **Options:**
 
-| Option | Description |
-|--------|-------------|
-| `-t, --template <template>` | Template name (`barebone`, `blank`, `mvc`) or local path (`./path`, `~/path`) |
-| `-p, --package-manager <manager>` | Package manager: `bun`, `npm`, `yarn`, `pnpm` |
-| `--typescript` | Use TypeScript (default) |
-| `--no-typescript` | Skip TypeScript |
-| `--eslint` | Add ESLint configuration |
-| `--no-eslint` | Skip ESLint |
-| `--prettier` | Add Prettier configuration |
-| `--no-prettier` | Skip Prettier |
-| `--docker` | Add Docker configuration |
-| `--no-docker` | Skip Docker |
-| `--git` | Initialize git repository |
-| `--no-git` | Skip git initialization |
-| `--install` | Install dependencies after creation |
-| `--no-install` | Skip dependency installation |
-| `-y, --yes` | Skip prompts and use defaults |
-| `--offline` | Use cached templates only (no network) |
-| `--refresh-templates` | Force refresh template cache before use |
+| Option                            | Description                                                                   |
+| --------------------------------- | ----------------------------------------------------------------------------- |
+| `-t, --template <template>`       | Template name (`barebone`, `blank`, `mvc`) or local path (`./path`, `~/path`) |
+| `-p, --package-manager <manager>` | Package manager: `bun`, `npm`, `yarn`, `pnpm`                                 |
+| `--typescript`                    | Use TypeScript (default)                                                      |
+| `--no-typescript`                 | Skip TypeScript                                                               |
+| `--eslint`                        | Add ESLint configuration                                                      |
+| `--no-eslint`                     | Skip ESLint                                                                   |
+| `--prettier`                      | Add Prettier configuration                                                    |
+| `--no-prettier`                   | Skip Prettier                                                                 |
+| `--docker`                        | Add Docker configuration                                                      |
+| `--no-docker`                     | Skip Docker                                                                   |
+| `--git`                           | Initialize git repository                                                     |
+| `--no-git`                        | Skip git initialization                                                       |
+| `--install`                       | Install dependencies after creation                                           |
+| `--no-install`                    | Skip dependency installation                                                  |
+| `-y, --yes`                       | Skip prompts and use defaults                                                 |
+| `--offline`                       | Use cached templates only (no network)                                        |
+| `--refresh-templates`             | Force refresh template cache before use                                       |
 
 **Examples:**
 
@@ -63,14 +63,14 @@ honestjs list
 
 **Options:**
 
-| Option | Description |
-|--------|-------------|
-| `-j, --json` | Output in JSON format |
-| `-c, --category <category>` | Filter by category |
-| `-t, --tag <tag>` | Filter by tag |
-| `-l, --local <path>` | List templates from a local path (repo root or single template) |
-| `--offline` | Use cached templates only (no network) |
-| `--refresh-templates` | Force refresh template cache before use |
+| Option                      | Description                                                     |
+| --------------------------- | --------------------------------------------------------------- |
+| `-j, --json`                | Output in JSON format                                           |
+| `-c, --category <category>` | Filter by category                                              |
+| `-t, --tag <tag>`           | Filter by tag                                                   |
+| `-l, --local <path>`        | List templates from a local path (repo root or single template) |
+| `--offline`                 | Use cached templates only (no network)                          |
+| `--refresh-templates`       | Force refresh template cache before use                         |
 
 **Examples:**
 
@@ -95,8 +95,8 @@ honestjs info --local ./templates
 
 **Options:**
 
-| Option | Description |
-|--------|-------------|
+| Option               | Description                                        |
+| -------------------- | -------------------------------------------------- |
 | `-l, --local <path>` | Show templates from a local path instead of remote |
 
 Displays:
@@ -139,27 +139,27 @@ honestjs g <schematic> <name>
 
 **Schematics:**
 
-| Schematic | Alias | Description |
-|-----------|-------|-------------|
-| `controller` | `c` | Generate a controller |
-| `service` | `s` | Generate a service |
-| `module` | `m` | Generate a module |
-| `view` | `v` | Generate a view |
+| Schematic    | Alias | Description           |
+| ------------ | ----- | --------------------- |
+| `controller` | `c`   | Generate a controller |
+| `service`    | `s`   | Generate a service    |
+| `module`     | `m`   | Generate a module     |
+| `view`       | `v`   | Generate a view       |
 | `middleware` | `c-m` | Generate a middleware |
-| `guard` | `c-g` | Generate a guard |
-| `filter` | `c-f` | Generate a filter |
-| `pipe` | `c-p` | Generate a pipe |
+| `guard`      | `c-g` | Generate a guard      |
+| `filter`     | `c-f` | Generate a filter     |
+| `pipe`       | `c-p` | Generate a pipe       |
 
 **Options:**
 
-| Option | Description |
-|--------|-------------|
+| Option              | Description                                       |
+| ------------------- | ------------------------------------------------- |
 | `-p, --path <path>` | Specify the path where the file should be created |
-| `-f, --flat` | Create files in a flat structure |
-| `--force` | Overwrite existing files without prompting |
-| `--dry-run` | Show what would be created without writing files |
-| `--skip-import` | Skip importing the generated item |
-| `--export` | Export the generated item |
+| `-f, --flat`        | Create files in a flat structure                  |
+| `--force`           | Overwrite existing files without prompting        |
+| `--dry-run`         | Show what would be created without writing files  |
+| `--skip-import`     | Skip importing the generated item                 |
+| `--export`          | Export the generated item                         |
 
 **Examples:**
 

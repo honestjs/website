@@ -21,9 +21,9 @@ HonestJS provides a clean, decorator-based API for building web applications wit
 
 ## Quick Start
 
-Get up and running with HonestJS in minutes! Use the [CLI](./cli.md) (`bun add -g @honestjs/cli` then `honestjs new my-app`) or
-check our [Getting Started](./getting-started.md) guide for a complete tutorial. Or jump right in with this minimal
-example:
+Get up and running with HonestJS in minutes! Use the [CLI](./cli.md) (`bun add -g @honestjs/cli` then
+`honestjs new my-app`) or check our [Getting Started](./getting-started.md) guide for a complete tutorial. Or jump right
+in with this minimal example:
 
 ```typescript
 import 'reflect-metadata'

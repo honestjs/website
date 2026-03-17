@@ -200,10 +200,7 @@ export class UsersController {
 	}
 
 	@Get()
-	async findAll(
-		@Query('page') page?: string,
-		@Query('limit') limit?: string
-	) {
+	async findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
 		// Query params are always strings — parse with parseInt/Number or use pipes
 		const pagination = {
 			page: page ? parseInt(page, 10) : 1,
