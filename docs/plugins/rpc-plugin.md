@@ -254,6 +254,80 @@ expect(mockFetch).toHaveBeenCalledWith('http://test.com/api/v1/users/123', expec
 - Creates parameter validation and typing
 - Builds the complete RPC client with proper error handling
 
+## Type Inference and Limitations
+
+The plugin extracts type **names** from controller method parameters and return types, then uses `ts-json-schema-generator` to convert those names into JSON schemas and TypeScript interfaces for the generated client. Not all TypeScript type shapes can be reliably converted; this section describes what works and what does not.
+
+### Supported Type Patterns
+
+- **Explicit interfaces** and **type aliases** with plain property shapes
+- **Classes** with simple properties
+- Built-in utility types such as `Partial`, `Pick`, `Omit`, and `Record` (when applied to simple types)
+- **Arrays** of named types (e.g. `User[]`)
+- **Enums** and primitive unions
+
+### Unsupported Type Patterns
+
+- **Complex inferred types** from ORMs or libraries (e.g. `typeof table.$inferSelect`, `$inferInsert`)
+- Deeply nested **conditional**, **mapped**, or **intersection** types
+- **Anonymous internal symbols** (e.g. `__type`) that the compiler uses for inline object types
+- Types that depend on heavy generic instantiation chains
+
+When schema generation fails for a type, the plugin logs a warning and, in `best-effort` mode, emits an empty interface with a `// No schema definition found` comment in the generated client so generation continues.
+
+### Best Practice: Explicit DTOs
+
+Use **explicit interfaces or type aliases** for controller parameters and return types. Keep ORM-inferred types in your services and map to explicit DTOs at the controller boundary.
+
+**Problematic (schema generation may fail):**
+
+```typescript
+import type { links } from '../db/schema'
+
+export type Link = typeof links.$inferSelect
+
+@Controller('links')
+class LinksController {
+	@Get('/:code')
+	async getLink(@Param('code') code: string): Promise<Link> {
+		// ...
+	}
+}
+```
+
+**Recommended (reliable schema generation):**
+
+```typescript
+export interface Link {
+	id: number
+	code: string
+	url: string
+	clicks: number
+	lastClickedAt: Date | null
+	expiresAt: Date | null
+	createdAt: Date
+	updatedAt: Date
+}
+
+@Controller('links')
+class LinksController {
+	@Get('/:code')
+	async getLink(@Param('code') code: string): Promise<Link> {
+		// ...
+	}
+}
+```
+
+### Inline Return Types
+
+When the return type is an **inline object literal** (e.g. `Promise<{ data: Link[]; total: number }>`), the plugin inlines it directly in the generated client and does not need to resolve a named type for schema generation. Those return types always work regardless of whether `Link` is inferred or explicit.
+
+### Diagnosing Schema Issues
+
+- Check **`rpc-diagnostics.json`** in the output directory: it lists `warnings` for each type that failed schema generation.
+- In **best-effort** mode (default), failed types result in empty interfaces; the client still generates.
+- Set **`failOnSchemaError: true`** (or use `mode: 'strict'`) to make schema failures throw and stop generation.
+
 ## Example Generated Output
 
 ### Generated Client
