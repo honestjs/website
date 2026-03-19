@@ -91,7 +91,14 @@ Use startup diagnostics while developing, and opt into stricter startup checks w
 
 ```typescript
 const { app, hono } = await Application.create(AppModule, {
-	debug: { routes: true, plugins: true },
+	debug: {
+		routes: true,
+		plugins: true,
+		pipeline: true,
+		di: true,
+		startup: true
+	},
+	diagnostics: myDiagnosticsEmitter,
 	strict: {
 		// Fails startup if no routes were registered
 		requireRoutes: true
@@ -102,6 +109,23 @@ const { app, hono } = await Application.create(AppModule, {
 	}
 })
 ```
+
+Debug categories:
+
+- `routes`: route registration diagnostics (including per-controller registration timing)
+- `plugins`: plugin ordering and lifecycle diagnostics
+- `pipeline`: request pipeline diagnostics (guards, pipes, execution path)
+- `di`: dependency injection diagnostics
+- `startup`: startup lifecycle diagnostics (registered routes, completion/failure timing)
+
+Use `debug: true` to enable all categories.
+
+### Runtime Metadata Behavior
+
+Decorator metadata is collected globally, but each application instance runs against an immutable metadata snapshot that
+is captured at startup. This prevents post-bootstrap metadata mutations from changing behavior in already-running apps.
+
+In practical terms, the metadata used by `RouteManager` and `ComponentManager` is app-scoped at runtime.
 
 ### Global Components Configuration
 

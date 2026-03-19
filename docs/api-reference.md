@@ -518,7 +518,8 @@ Configuration options for the HonestJS application.
 
 ```typescript
 interface HonestOptions {
-	debug?: boolean | { routes?: boolean; plugins?: boolean }
+	debug?: boolean | { routes?: boolean; plugins?: boolean; pipeline?: boolean; di?: boolean; startup?: boolean }
+	diagnostics?: IDiagnosticsEmitter
 	strict?: {
 		requireRoutes?: boolean
 	}
@@ -544,6 +545,27 @@ interface HonestOptions {
 	plugins?: PluginEntry[]
 	onError?: (error: Error, context: Context) => Response | Promise<Response>
 	notFound?: (context: Context) => Response | Promise<Response>
+}
+```
+
+#### `DiagnosticEvent` and `IDiagnosticsEmitter`
+
+Structured diagnostics contracts emitted by framework runtime components.
+
+```typescript
+type DiagnosticLevel = 'debug' | 'info' | 'warn' | 'error'
+
+type DiagnosticCategory = 'startup' | 'routes' | 'plugins' | 'deprecations' | 'pipeline' | 'di' | 'errors'
+
+interface DiagnosticEvent {
+	level: DiagnosticLevel
+	category: DiagnosticCategory
+	message: string
+	details?: Record<string, unknown>
+}
+
+interface IDiagnosticsEmitter {
+	emit(event: DiagnosticEvent): void
 }
 ```
 
@@ -658,7 +680,6 @@ interface RouteDefinition {
 	path: string
 	method: string
 	handlerName: string | symbol
-	parameterMetadata: ParameterMetadata[]
 	version?: number | null | typeof VERSION_NEUTRAL | number[]
 	prefix?: string | null
 }
@@ -690,8 +711,8 @@ Metadata about a parameter.
 interface ParameterMetadata {
 	index: number
 	name: string
-	data?: any
-	factory: (data: any, ctx: Context) => any
+	data?: unknown
+	factory: (data: unknown, ctx: Context) => unknown | Promise<unknown>
 	metatype?: Constructor<unknown>
 }
 ```
