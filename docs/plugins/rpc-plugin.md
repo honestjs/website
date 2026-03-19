@@ -36,25 +36,57 @@ interface RPCPluginOptions {
 	readonly outputDir?: string // Output directory for generated files (default: './generated/rpc')
 	readonly generateOnInit?: boolean // Generate files on initialization (default: true)
 	readonly generators?: readonly RPCGenerator[] // Optional list of generators to execute
-	readonly mode?: 'strict' | 'best-effort' // Default: 'best-effort'
-	readonly logLevel?: 'silent' | 'error' | 'warn' | 'info' | 'debug' // Default: 'info'
-	readonly customClassMatcher?: (classDeclaration: ClassDeclaration) => boolean // Optional override for controller discovery
-	readonly failOnSchemaError?: boolean // Default: true in strict mode
-	readonly failOnRouteAnalysisWarning?: boolean // Default: true in strict mode
+	readonly mode?: 'strict' | 'best-effort' // strict fails on warnings/fallbacks
+	readonly logLevel?: 'silent' | 'error' | 'warn' | 'info' | 'debug' // default: info
+	readonly customClassMatcher?: (classDeclaration: ClassDeclaration) => boolean // optional override; default discovery uses decorators
+	readonly failOnSchemaError?: boolean // default true in strict mode
+	readonly failOnRouteAnalysisWarning?: boolean // default true in strict mode
 	readonly context?: {
 		readonly namespace?: string // Default: 'rpc'
 		readonly keys?: {
 			readonly artifact?: string // Default: 'artifact'
 		}
 	}
+	readonly hooks?: {
+		readonly preAnalysisFilters?: readonly RPCPreAnalysisFilter[]
+		readonly postAnalysisTransforms?: readonly RPCPostAnalysisTransform[]
+		readonly preEmitValidators?: readonly RPCPreEmitValidator[]
+		readonly postEmitReporters?: readonly RPCPostEmitReporter[]
+	}
 }
 ```
 
+## Generator Compatibility Contract
+
+Custom generators participate in explicit API version and capability negotiation.
+
+```typescript
+interface RPCGenerator {
+	readonly name: string
+	readonly supportedApiVersions?: readonly string[]
+	readonly requiredCapabilities?: readonly RPCGeneratorCapability[]
+	generate(context: RPCGeneratorContext): Promise<GeneratedClientInfo>
+}
+
+interface RPCGeneratorContext {
+	readonly outputDir: string
+	readonly routes: readonly ExtendedRouteInfo[]
+	readonly schemas: readonly SchemaInfo[]
+	readonly pluginApiVersion: string
+	readonly pluginCapabilities: readonly RPCGeneratorCapability[]
+}
+```
+
+The plugin validates this at construction time and fails fast if versions/capabilities are incompatible.
+
+- No legacy compatibility adapter is provided for generator API mismatches.
+- Generators must explicitly support the active plugin API version.
+
 ### Generator Behavior
 
-- If `generators` is omitted, the plugin uses the built-in `TypeScriptClientGenerator`.
-- If `generators` is defined, only those generators are executed.
-- You can explicitly include the built-in generator:
+- If `generators` is omitted, the plugin uses the built-in `TypeScriptClientGenerator` by default.
+- If `generators` is provided, only those generators are executed.
+- You can still use the built-in TypeScript client generator explicitly:
 
 ```typescript
 import { RPCPlugin, TypeScriptClientGenerator } from '@honestjs/rpc-plugin'
@@ -66,7 +98,7 @@ new RPCPlugin({
 
 ## Application Context Artifact
 
-After analysis, RPC plugin publishes this artifact to app context:
+After analysis, RPC plugin publishes this artifact to the application context:
 
 ```typescript
 type RpcArtifact = {
@@ -76,23 +108,29 @@ type RpcArtifact = {
 }
 ```
 
-`artifactVersion` is currently `"1"` and is validated by downstream consumers like the API Docs plugin.
-
-By default it is written to `'rpc.artifact'`. The API Docs plugin defaults to that key, so you can use both plugins like
-this:
+Default key is `'rpc.artifact'` (from `context.namespace + '.' + context.keys.artifact`). This enables direct
+integration with API docs:
 
 ```typescript
-import { RPCPlugin } from '@honestjs/rpc-plugin'
 import { ApiDocsPlugin } from '@honestjs/api-docs-plugin'
-import { Application } from 'honestjs'
-import AppModule from './app.module'
 
 const { hono } = await Application.create(AppModule, {
-	plugins: [new RPCPlugin(), new ApiDocsPlugin()]
+	plugins: [new RPCPlugin(), new ApiDocsPlugin({ artifact: 'rpc.artifact' })]
 })
 ```
 
+`artifactVersion` is currently `"1"` and is used for compatibility checks.
+
 ## What It Generates
+
+The plugin generates files in the output directory (default: `./generated/rpc`):
+
+| File                   | Description                                                            | When generated                 |
+| ---------------------- | ---------------------------------------------------------------------- | ------------------------------ |
+| `client.ts`            | Type-safe RPC client with all DTOs                                     | When TypeScript generator runs |
+| `.rpc-checksum`        | Hash of source files for incremental caching                           | Always                         |
+| `rpc-artifact.json`    | Serialized routes/schemas artifact for cache-backed context publishing | Always                         |
+| `rpc-diagnostics.json` | Diagnostics report (mode, warnings, cache status)                      | Always                         |
 
 ### TypeScript RPC Client (`client.ts`)
 
@@ -230,24 +268,63 @@ const testApiClient = new ApiClient('http://test.com', {
 expect(mockFetch).toHaveBeenCalledWith('http://test.com/api/v1/users/123', expect.objectContaining({ method: 'GET' }))
 ```
 
+## Hash-based Caching
+
+On startup the plugin hashes all controller source files (SHA-256) and stores the checksum in `.rpc-checksum` inside the
+output directory. On subsequent runs, if the hash matches and the expected output files already exist, the expensive
+analysis and generation pipeline is skipped entirely. This significantly reduces startup time in large projects.
+
+Caching is automatic and requires no configuration. To force regeneration:
+
+```typescript
+// Explicit cache bypass
+await rpcPlugin.analyze({ force: true })
+
+// Respect the cache (same behavior as automatic startup)
+await rpcPlugin.analyze({ force: false })
+```
+
+You can also delete `.rpc-checksum` from the output directory to clear the cache.
+
+> **Note:** The hash covers controller files matched by the `controllerPattern` glob. If you only change a DTO/model
+> file that lives outside that pattern, the cache won't invalidate automatically. Use `analyze()` or delete
+> `.rpc-checksum` in that case.
+
 ## How It Works
 
-### 1. Route Analysis
+### Stage 1. Analysis
 
-- Scans your HonestJS application routes (from `app.getRoutes()`)
-- Uses ts-morph to analyze controller source code
-- Extracts method signatures, parameter types, and return types
-- Builds comprehensive route metadata
-- Uses custom discovery matcher when provided; otherwise discovers by decorators (`@Controller`, `@View`)
+- Scans route registry and source files once
+- Builds a shared analysis graph from controller AST traversal
+- Extracts route metadata and candidate schema types
+- Produces stage diagnostics and warnings
 
-### 2. Schema Generation
+### Stage 2. Transform
 
-- Analyzes types used in controller methods
-- Generates JSON schemas using ts-json-schema-generator
-- Creates TypeScript interfaces from schemas
-- Integrates with route analysis for complete type coverage
+- Applies post-analysis transforms
+- Runs pre-emit validators
+- Enforces strict-mode warning gates before emit
 
-### 3. Client Generation
+### Stage 3. Emit
+
+- Executes configured generators with validated context
+- Persists artifact + diagnostics atomically
+- Runs post-emit reporters
+
+### Stage 4. Caching
+
+- Uses checksum + generator hash to determine cache hit/miss
+- Skips full pipeline on valid cache hit
+- Writes refreshed checksum and diagnostics on successful emits
+
+This staged flow is implemented in:
+
+- `src/pipeline/analysis-stage.ts`
+- `src/pipeline/transform-stage.ts`
+- `src/pipeline/emit-stage.ts`
+- `src/pipeline/pipeline-coordinator.ts`
+
+### Generated Client Features
 
 - Groups routes by controller for organization
 - Generates type-safe method signatures
@@ -256,7 +333,9 @@ expect(mockFetch).toHaveBeenCalledWith('http://test.com/api/v1/users/123', expec
 
 ## Type Inference and Limitations
 
-The plugin extracts type **names** from controller method parameters and return types, then uses `ts-json-schema-generator` to convert those names into JSON schemas and TypeScript interfaces for the generated client. Not all TypeScript type shapes can be reliably converted; this section describes what works and what does not.
+The plugin extracts type **names** from controller method parameters and return types, then uses
+`ts-json-schema-generator` to convert those names into JSON schemas and TypeScript interfaces for the generated client.
+Not all TypeScript type shapes can be reliably converted; this section describes what works and what does not.
 
 ### Supported Type Patterns
 
@@ -273,11 +352,13 @@ The plugin extracts type **names** from controller method parameters and return 
 - **Anonymous internal symbols** (e.g. `__type`) that the compiler uses for inline object types
 - Types that depend on heavy generic instantiation chains
 
-When schema generation fails for a type, the plugin logs a warning and, in `best-effort` mode, emits an empty interface with a `// No schema definition found` comment in the generated client so generation continues.
+When schema generation fails for a type, the plugin logs a warning and, in `best-effort` mode, emits an empty interface
+with a `// No schema definition found` comment in the generated client so generation continues.
 
 ### Best Practice: Explicit DTOs
 
-Use **explicit interfaces or type aliases** for controller parameters and return types. Keep ORM-inferred types in your services and map to explicit DTOs at the controller boundary.
+Use **explicit interfaces or type aliases** for controller parameters and return types. Keep ORM-inferred types in your
+services and map to explicit DTOs at the controller boundary.
 
 **Problematic (schema generation may fail):**
 
@@ -320,11 +401,14 @@ class LinksController {
 
 ### Inline Return Types
 
-When the return type is an **inline object literal** (e.g. `Promise<{ data: Link[]; total: number }>`), the plugin inlines it directly in the generated client and does not need to resolve a named type for schema generation. Those return types always work regardless of whether `Link` is inferred or explicit.
+When the return type is an **inline object literal** (e.g. `Promise<{ data: Link[]; total: number }>`), the plugin
+inlines it directly in the generated client and does not need to resolve a named type for schema generation. Those
+return types always work regardless of whether `Link` is inferred or explicit.
 
 ### Diagnosing Schema Issues
 
-- Check **`rpc-diagnostics.json`** in the output directory: it lists `warnings` for each type that failed schema generation.
+- Check **`rpc-diagnostics.json`** in the output directory: it lists `warnings` for each type that failed schema
+  generation.
 - In **best-effort** mode (default), failed types result in empty interfaces; the client still generates.
 - Set **`failOnSchemaError: true`** (or use `mode: 'strict'`) to make schema failures throw and stop generation.
 
@@ -345,6 +429,11 @@ export class ApiClient {
 				options?: RequestOptions<undefined, { page: number; limit: number }, undefined, undefined>
 			) => {
 				return this.request<Result>('GET', `/api/v1/users/`, options)
+			},
+			getById: async <Result = User>(
+				options: RequestOptions<undefined, { id: string }, undefined, undefined>
+			) => {
+				return this.request<Result>('GET', `/api/v1/users/:id`, options)
 			}
 		}
 	}
@@ -364,18 +453,19 @@ export type RequestOptions<
 
 ## Plugin Lifecycle
 
-The plugin automatically generates files when your HonestJS application starts up (if `generateOnInit` is true). You can
-also manually trigger generation:
+The plugin automatically generates files when your HonestJS application starts up (if `generateOnInit` is true). On
+subsequent startups, the hash-based cache will skip regeneration if controller files haven't changed.
+
+You can also manually trigger generation:
 
 ```typescript
 const rpcPlugin = new RPCPlugin()
-await rpcPlugin.analyze({ force: true }) // bypass cache
-await rpcPlugin.analyze({ force: false }) // respect cache
-await rpcPlugin.analyze({ force: true, dryRun: true }) // analyze-only (no generated client)
-```
+await rpcPlugin.analyze({ force: true }) // Force regeneration (bypasses cache)
+await rpcPlugin.analyze({ force: false }) // Respect cache
 
-In addition to `client.ts` and `rpc-artifact.json`, the plugin writes `rpc-diagnostics.json` with mode, cache status,
-and warning details.
+// Analyze-only mode (no files generated, diagnostics still emitted)
+await rpcPlugin.analyze({ force: true, dryRun: true })
+```
 
 ## Advanced Usage
 
@@ -410,7 +500,7 @@ await rpcPlugin.analyze()
 Here's how your controllers should be structured for optimal RPC generation:
 
 ```typescript
-import { Controller, Post, Get, Body, Param, Query } from 'honestjs'
+import { Body, Controller, Get, Param, Post, Query } from 'honestjs'
 
 interface CreateUserDto {
 	name: string
