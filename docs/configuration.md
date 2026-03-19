@@ -91,6 +91,7 @@ Use diagnostics while developing, and opt into stricter startup checks when need
 
 ```typescript
 const { app, hono } = await Application.create(AppModule, {
+	startupGuide: { verbose: true },
 	debug: {
 		routes: true,
 		plugins: true,
@@ -120,6 +121,30 @@ Debug categories:
 - `startup`: startup lifecycle diagnostics (registered routes, completion/failure timing)
 
 Set `debug: true` to enable every category.
+
+### Startup Guide Mode
+
+Enable startup guidance to emit actionable hints when app initialization fails.
+
+```typescript
+const { app, hono } = await Application.create(AppModule, {
+	startupGuide: true
+})
+
+// Verbose mode adds a second diagnostics event with additional steps
+const { app, hono } = await Application.create(AppModule, {
+	startupGuide: { verbose: true }
+})
+```
+
+Guide mode helps with common startup issues such as:
+
+- missing `@Controller()` on classes listed in `module.controllers`
+- controllers without HTTP method decorators
+- missing `@Service()` on injectable dependencies
+- missing decorator metadata / `reflect-metadata` setup
+- strict no-routes startup failures
+- plugin ordering or capability contract mismatches
 
 ### Runtime Metadata Behavior
 
@@ -212,6 +237,33 @@ const { app, hono } = await Application.create(AppModule, {
 ```
 
 Plugins can hook into the application lifecycle with `beforeModulesRegistered` and `afterModulesRegistered` methods.
+
+You can also provide wrapped plugin entries with explicit ordering and startup contracts:
+
+```typescript
+class ArtifactPlugin implements IPlugin {
+	meta = {
+		name: 'artifact',
+		provides: ['artifact:routes']
+	}
+}
+
+class DocsPlugin implements IPlugin {
+	meta = {
+		name: 'docs',
+		requires: ['artifact:routes']
+	}
+}
+
+const { app, hono } = await Application.create(AppModule, {
+	plugins: [
+		{ plugin: new DocsPlugin(), name: 'docs', after: ['artifact'] },
+		{ plugin: new ArtifactPlugin(), name: 'artifact' }
+	]
+})
+```
+
+If ordering constraints or required capabilities cannot be satisfied, startup fails fast with a clear error.
 
 ### Error Handling Configuration
 

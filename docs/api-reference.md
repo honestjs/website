@@ -518,6 +518,7 @@ Configuration options for the HonestJS application.
 
 ```typescript
 interface HonestOptions {
+	startupGuide?: boolean | { verbose?: boolean }
 	debug?: boolean | { routes?: boolean; plugins?: boolean; pipeline?: boolean; di?: boolean; startup?: boolean }
 	diagnostics?: IDiagnosticsEmitter
 	strict?: {
@@ -653,6 +654,11 @@ Interface for plugin classes.
 
 ```typescript
 interface IPlugin {
+	meta?: {
+		name?: string
+		provides?: string[]
+		requires?: string[]
+	}
 	beforeModulesRegistered?: (app: Application, hono: Hono) => void | Promise<void>
 	afterModulesRegistered?: (app: Application, hono: Hono) => void | Promise<void>
 }
@@ -854,15 +860,80 @@ type PluginType = Constructor<IPlugin> | IPlugin
 
 Type for plugin registration entries. Supports plain plugins or wrapped entries with optional pre/post processors.
 
-```typescript
+````typescript
 type PluginEntry =
 	| PluginType
 	| {
 			plugin: IPlugin | Constructor<IPlugin>
+			name?: string
+			before?: string[]
+			after?: string[]
 			preProcessors?: PluginProcessor[]
 			postProcessors?: PluginProcessor[]
 	  }
+
+### Testing interfaces
+
+#### `TestModuleOptions`
+
+```typescript
+interface TestModuleOptions extends ModuleOptions {
+	name?: string
+}
+````
+
+#### `CreateTestApplicationOptions`
+
+```typescript
+interface CreateTestApplicationOptions extends TestModuleOptions {
+	module?: Constructor
+	appOptions?: HonestOptions
+}
 ```
+
+#### `CreateControllerTestApplicationOptions`
+
+```typescript
+interface CreateControllerTestApplicationOptions extends Omit<TestModuleOptions, 'controllers'> {
+	controller: Constructor
+	appOptions?: HonestOptions
+}
+```
+
+#### `CreateServiceTestContainerOptions`
+
+```typescript
+interface CreateServiceTestContainerOptions {
+	overrides?: ServiceTestOverride[]
+	preload?: Constructor[]
+	diagnostics?: IDiagnosticsEmitter
+	debugDi?: boolean
+}
+```
+
+#### `TestApplication`
+
+```typescript
+interface TestApplication {
+	app: Application
+	hono: Hono
+	request: (input: string | Request, init?: RequestInit) => Promise<Response>
+}
+```
+
+#### `TestServiceContainer`
+
+```typescript
+interface TestServiceContainer {
+	container: DiContainer
+	get<T>(target: Constructor<T>): T
+	register<T>(target: Constructor<T>, instance: T): void
+	has<T>(target: Constructor<T>): boolean
+	clear(): void
+}
+```
+
+````
 
 ## Constants
 
@@ -872,7 +943,7 @@ Symbol to use when marking a route as version-neutral.
 
 ```typescript
 const VERSION_NEUTRAL = Symbol('VERSION_NEUTRAL')
-```
+````
 
 **Usage:**
 

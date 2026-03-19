@@ -67,6 +67,7 @@ export default defineConfig({
 						text: 'Application context',
 						link: '/docs/features/application-context'
 					},
+					{ text: 'Testing', link: '/docs/features/testing' },
 					{ text: 'Plugins', link: '/docs/features/plugins' },
 					{ text: 'MVC', link: '/docs/features/mvc' },
 					{ text: 'Helpers', link: '/docs/features/helpers' }

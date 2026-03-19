@@ -86,6 +86,7 @@ export default hono
 
 - **[Application context](./features/application-context.md)** - App-level registry for sharing pipeline data by key
   (app and plugins)
+- **[Testing](./features/testing.md)** - Lightweight testing helpers for application, controller, and service tests
 - **[MVC Support](./features/mvc.md)** - Model-View-Controller architecture
 - **[Plugins](./features/plugins.md)** - Extending framework functionality
 - **[Helpers](./features/helpers.md)** - Utility functions and helper methods

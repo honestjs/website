@@ -16,6 +16,12 @@ A plugin must implement the `IPlugin` interface, which provides two optional lif
 
 ```typescript
 interface IPlugin {
+	meta?: {
+		name?: string
+		provides?: string[]
+		requires?: string[]
+	}
+
 	// Runs before any modules are registered with the application.
 	beforeModulesRegistered?: (app: Application, hono: Hono) => void | Promise<void>
 
@@ -236,6 +242,43 @@ plugins: [
 
 Execution order per plugin: `preProcessors` → `beforeModulesRegistered` (phase 1, before modules);
 `afterModulesRegistered` → `postProcessors` (phase 2, after modules).
+
+## Deterministic ordering and capability contracts
+
+When plugin ordering matters, use named entries with `before` and `after`. You can also declare startup contracts with
+`meta.provides` and `meta.requires`.
+
+```typescript
+class ArtifactPlugin implements IPlugin {
+	meta = {
+		name: 'artifact',
+		provides: ['artifact:routes']
+	}
+}
+
+class DocsPlugin implements IPlugin {
+	meta = {
+		name: 'docs',
+		requires: ['artifact:routes']
+	}
+}
+
+const { hono } = await Application.create(AppModule, {
+	plugins: [
+		{ plugin: new DocsPlugin(), name: 'docs', after: ['artifact'] },
+		{ plugin: new ArtifactPlugin(), name: 'artifact' }
+	]
+})
+```
+
+Behavior:
+
+- plugin entries are validated and sorted deterministically at startup
+- unknown `before`/`after` targets fail startup
+- dependency cycles fail startup
+- missing required capabilities fail startup
+
+This keeps plugin orchestration explicit and predictable in larger applications.
 
 ## Best Practices
 
