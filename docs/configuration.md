@@ -87,7 +87,7 @@ const { app, hono } = await Application.create(AppModule, {
 
 ### Debug and Strict Options
 
-Use startup diagnostics while developing, and opt into stricter startup checks when needed.
+Use diagnostics while developing, and opt into stricter startup checks when needed.
 
 ```typescript
 const { app, hono } = await Application.create(AppModule, {
@@ -98,6 +98,7 @@ const { app, hono } = await Application.create(AppModule, {
 		di: true,
 		startup: true
 	},
+	// Optional structured diagnostics emitter
 	diagnostics: myDiagnosticsEmitter,
 	strict: {
 		// Fails startup if no routes were registered
@@ -118,14 +119,14 @@ Debug categories:
 - `di`: dependency injection diagnostics
 - `startup`: startup lifecycle diagnostics (registered routes, completion/failure timing)
 
-Use `debug: true` to enable all categories.
+Set `debug: true` to enable every category.
 
 ### Runtime Metadata Behavior
 
 Decorator metadata is collected globally, but each application instance runs against an immutable metadata snapshot that
 is captured at startup. This prevents post-bootstrap metadata mutations from changing behavior in already-running apps.
 
-In practical terms, the metadata used by `RouteManager` and `ComponentManager` is app-scoped at runtime.
+In practice, the metadata consumed by route and component managers is app-scoped at runtime.
 
 ### Global Components Configuration
 

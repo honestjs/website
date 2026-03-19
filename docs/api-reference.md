@@ -552,6 +552,8 @@ interface HonestOptions {
 
 Structured diagnostics contracts emitted by framework runtime components.
 
+Use `debug: true` to emit all categories, or pass a debug object to enable specific categories.
+
 ```typescript
 type DiagnosticLevel = 'debug' | 'info' | 'warn' | 'error'
 
