@@ -16,6 +16,8 @@ Create a new HonestJS project from a template.
 
 ```bash
 honestjs new [project-name]
+honestjs create [project-name]
+honestjs scaffold [project-name]
 ```
 
 **Options:**
@@ -39,12 +41,16 @@ honestjs new [project-name]
 | `-y, --yes`                       | Skip prompts and use defaults                                                 |
 | `--offline`                       | Use cached templates only (no network)                                        |
 | `--refresh-templates`             | Force refresh template cache before use                                       |
+| `--dry-run`                       | Show what would be created without writing files                              |
+| `--strict`                        | Fail on first transform error (useful for CI)                                 |
+| `--json`                          | Output command result as JSON                                                 |
 
 **Examples:**
 
 ```bash
 honestjs new my-app
 honestjs new my-app -t mvc -y
+honestjs create my-app -t barebone -y
 honestjs new my-app --template barebone --package-manager pnpm
 # Local templates (repo root or single template dir)
 honestjs new my-app --template ./path/to/templates
@@ -91,6 +97,7 @@ Show CLI version, available templates, and environment info.
 ```bash
 honestjs info
 honestjs info --local ./templates
+honestjs info --json
 ```
 
 **Options:**
@@ -98,6 +105,7 @@ honestjs info --local ./templates
 | Option               | Description                                        |
 | -------------------- | -------------------------------------------------- |
 | `-l, --local <path>` | Show templates from a local path instead of remote |
+| `--json`             | Output command result as JSON                      |
 
 Displays:
 
@@ -135,6 +143,7 @@ Generate files from schematics. Alias: `g`.
 ```bash
 honestjs generate <schematic> <name>
 honestjs g <schematic> <name>
+honestjs generate <schematic> <name> --json
 ```
 
 **Schematics:**
@@ -160,6 +169,7 @@ honestjs g <schematic> <name>
 | `--dry-run`         | Show what would be created without writing files  |
 | `--skip-import`     | Skip importing the generated item                 |
 | `--export`          | Export the generated item                         |
+| `--json`            | Output command result as JSON                     |
 
 **Examples:**
 
