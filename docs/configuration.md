@@ -115,7 +115,7 @@ const { app, hono } = await Application.create(AppModule, {
 Debug categories:
 
 - `routes`: route registration diagnostics (including per-controller registration timing)
-- `plugins`: plugin ordering and lifecycle diagnostics
+- `plugins`: plugin registration order (logged when enabled) and plugin lifecycle diagnostics
 - `pipeline`: request pipeline diagnostics (guards, pipes, execution path)
 - `di`: dependency injection diagnostics
 - `startup`: startup lifecycle diagnostics (registered routes, completion/failure timing)
@@ -144,7 +144,6 @@ Guide mode helps with common startup issues such as:
 - missing `@Service()` on injectable dependencies
 - missing decorator metadata / `reflect-metadata` setup
 - strict no-routes startup failures
-- plugin ordering or capability contract mismatches
 
 ### Runtime Metadata Behavior
 
@@ -251,32 +250,8 @@ Plugins can hook into the application lifecycle with `beforeModulesRegistered` a
 framework sets `plugin.logger` (optional `ILogger` from `HonestOptions`) on each plugin instance before those hooks run;
 use `this.logger?.emit(...)` when you need structured diagnostics from a plugin.
 
-You can also provide wrapped plugin entries with explicit ordering and startup contracts:
-
-```typescript
-class ArtifactPlugin implements IPlugin {
-	meta = {
-		name: 'artifact',
-		provides: ['artifact:routes']
-	}
-}
-
-class DocsPlugin implements IPlugin {
-	meta = {
-		name: 'docs',
-		requires: ['artifact:routes']
-	}
-}
-
-const { app, hono } = await Application.create(AppModule, {
-	plugins: [
-		{ plugin: new DocsPlugin(), name: 'docs', after: ['artifact'] },
-		{ plugin: new ArtifactPlugin(), name: 'artifact' }
-	]
-})
-```
-
-If ordering constraints or required capabilities cannot be satisfied, startup fails fast with a clear error.
+Plugins run in `options.plugins` array order; put producer plugins before consumers when one depends on another’s
+app-context data.
 
 ### Error Handling Configuration
 

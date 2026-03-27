@@ -20,8 +20,6 @@ interface IPlugin {
 
 	meta?: {
 		name?: string
-		provides?: string[]
-		requires?: string[]
 	}
 
 	// Runs before any modules are registered with the application.
@@ -273,42 +271,16 @@ plugins: [
 Execution order per plugin: `preProcessors` → `beforeModulesRegistered` (phase 1, before modules);
 `afterModulesRegistered` → `postProcessors` (phase 2, after modules).
 
-## Deterministic ordering and capability contracts
+## Plugin order
 
-When plugin ordering matters, use named entries with `before` and `after`. You can also declare startup contracts with
-`meta.provides` and `meta.requires`.
+Plugins run in the order they appear in `options.plugins`. When one plugin depends on another (for example API docs
+reading an artifact produced by RPC), list the producer before the consumer.
 
-```typescript
-class ArtifactPlugin implements IPlugin {
-	meta = {
-		name: 'artifact',
-		provides: ['artifact:routes']
-	}
-}
+### Plugin names (diagnostics)
 
-class DocsPlugin implements IPlugin {
-	meta = {
-		name: 'docs',
-		requires: ['artifact:routes']
-	}
-}
-
-const { hono } = await Application.create(AppModule, {
-	plugins: [
-		{ plugin: new DocsPlugin(), name: 'docs', after: ['artifact'] },
-		{ plugin: new ArtifactPlugin(), name: 'artifact' }
-	]
-})
-```
-
-Behavior:
-
-- plugin entries are validated and sorted deterministically at startup
-- unknown `before`/`after` targets fail startup
-- dependency cycles fail startup
-- missing required capabilities fail startup
-
-This keeps plugin orchestration explicit and predictable in larger applications.
+For `debug.plugins` and similar logs, the framework picks a display name in this order: `name` on a wrapped entry (if
+you use `{ plugin, name?, ... }`), then `plugin.meta?.name`, then the plugin class constructor name, then
+`AnonymousPlugin#n` for anonymous object plugins. Naming is for diagnostics only; it does not change execution order.
 
 ## Best Practices
 

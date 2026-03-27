@@ -659,13 +659,15 @@ interface IPlugin {
 	logger?: ILogger
 	meta?: {
 		name?: string
-		provides?: string[]
-		requires?: string[]
 	}
 	beforeModulesRegistered?: (app: Application, hono: Hono) => void | Promise<void>
 	afterModulesRegistered?: (app: Application, hono: Hono) => void | Promise<void>
 }
 ```
+
+Display names for `debug.plugins` and similar logs resolve in order: optional `name` on a wrapped
+`{ plugin, name?, ... }` entry, then `meta.name`, then the plugin class constructor name, then `AnonymousPlugin#n` for
+anonymous object plugins. Plugins always run in `options.plugins` array order.
 
 ### Dependency Injection Interfaces
 
@@ -869,8 +871,6 @@ type PluginEntry =
 	| {
 			plugin: IPlugin | Constructor<IPlugin>
 			name?: string
-			before?: string[]
-			after?: string[]
 			preProcessors?: PluginProcessor[]
 			postProcessors?: PluginProcessor[]
 	  }
