@@ -99,8 +99,8 @@ const { app, hono } = await Application.create(AppModule, {
 		di: true,
 		startup: true
 	},
-	// Optional structured diagnostics emitter
-	diagnostics: myDiagnosticsEmitter,
+	// Optional structured logger
+	logger: myLogger,
 	strict: {
 		// Fails startup if no routes were registered
 		requireRoutes: true
@@ -203,16 +203,24 @@ Extend your application with plugins:
 ```typescript
 import type { IPlugin } from 'honestjs'
 import { Application } from 'honestjs'
+import type { Hono } from 'hono'
 
 class DatabasePlugin implements IPlugin {
 	async beforeModulesRegistered(app: Application, hono: Hono) {
 		// Setup database connection
-		console.log('Setting up database...')
+		this.logger?.emit({
+			level: 'info',
+			category: 'plugins',
+			message: 'Setting up database...'
+		})
 	}
 
 	async afterModulesRegistered(app: Application, hono: Hono) {
-		// Perform post-registration tasks
-		console.log('Database setup complete')
+		this.logger?.emit({
+			level: 'info',
+			category: 'plugins',
+			message: 'Database setup complete'
+		})
 	}
 }
 
@@ -220,8 +228,11 @@ class CachePlugin implements IPlugin {
 	constructor(private options: { ttl: number; maxSize: number }) {}
 
 	async beforeModulesRegistered(app: Application, hono: Hono) {
-		// Initialize cache
-		console.log(`Initializing cache with TTL: ${this.options.ttl}`)
+		this.logger?.emit({
+			level: 'info',
+			category: 'plugins',
+			message: `Initializing cache with TTL: ${this.options.ttl}`
+		})
 	}
 }
 
@@ -236,7 +247,9 @@ const { app, hono } = await Application.create(AppModule, {
 })
 ```
 
-Plugins can hook into the application lifecycle with `beforeModulesRegistered` and `afterModulesRegistered` methods.
+Plugins can hook into the application lifecycle with `beforeModulesRegistered` and `afterModulesRegistered` methods. The
+framework sets `plugin.logger` (optional `ILogger` from `HonestOptions`) on each plugin instance before those hooks run;
+use `this.logger?.emit(...)` when you need structured diagnostics from a plugin.
 
 You can also provide wrapped plugin entries with explicit ordering and startup contracts:
 

@@ -520,7 +520,7 @@ Configuration options for the HonestJS application.
 interface HonestOptions {
 	startupGuide?: boolean | { verbose?: boolean }
 	debug?: boolean | { routes?: boolean; plugins?: boolean; pipeline?: boolean; di?: boolean; startup?: boolean }
-	diagnostics?: IDiagnosticsEmitter
+	logger?: ILogger
 	strict?: {
 		requireRoutes?: boolean
 	}
@@ -549,26 +549,26 @@ interface HonestOptions {
 }
 ```
 
-#### `DiagnosticEvent` and `IDiagnosticsEmitter`
+#### `LogEvent` and `ILogger`
 
 Structured diagnostics contracts emitted by framework runtime components.
 
 Use `debug: true` to emit all categories, or pass a debug object to enable specific categories.
 
 ```typescript
-type DiagnosticLevel = 'debug' | 'info' | 'warn' | 'error'
+type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 
-type DiagnosticCategory = 'startup' | 'routes' | 'plugins' | 'deprecations' | 'pipeline' | 'di' | 'errors'
+type LogCategory = 'startup' | 'routes' | 'plugins' | 'deprecations' | 'pipeline' | 'di' | 'errors'
 
-interface DiagnosticEvent {
-	level: DiagnosticLevel
-	category: DiagnosticCategory
+interface LogEvent {
+	level: LogLevel
+	category: LogCategory
 	message: string
 	details?: Record<string, unknown>
 }
 
-interface IDiagnosticsEmitter {
-	emit(event: DiagnosticEvent): void
+interface ILogger {
+	emit(event: LogEvent): void
 }
 ```
 
@@ -650,10 +650,13 @@ interface IFilter {
 
 #### `IPlugin`
 
-Interface for plugin classes.
+Interface for plugin classes. Before `beforeModulesRegistered` and `afterModulesRegistered` run, the framework assigns
+the application’s optional `logger` (`HonestOptions.logger`) to `plugin.logger`. Hooks take only `app` and `hono`; use
+`this.logger?.emit(...)` for structured log events from plugin code.
 
 ```typescript
 interface IPlugin {
+	logger?: ILogger
 	meta?: {
 		name?: string
 		provides?: string[]
@@ -906,7 +909,7 @@ interface CreateControllerTestApplicationOptions extends Omit<TestModuleOptions,
 interface CreateServiceTestContainerOptions {
 	overrides?: ServiceTestOverride[]
 	preload?: Constructor[]
-	diagnostics?: IDiagnosticsEmitter
+	logger?: ILogger
 	debugDi?: boolean
 }
 ```

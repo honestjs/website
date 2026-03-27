@@ -16,6 +16,8 @@ A plugin must implement the `IPlugin` interface, which provides two optional lif
 
 ```typescript
 interface IPlugin {
+	logger?: ILogger
+
 	meta?: {
 		name?: string
 		provides?: string[]
@@ -29,6 +31,9 @@ interface IPlugin {
 	afterModulesRegistered?: (app: Application, hono: Hono) => void | Promise<void>
 }
 ```
+
+Before either hook runs, the framework assigns `logger` (the optional `ILogger` from application options) to the plugin
+instance. Use `this.logger?.emit(...)` for structured diagnostics.
 
 Both hooks receive:
 
@@ -76,7 +81,11 @@ export class LoggerPlugin implements IPlugin {
 	}
 
 	async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		console.log(`[LoggerPlugin] Initializing with log level: ${this.logLevel}`)
+		this.logger?.emit({
+			level: 'info',
+			category: 'plugins',
+			message: `[LoggerPlugin] Initializing with log level: ${this.logLevel}`
+		})
 
 		// Add a request logging middleware
 		hono.use('*', async (c, next) => {
@@ -91,7 +100,11 @@ export class LoggerPlugin implements IPlugin {
 	}
 
 	async afterModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		console.log('[LoggerPlugin] All modules registered, logging is active')
+		this.logger?.emit({
+			level: 'info',
+			category: 'plugins',
+			message: '[LoggerPlugin] All modules registered, logging is active'
+		})
 	}
 }
 ```
@@ -122,7 +135,11 @@ export class DatabasePlugin implements IPlugin {
 	}
 
 	async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		console.log('[DatabasePlugin] Connecting to database...')
+		this.logger?.emit({
+			level: 'info',
+			category: 'plugins',
+			message: '[DatabasePlugin] Connecting to database...'
+		})
 
 		try {
 			// Simulate database connection
@@ -134,15 +151,28 @@ export class DatabasePlugin implements IPlugin {
 				await next()
 			})
 
-			console.log('[DatabasePlugin] Database connection established')
+			this.logger?.emit({
+				level: 'info',
+				category: 'plugins',
+				message: '[DatabasePlugin] Database connection established'
+			})
 		} catch (error) {
-			console.error('[DatabasePlugin] Failed to connect to database:', error)
+			this.logger?.emit({
+				level: 'error',
+				category: 'plugins',
+				message: '[DatabasePlugin] Failed to connect to database',
+				details: { error: String(error) }
+			})
 			throw error
 		}
 	}
 
 	async afterModulesRegistered(app: Application, hono: Hono): Promise<void> {
-		console.log('[DatabasePlugin] Database plugin initialization complete')
+		this.logger?.emit({
+			level: 'info',
+			category: 'plugins',
+			message: '[DatabasePlugin] Database plugin initialization complete'
+		})
 
 		// Add a health check endpoint
 		hono.get('/health/db', async (c) => {
@@ -291,7 +321,12 @@ async beforeModulesRegistered(app: Application, hono: Hono): Promise<void> {
 	try {
 		await this.initialize()
 	} catch (error) {
-		console.error('[MyPlugin] Initialization failed:', error)
+		this.logger?.emit({
+			level: 'error',
+			category: 'plugins',
+			message: '[MyPlugin] Initialization failed',
+			details: { error: String(error) }
+		})
 		// Decide whether to throw the error (which fails app startup) or continue
 		throw error
 	}
