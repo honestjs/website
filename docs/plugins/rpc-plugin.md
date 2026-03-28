@@ -37,7 +37,6 @@ interface RPCPluginOptions {
 	readonly generateOnInit?: boolean // Generate files on initialization (default: true)
 	readonly generators?: readonly RPCGenerator[] // Optional list of generators to execute
 	readonly mode?: 'strict' | 'best-effort' // strict fails on warnings/fallbacks
-	readonly logLevel?: 'silent' | 'error' | 'warn' | 'info' | 'debug' // default: info
 	readonly customClassMatcher?: (classDeclaration: ClassDeclaration) => boolean // optional override; default discovery uses decorators
 	readonly failOnSchemaError?: boolean // default true in strict mode
 	readonly failOnRouteAnalysisWarning?: boolean // default true in strict mode
