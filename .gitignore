@@ -39,3 +39,8 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # Cursor
 .cursor
+
+# LLMs
+public/llms.txt
+public/llms-full.txt
+public/llms-small.txt
