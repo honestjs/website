@@ -1,13 +1,10 @@
 # Getting Started
 
-This guide walks you through creating your first HonestJS application. Pick the
-track that suits you best.
+This guide walks you through creating your first HonestJS application. Pick the track that suits you best.
 
-::: info Project Status HonestJS is in early development (pre-v1.0.0). The API
-may change between minor versions and some features are still in progress. We
-recommend caution before using it in production. See
-[GitHub Issues](https://github.com/honestjs/honest/issues) for known issues and
-roadmap. :::
+::: info Project Status HonestJS is in early development (pre-v1.0.0). The API may change between minor versions and
+some features are still in progress. We recommend caution before using it in production. See
+[GitHub Issues](https://github.com/honestjs/honest/issues) for known issues and roadmap. :::
 
 ## Prerequisites
 
@@ -16,8 +13,8 @@ roadmap. :::
 
 ## Choose a Template
 
-All templates include TypeScript, optional ESLint, Prettier, Docker, and git
-init. Pick the one that matches your use case:
+All templates include TypeScript, optional ESLint, Prettier, Docker, and git init. Pick the one that matches your use
+case:
 
 | Template     | Best for                                   | What you get                                        |
 | ------------ | ------------------------------------------ | --------------------------------------------------- |
@@ -25,10 +22,9 @@ init. Pick the one that matches your use case:
 | **barebone** | APIs, small-to-medium apps                 | Modules, controllers, services, testing             |
 | **mvc**      | Full-stack apps with server-rendered views | Hono JSX views, layouts, static assets, MVC pattern |
 
-::: tip Coming from NestJS? The **barebone** template feels most familiar:
-modules, controllers, and services are organized the same way. The main
-differences are that HonestJS runs on Hono (not Express) and uses
-`Application.create` instead of `NestFactory.create`. :::
+::: tip Coming from NestJS? The **barebone** template feels most familiar: modules, controllers, and services are
+organized the same way. The main differences are that HonestJS runs on Hono (not Express) and uses `Application.create`
+instead of `NestFactory.create`. :::
 
 ## Track A: Using the CLI (Recommended) {#cli-track}
 
@@ -56,8 +52,7 @@ yarn global add @honestjs/cli
 honestjs new my-project    # aliases: honest, hnjs
 ```
 
-The CLI will prompt you to choose a template and configure options. To skip
-prompts and use defaults:
+The CLI will prompt you to choose a template and configure options. To skip prompts and use defaults:
 
 ```bash
 honestjs new my-project -t barebone -y
@@ -144,12 +139,10 @@ Ensure your `tsconfig.json` has decorator support enabled:
 
 :::
 
-::: warning reflect-metadata is required HonestJS uses TypeScript decorator
-metadata for dependency injection. You must:
+::: warning reflect-metadata is required HonestJS uses TypeScript decorator metadata for dependency injection. You must:
 
 1. Enable `experimentalDecorators` and `emitDecoratorMetadata` in tsconfig
-2. Import `reflect-metadata` **once** at the top of your entry file, before any
-   HonestJS code :::
+2. Import `reflect-metadata` **once** at the top of your entry file, before any HonestJS code :::
 
 ### 3. Create the Application
 
@@ -158,21 +151,21 @@ Create the following files:
 ::: code-group
 
 ```typescript [src/app.service.ts]
-import { Service } from "honestjs";
+import { Service } from 'honestjs'
 
 @Service()
 class AppService {
 	helloWorld(): string {
-		return "Hello, World!";
+		return 'Hello, World!'
 	}
 }
 
-export default AppService;
+export default AppService
 ```
 
 ```typescript [src/app.controller.ts]
-import { Controller, Get } from "honestjs";
-import AppService from "./app.service";
+import { Controller, Get } from 'honestjs'
+import AppService from './app.service'
 
 @Controller()
 class AppController {
@@ -180,35 +173,35 @@ class AppController {
 
 	@Get()
 	helloWorld(): string {
-		return this.appService.helloWorld();
+		return this.appService.helloWorld()
 	}
 }
 
-export default AppController;
+export default AppController
 ```
 
 ```typescript [src/app.module.ts]
-import { Module } from "honestjs";
-import AppController from "./app.controller";
-import AppService from "./app.service";
+import { Module } from 'honestjs'
+import AppController from './app.controller'
+import AppService from './app.service'
 
 @Module({
 	controllers: [AppController],
-	services: [AppService],
+	services: [AppService]
 })
 class AppModule {}
 
-export default AppModule;
+export default AppModule
 ```
 
 ```typescript [src/main.ts]
-import "reflect-metadata";
-import { Application } from "honestjs";
-import AppModule from "./app.module";
+import 'reflect-metadata'
+import { Application } from 'honestjs'
+import AppModule from './app.module'
 
-const { app, hono } = await Application.create(AppModule);
+const { app, hono } = await Application.create(AppModule)
 
-export default hono;
+export default hono
 ```
 
 :::
@@ -225,19 +218,15 @@ Your application is now running at `http://localhost:3000`.
 
 ## What Just Happened?
 
-Whether you used the CLI or manual setup, HonestJS bootstrapped an application
-from four building blocks:
+Whether you used the CLI or manual setup, HonestJS bootstrapped an application from four building blocks:
 
-1. **Service** (`@Service()`) - contains your business logic, managed by the DI
-   container
-2. **Controller** (`@Controller()`, `@Get()`) - maps HTTP requests to service
-   methods
+1. **Service** (`@Service()`) - contains your business logic, managed by the DI container
+2. **Controller** (`@Controller()`, `@Get()`) - maps HTTP requests to service methods
 3. **Module** (`@Module()`) - groups controllers and services together
-4. **Entry point** (`Application.create`) - bootstraps the app and returns a
-   Hono instance
+4. **Entry point** (`Application.create`) - bootstraps the app and returns a Hono instance
 
-The dependency injection system automatically wires the service into the
-controller's constructor. No manual instantiation needed.
+The dependency injection system automatically wires the service into the controller's constructor. No manual
+instantiation needed.
 
 ### How it compares to NestJS
 
@@ -265,19 +254,12 @@ controller's constructor. No manual instantiation needed.
 
 Now that you have a running application, explore these topics in order:
 
-1. **[Configuration](./configuration.md)** - customize routing prefixes,
-   versioning, debug mode, and global components
-2. **[Routing](./concepts/routing.md)** - define routes, use parameters, and set
-   up API versioning
-3. **[Dependency Injection](./concepts/dependency-injection.md)** - understand
-   the DI container and service lifecycle
-4. **[Parameters](./concepts/parameters.md)** - extract body, query, params, and
-   headers from requests
-5. **[Components](./components/overview.md)** - add middleware, guards, pipes,
-   and exception filters
+1. **[Configuration](./configuration.md)** - customize routing prefixes, versioning, debug mode, and global components
+2. **[Routing](./concepts/routing.md)** - define routes, use parameters, and set up API versioning
+3. **[Dependency Injection](./concepts/dependency-injection.md)** - understand the DI container and service lifecycle
+4. **[Parameters](./concepts/parameters.md)** - extract body, query, params, and headers from requests
+5. **[Components](./components/overview.md)** - add middleware, guards, pipes, and exception filters
 6. **[Plugins](./features/plugins.md)** - extend the framework with plugins
-7. **[MVC](./features/mvc.md)** - build full-stack apps with Hono JSX views (use
-   the `mvc` template)
-8. **[Testing](./features/testing.md)** - test your controllers and services
-   with built-in helpers
+7. **[MVC](./features/mvc.md)** - build full-stack apps with Hono JSX views (use the `mvc` template)
+8. **[Testing](./features/testing.md)** - test your controllers and services with built-in helpers
 9. **[FAQ](./faq.md)** - answers to common questions and troubleshooting tips

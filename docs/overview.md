@@ -3,11 +3,9 @@
 Welcome to the HonestJS documentation! HonestJS is a modern, lightweight web framework for TypeScript and JavaScript,
 built on top of [Hono](https://hono.dev).
 
-::: info Project Status
-HonestJS is in early development (pre-v1.0.0). The API may change between minor versions and some features are still in
-progress. We recommend caution before using it in production until v1.0.0 is released. Follow progress on
-[GitHub](https://github.com/honestjs/honest) or join the [Discord](https://discord.gg/FB5bX9KN).
-:::
+::: info Project Status HonestJS is in early development (pre-v1.0.0). The API may change between minor versions and
+some features are still in progress. We recommend caution before using it in production until v1.0.0 is released. Follow
+progress on [GitHub](https://github.com/honestjs/honest) or join the [Discord](https://discord.gg/FB5bX9KN). :::
 
 ## What is HonestJS?
 
