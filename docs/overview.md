@@ -214,7 +214,7 @@ import { Controller, Get, Layout } from 'honestjs'
 class PagesController {
 	@Get('home')
 	home() {
-		// Layout returns a Response (from hono/html) — return it directly
+		// Layout returns a Response (from hono/html) - return it directly
 		return Layout({
 			title: 'Home - My App',
 			description: 'Welcome to our application',

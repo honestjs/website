@@ -12,7 +12,7 @@ HonestJS comes with a comprehensive set of built-in decorators for common use ca
 - `@Body(data?: string)`: Extracts the request body. Can optionally extract a specific property from the body.
 - `@Param(data?: string)`: Extracts route parameters (always strings).
 - `@Query(data?: string)`: Extracts query parameters. Without a key, returns the full `Record<string, string>`. Query
-  values are always strings — use pipes to parse numbers or booleans.
+  values are always strings - use pipes to parse numbers or booleans.
 - `@Header(data?: string)`: Extracts request headers.
 
 ### Context Decorators
@@ -25,7 +25,7 @@ HonestJS comes with a comprehensive set of built-in decorators for common use ca
 ## Basic Usage Examples
 
 ```typescript
-import { Body, Controller, Ctx, Get, Param, Post, Query, Header } from 'honestjs'
+import { Body, Controller, Ctx, Get, Header, Param, Post, Query } from 'honestjs'
 import type { Context } from 'hono'
 import type { CreateUserDto, UpdateUserDto } from './users.types'
 
@@ -201,7 +201,7 @@ export class UsersController {
 
 	@Get()
 	async findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
-		// Query params are always strings — parse with parseInt/Number or use pipes
+		// Query params are always strings - parse with parseInt/Number or use pipes
 		const pagination = {
 			page: page ? parseInt(page, 10) : 1,
 			limit: limit ? parseInt(limit, 10) : 10
@@ -295,7 +295,12 @@ export const SortOptions = createParamDecorator('sort', (_, ctx: Context) => {
 export class UsersController {
 	@Get()
 	async findAll(
-		@Pagination() pagination: { page: number; limit: number; offset: number },
+		@Pagination()
+		pagination: {
+			page: number
+			limit: number
+			offset: number
+		},
 		@SortOptions() sort: { sortBy: string; sortOrder: string }
 	) {
 		return await this.usersService.findAll(pagination, sort)
