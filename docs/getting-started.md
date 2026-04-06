@@ -1,106 +1,137 @@
 # Getting Started
 
-This guide demonstrates how to create a basic "Hello, World!" application with HonestJS.
+This guide walks you through creating your first HonestJS application. Pick the track that suits you best.
+
+::: info Project Status
+HonestJS is in early development (pre-v1.0.0). The API may change between minor versions and some features are still in
+progress. We recommend caution before using it in production. See
+[GitHub Issues](https://github.com/honestjs/honest/issues) for known issues and roadmap.
+:::
 
 ## Prerequisites
 
-Before you begin, make sure you have the following installed:
+- [Bun](https://bun.sh/) (recommended) or Node.js 18+
+- Basic TypeScript knowledge
 
-- [Bun](https://bun.sh/) (recommended) or Node.js
-- TypeScript knowledge (basic understanding)
+## Choose a Template
 
-## Project Setup
+All templates include TypeScript, optional ESLint, Prettier, Docker, and git init. Pick the one that matches your use
+case:
 
-The fastest way to create a new Honest application is with the [HonestJS CLI](./cli.md).
+| Template     | Best for                             | What you get                                   |
+| ------------ | ------------------------------------ | ---------------------------------------------- |
+| **blank**    | Learning HonestJS, minimal projects  | Empty project with basic setup                 |
+| **barebone** | APIs, small-to-medium apps           | Modules, controllers, services, testing        |
+| **mvc**      | Full-stack apps with server-rendered views | Hono JSX views, layouts, static assets, MVC pattern |
+
+::: tip Coming from NestJS?
+The **barebone** template feels most familiar: modules, controllers, and services are organized the same way. The main
+differences are that HonestJS runs on Hono (not Express) and uses `Application.create` instead of `NestFactory.create`.
+:::
+
+## Track A: Using the CLI (Recommended) {#cli-track}
 
 ### 1. Install the CLI
-
-To install the CLI globally, run:
 
 ```bash
 bun add -g @honestjs/cli
 ```
 
-### 2. Create a Project
-
-Create a new project using the `new` command:
+::: details Using npm, pnpm, or yarn?
 
 ```bash
-honestjs new my-project # alias: honest, hnjs
+npm install -g @honestjs/cli
+# or
+pnpm add -g @honestjs/cli
+# or
+yarn global add @honestjs/cli
 ```
 
-This command will prompt you to select a template and configure the project. For this guide, choose the `barebone`
-template. Available templates: `blank` (minimal), `barebone` (modules structure), `mvc` (full-stack with Hono JSX
-views). Use `-y` or `--yes` to skip prompts and use defaults.
+:::
+
+### 2. Create a Project
+
+```bash
+honestjs new my-project    # aliases: honest, hnjs
+```
+
+The CLI will prompt you to choose a template and configure options. To skip prompts and use defaults:
+
+```bash
+honestjs new my-project -t barebone -y
+```
 
 ### 3. Start the Development Server
-
-Navigate to your new project directory and start the development server:
 
 ```bash
 cd my-project
 bun dev
 ```
 
-Your application will be available at `http://localhost:3000`.
+Your application is now running at `http://localhost:3000`.
 
-## Manual Setup
+### What the CLI Created
 
-If you prefer to set up your project manually, follow these steps:
+Depending on your template choice, you'll find:
+
+```
+my-project/
+├── src/
+│   ├── main.ts                # Application entry point
+│   ├── app.module.ts          # Root module
+│   └── modules/               # Feature modules (barebone/mvc)
+│       └── app/
+│           ├── app.controller.ts
+│           └── app.service.ts
+├── package.json
+└── tsconfig.json
+```
+
+> For a complete guide to folder structure and conventions, see
+> [Project Organization](./concepts/project-organization.md).
+
+---
+
+## Track B: Manual Setup {#manual-track}
+
+If you prefer to set up your project from scratch:
 
 ### 1. Initialize Project
-
-First, create a new project and install the necessary dependencies.
 
 ```bash
 bun init
 bun add honestjs hono reflect-metadata
 ```
 
+::: details Using npm, pnpm, or yarn?
+
+```bash
+npm init -y
+npm install honestjs hono reflect-metadata
+```
+
+:::
+
 ### 2. Configure TypeScript
 
-Ensure your `tsconfig.json` has the following options enabled for decorator support:
+Ensure your `tsconfig.json` has decorator support enabled:
 
 ::: code-group
 
 ```json [tsconfig.json]
 {
 	"compilerOptions": {
-		// Enable latest features
 		"lib": ["ESNext", "DOM"],
 		"target": "ESNext",
 		"module": "ESNext",
 		"moduleDetection": "force",
-
-		// Optional: Enable JSX support for Hono
 		"jsx": "react-jsx",
 		"jsxImportSource": "hono/jsx",
-
-		// Bundler mode
 		"moduleResolution": "bundler",
 		"verbatimModuleSyntax": true,
-
-		// Enable declaration file generation
-		"declaration": false,
-		"declarationMap": false,
-		"emitDeclarationOnly": false,
-		"outDir": "dist",
-		"rootDir": "src",
-		"sourceMap": false,
-
-		// Best practices
 		"strict": true,
 		"skipLibCheck": true,
-		"noFallthroughCasesInSwitch": true,
-		"forceConsistentCasingInFileNames": true,
 		"esModuleInterop": true,
-
-		// Some stricter flags (disabled by default)
-		"noUnusedLocals": false,
-		"noUnusedParameters": false,
-		"noPropertyAccessFromIndexSignature": false,
-
-		// Decorators
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true
 	},
@@ -111,67 +142,20 @@ Ensure your `tsconfig.json` has the following options enabled for decorator supp
 
 :::
 
-## Building Your First App
+::: warning reflect-metadata is required
+HonestJS uses TypeScript decorator metadata for dependency injection. You must:
 
-### 0. Create a directory structure
+1. Enable `experimentalDecorators` and `emitDecoratorMetadata` in tsconfig
+2. Import `reflect-metadata` **once** at the top of your entry file, before any HonestJS code
+   :::
 
-HonestJS applications follow a well-organized folder structure that promotes maintainability and scalability. Here's the
-recommended project organization:
+### 3. Create the Application
 
-```
-Project
-├── src
-│   ├── app.module.ts          # Root application module
-│   ├── main.ts                # Application entry point
-│   ├── components/            # Global/shared components
-│   │   ├── Footer.tsx
-│   │   └── Header.tsx
-│   ├── decorators/            # Custom decorators
-│   │   └── parameter.decorator.ts
-│   ├── layouts/               # Layout components
-│   │   └── MainLayout.tsx
-│   └── modules/               # Feature modules
-│       └── users/             # Example: Users module
-│           ├── components/     # Module-specific components
-│           │   └── UserList.tsx
-│           ├── dtos/          # Data Transfer Objects
-│           │   └── create-user.dto.ts
-│           ├── models/        # Data models
-│           │   └── user.model.ts
-│           ├── users.controller.ts
-│           ├── users.module.ts
-│           ├── users.service.ts
-│           ├── users.service.test.ts
-│           └── users.view.tsx
-├── static/                    # Static assets
-│   ├── css/
-│   │   ├── main.css          # Global styles
-│   │   └── views/            # View-specific styles
-│   │       └── users.css
-│   └── js/
-│       ├── main.js           # Global scripts
-│       └── views/            # View-specific scripts
-│           └── users.js
-└── tests/                     # Test files
-    └── users/
-        └── users.service.test.ts
-```
-
-#### Key Organizational Principles
-
-- **Modular Structure**: Each feature is organized into its own module with related components
-- **Separation of Concerns**: Controllers, services, and views are clearly separated
-- **Reusable Components**: Global components can be shared across modules
-- **Static Assets**: CSS and JavaScript files are organized by scope (global vs. view-specific)
-- **Testing**: Test files are co-located with the code they test
-
-### 1. Create a Service
-
-Services are responsible for business logic. This service will provide the "Hello, World!" message.
+Create the following files:
 
 ::: code-group
 
-```typescript [app.service.ts]
+```typescript [src/app.service.ts]
 import { Service } from 'honestjs'
 
 @Service()
@@ -184,15 +168,7 @@ class AppService {
 export default AppService
 ```
 
-:::
-
-### 2. Create a Controller
-
-Controllers handle incoming requests and use services to fulfill them.
-
-::: code-group
-
-```typescript [app.controller.ts]
+```typescript [src/app.controller.ts]
 import { Controller, Get } from 'honestjs'
 import AppService from './app.service'
 
@@ -209,15 +185,7 @@ class AppController {
 export default AppController
 ```
 
-:::
-
-### 3. Create a Module
-
-Modules organize the application's components and define the dependency injection scope.
-
-::: code-group
-
-```typescript [app.module.ts]
+```typescript [src/app.module.ts]
 import { Module } from 'honestjs'
 import AppController from './app.controller'
 import AppService from './app.service'
@@ -231,135 +199,72 @@ class AppModule {}
 export default AppModule
 ```
 
-:::
-
-### 4. Create the Application Entrypoint
-
-Finally, create the main application file to bootstrap the HonestJS app.
-
-::: code-group
-
-```typescript [main.ts]
+```typescript [src/main.ts]
 import 'reflect-metadata'
 import { Application } from 'honestjs'
 import AppModule from './app.module'
 
 const { app, hono } = await Application.create(AppModule)
 
-// Export the Hono instance for deployment
 export default hono
 ```
 
 :::
 
-### 5. Run the Application
-
-Now, run the application:
+### 4. Run the Application
 
 ```bash
 bun src/main.ts
 ```
 
-Your application will be available at `http://localhost:3000` (or the port configured by your deployment environment).
+Your application is now running at `http://localhost:3000`.
+
+---
 
 ## What Just Happened?
 
-Let's break down what we just created:
+Whether you used the CLI or manual setup, HonestJS bootstrapped an application from four building blocks:
 
-1. **AppService**: A service class that contains our business logic
-2. **AppController**: A controller that handles HTTP requests and uses the service
-3. **AppModule**: A module that organizes our components and enables dependency injection
-4. **main.ts**: The entry point that bootstraps our application
+1. **Service** (`@Service()`) — contains your business logic, managed by the DI container
+2. **Controller** (`@Controller()`, `@Get()`) — maps HTTP requests to service methods
+3. **Module** (`@Module()`) — groups controllers and services together
+4. **Entry point** (`Application.create`) — bootstraps the app and returns a Hono instance
 
-The magic happens through:
+The dependency injection system automatically wires the service into the controller's constructor. No manual
+instantiation needed.
 
-- **Decorators**: `@Service()`, `@Controller()`, `@Get()`, `@Module()` tell HonestJS how to handle each class
-- **Dependency Injection**: The controller automatically receives the service instance
-- **Reflection**: TypeScript's reflection metadata enables the DI system to work. Always import `reflect-metadata` once
-  at the top of your entry file, before any Honest decorators are loaded.
+### How it compares to NestJS
 
-## Project Organization
+| Concept           | NestJS                     | HonestJS                         |
+| ----------------- | -------------------------- | -------------------------------- |
+| Bootstrap         | `NestFactory.create()`     | `Application.create()`           |
+| HTTP engine       | Express (default)          | Hono                             |
+| Decorators        | `@Injectable()`            | `@Service()`                     |
+| Module system     | `@Module()`                | `@Module()`                      |
+| DI                | Constructor injection      | Constructor injection             |
+| Request context   | Express `req`/`res`        | Hono `Context` via `@Ctx()`      |
+| Exported instance | NestJS app                 | `hono` (standard Hono instance)  |
 
-Understanding how to organize your HonestJS application is crucial for building maintainable and scalable projects.
-Let's dive deeper into the folder structure and organizational patterns.
+### How it compares to plain Hono
 
-> **📚 For a complete guide to project organization, see [Project Organization](../concepts/project-organization.md)**
-
-### Module Organization
-
-Each feature in your application should be organized into its own module. A module typically contains:
-
-- **Controller**: Handles HTTP requests and responses
-- **Service**: Contains business logic and data access
-- **Views**: JSX components for rendering HTML (if using MVC)
-- **DTOs**: Data Transfer Objects for input validation
-- **Models**: Data structures and type definitions
-- **Components**: Module-specific UI components
-- **Tests**: Unit and integration tests
-
-### Global vs. Module-Specific Components
-
-HonestJS supports both global and module-specific components:
-
-#### Global Components
-
-Global components are available throughout the entire application and are typically defined in the root module or
-configuration:
-
-```typescript
-// Global middleware, guards, pipes, and filters
-const { app, hono } = await Application.create(AppModule, {
-	components: {
-		middleware: [new LoggerMiddleware()],
-		guards: [AuthGuard],
-		pipes: [ValidationPipe],
-		filters: [HttpExceptionFilter]
-	}
-})
-```
-
-#### Module-Specific Components
-
-Module-specific components are scoped to a particular feature and can be applied at the controller or handler level:
-
-```typescript
-@Controller('users')
-@UseMiddleware(UsersMiddleware)
-@UseGuards(UsersGuard)
-class UsersController {}
-
-@Controller('users')
-class UsersWriteController {
-	@Post()
-	@UsePipes(UsersPipe)
-	@UseFilters(UsersFilter)
-	createUser(@Body() body: CreateUserDto) {}
-}
-```
-
-### Static Asset Organization
-
-Static assets are organized to support both global and view-specific styling and scripting:
-
-- **Global Assets**: `main.css` and `main.js` contain styles and scripts used across the entire application
-- **View-Specific Assets**: View-specific CSS and JS files are organized in subdirectories to avoid conflicts and enable
-  lazy loading
-
-### Best Practices
-
-1. **Keep Modules Focused**: Each module should have a single responsibility
-2. **Use Consistent Naming**: Follow consistent naming conventions for files and directories
-3. **Co-locate Related Files**: Keep related files close together (e.g., service and its tests)
-4. **Separate Concerns**: Keep business logic, presentation, and data access separate
-5. **Plan for Growth**: Structure your application to accommodate future features
+| Concept           | Plain Hono                 | HonestJS                         |
+| ----------------- | -------------------------- | -------------------------------- |
+| Route definition  | `app.get('/path', fn)`     | `@Controller()` + `@Get()`      |
+| DI                | Manual / none              | Built-in container               |
+| Middleware        | `app.use()`                | `@UseMiddleware()` or global     |
+| Project structure | Free-form                  | Modules/controllers/services     |
+| Underlying engine | Hono                       | Hono (accessible via `app.getApp()`) |
 
 ## Next Steps
 
-Now that you have a basic application running and understand the project organization, you can explore:
+Now that you have a running application, explore these topics in order:
 
-- [Configuration](./configuration.md) - Learn how to configure your application
-- [Routing](./concepts/routing.md) - Understand how to define routes and handle requests
-- [Dependency Injection](./concepts/dependency-injection.md) - Learn about the DI system
-- [Parameters](./concepts/parameters.md) - See how to extract data from requests
-- [Components](./components/overview.md) - Explore middleware, guards, pipes, and filters
-- [MVC](./features/mvc.md) - Build full-stack apps with Hono JSX views (use `mvc` template)
+1. **[Configuration](./configuration.md)** — customize routing prefixes, versioning, debug mode, and global components
+2. **[Routing](./concepts/routing.md)** — define routes, use parameters, and set up API versioning
+3. **[Dependency Injection](./concepts/dependency-injection.md)** — understand the DI container and service lifecycle
+4. **[Parameters](./concepts/parameters.md)** — extract body, query, params, and headers from requests
+5. **[Components](./components/overview.md)** — add middleware, guards, pipes, and exception filters
+6. **[Plugins](./features/plugins.md)** — extend the framework with plugins
+7. **[MVC](./features/mvc.md)** — build full-stack apps with Hono JSX views (use the `mvc` template)
+8. **[Testing](./features/testing.md)** — test your controllers and services with built-in helpers
+9. **[FAQ](./faq.md)** — answers to common questions and troubleshooting tips

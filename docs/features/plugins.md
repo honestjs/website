@@ -408,3 +408,7 @@ export class MetricsPlugin implements IPlugin {
 ```
 
 Plugins are a powerful way to keep your application modular and maintainable while adding the functionality you need.
+
+> Having plugin issues? See the [FAQ](../faq.md#plugins) for common questions about plugin ordering and naming, or the
+> [Troubleshooting](../troubleshooting.md#plugins) page for edge cases like RPC + ApiDocs ordering pitfalls and artifact
+> version mismatches.

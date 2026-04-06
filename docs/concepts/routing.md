@@ -369,3 +369,7 @@ export class HealthController {
 
 By combining these features, you can build well-structured and maintainable routing for your applications with flexible
 versioning and prefixing strategies.
+
+> Having routing issues? See the [FAQ](../faq.md#routing--versioning) for common questions, or the
+> [Troubleshooting](../troubleshooting.md#routing--versioning) page for edge cases like `VERSION_NEUTRAL` behavior and
+> duplicate route detection.

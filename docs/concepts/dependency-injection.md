@@ -441,3 +441,6 @@ class UsersController {
 
 By following these principles, you can build robust and well-structured applications with clear separation of concerns
 and excellent testability.
+
+> Having DI issues? See the [FAQ](../faq.md#dependency-injection) for common error messages and fixes, or the
+> [Troubleshooting](../troubleshooting.md#dependency-injection) page for detailed edge cases.

@@ -537,3 +537,7 @@ class UsersController {
 
 By following these practices, you can create robust error handling that provides clear, actionable feedback to clients
 while maintaining security and debugging capabilities.
+
+> Having error handling issues? See the [FAQ](../faq.md#pipeline) for common questions about the pipeline, or the
+> [Troubleshooting](../troubleshooting.md#parameters--pipeline) page for edge cases like filters that throw during error
+> handling.

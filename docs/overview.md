@@ -3,6 +3,12 @@
 Welcome to the HonestJS documentation! HonestJS is a modern, lightweight web framework for TypeScript and JavaScript,
 built on top of [Hono](https://hono.dev).
 
+::: info Project Status
+HonestJS is in early development (pre-v1.0.0). The API may change between minor versions and some features are still in
+progress. We recommend caution before using it in production until v1.0.0 is released. Follow progress on
+[GitHub](https://github.com/honestjs/honest) or join the [Discord](https://discord.gg/FB5bX9KN).
+:::
+
 ## What is HonestJS?
 
 HonestJS provides a clean, decorator-based API for building web applications with:
@@ -248,15 +254,18 @@ yarn add honestjs hono reflect-metadata
 
 For detailed setup instructions, see our [Getting Started](./getting-started.md) guide.
 
+### Help
+
+- **[FAQ](./faq.md)** - Answers to common questions about setup, DI, routing, and more
+- **[Troubleshooting](./troubleshooting.md)** - Edge cases, error messages, and fixes
+
 ## Community and Support
 
-- **Repository**: [GitHub Repository](https://github.com/honestjs/honest)
+- **Documentation**: [honestjs.dev](https://honestjs.dev)
+- **Repository**: [GitHub](https://github.com/honestjs/honest)
 - **Issues**: [GitHub Issues](https://github.com/honestjs/honest/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/honestjs/honest/discussions)
-
-<!-- ## Contributing -->
-
-<!-- We welcome contributions! Please see our [Contributing Guide](https://github.com/honestjs/honest/blob/master/CONTRIBUTING.md) for details. -->
+- **Discord**: [Join the community](https://discord.gg/FB5bX9KN)
 
 ## License
 

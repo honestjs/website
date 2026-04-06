@@ -87,7 +87,16 @@ expect(harness.has(UsersService)).toBe(true)
 - `has(target)`
 - `clear()`
 
+## Test Runners
+
+- **Projects created with the CLI** use **Vitest** by default. Run tests with `bun run test`.
+- **The HonestJS framework repo** itself uses **Bun's built-in test runner** (`bun test`).
+
+Both runners work with the testing helpers above.
+
 ## Notes
 
 - The helpers are intentionally thin wrappers over core runtime behavior.
 - They are suitable for unit and integration tests where you want low ceremony and predictable startup behavior.
+- When running multiple `Application.create` calls in one process (common in integration tests), call
+  `MetadataRegistry.clear()` in `afterEach` to avoid cross-test metadata pollution.

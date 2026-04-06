@@ -6,6 +6,18 @@ The HonestJS CLI (`@honestjs/cli`) scaffolds projects and generates files. Insta
 bun add -g @honestjs/cli
 ```
 
+::: details Using npm, pnpm, or yarn?
+
+```bash
+npm install -g @honestjs/cli
+# or
+pnpm add -g @honestjs/cli
+# or
+yarn global add @honestjs/cli
+```
+
+:::
+
 Aliases: `honestjs`, `honest`, `hnjs`.
 
 ## Commands

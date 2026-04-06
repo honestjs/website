@@ -31,7 +31,8 @@ export default defineConfig({
 					{ text: 'Overview', link: '/docs/overview' },
 					{ text: 'Getting Started', link: '/docs/getting-started' },
 					{ text: 'CLI', link: '/docs/cli' },
-					{ text: 'Configuration', link: '/docs/configuration' }
+					{ text: 'Configuration', link: '/docs/configuration' },
+					{ text: 'Deployment', link: '/docs/deployment' }
 				]
 			},
 			{
@@ -79,6 +80,13 @@ export default defineConfig({
 				items: [
 					{ text: 'RPC Plugin', link: '/docs/plugins/rpc-plugin' },
 					{ text: 'API Docs Plugin', link: '/docs/plugins/api-docs-plugin' }
+				]
+			},
+			{
+				text: 'Help',
+				items: [
+					{ text: 'FAQ', link: '/docs/faq' },
+					{ text: 'Troubleshooting', link: '/docs/troubleshooting' }
 				]
 			},
 			{
