@@ -2,9 +2,13 @@
 
 This guide walks you through creating your first HonestJS application. Pick the track that suits you best.
 
-::: info Project Status HonestJS is in early development (pre-v1.0.0). The API may change between minor versions and
-some features are still in progress. We recommend caution before using it in production. See
-[GitHub Issues](https://github.com/honestjs/honest/issues) for known issues and roadmap. :::
+::: info
+
+Project Status HonestJS is in early development (pre-v1.0.0). The API may change between minor versions and some
+features are still in progress. We recommend caution before using it in production. See
+[GitHub Issues](https://github.com/honestjs/honest/issues) for known issues and roadmap.
+
+:::
 
 ## Prerequisites
 
