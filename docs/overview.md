@@ -7,7 +7,7 @@ built on top of [Hono](https://hono.dev).
 
 Project Status HonestJS is in early development (pre-v1.0.0). The API may change between minor versions and some
 features are still in progress. We recommend caution before using it in production until v1.0.0 is released. Follow
-progress on [GitHub](https://github.com/honestjs/honest) or join the [Discord](https://discord.gg/FB5bX9KN).
+progress on [GitHub](https://github.com/honestjs/honest) or join the [Discord](https://discord.gg/wZvB7jXhdX).
 
 :::
 
@@ -267,7 +267,7 @@ For detailed setup instructions, see our [Getting Started](./getting-started.md)
 - **Repository**: [GitHub](https://github.com/honestjs/honest)
 - **Issues**: [GitHub Issues](https://github.com/honestjs/honest/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/honestjs/honest/discussions)
-- **Discord**: [Join the community](https://discord.gg/FB5bX9KN)
+- **Discord**: [Join the community](https://discord.gg/wZvB7jXhdX)
 
 ## License
 
